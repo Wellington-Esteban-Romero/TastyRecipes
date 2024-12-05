@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TastyRecipes</string>
+
+    <string name="splash_logo">Splash logo recipes</string>
 </resources>

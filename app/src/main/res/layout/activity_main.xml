@@ -9,7 +9,7 @@
     android:background="@color/white"
     tools:context=".activities.MainActivity">
 
-    <!-- Barra de búsqueda -->
+    <!-- search búsqueda -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
         android:layout_width="match_parent"
@@ -77,54 +77,25 @@
                     android:text="@string/label_drinks"
                     android:background="@drawable/category_button_background"
                     android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_drinks"
+                    android:background="@drawable/category_button_background"
+                    android:layout_marginEnd="8dp" />
             </LinearLayout>
         </HorizontalScrollView>
 
-        <!-- Botones de acceso rápido -->
-        <TextView
-            android:id="@+id/quick_access_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/acceso_r_pido"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="@font/roboto_medium"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="fill_horizontal">
-
-            <!-- Botón Favoritos -->
-            <ImageButton
-                android:id="@+id/favorites_button"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/round_button_background"
-                android:contentDescription="@string/favoritos" />
-
-            <!-- Botón Lista de Compras -->
-            <ImageButton
-                android:id="@+id/shopping_list_button"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/round_button_background"
-                android:contentDescription="@string/lista_de_compras" />
-
-            <!-- Botón Agregar receta (FAB) -->
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_recipe_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_button_background"
-                android:contentDescription="@string/agregar_receta"
-                app:layout_anchorGravity="end|bottom"
-                app:elevation="6dp" />
-        </LinearLayout>
     </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/bottom_app_bar" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

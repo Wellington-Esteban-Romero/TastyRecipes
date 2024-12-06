@@ -12,4 +12,5 @@
     <string name="agregar_receta">Agregar receta</string>
     <string name="acceso_r_pido">Acceso Rápido</string>
     <string name="todo">TODO</string>
+    <string name="recipes">Recipes</string>
 </resources>

@@ -33,9 +33,18 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    viewBinding {
+        enable = true
+    }
+
 }
 
 dependencies {
+
+    implementation (libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.picasso)
+    implementation (libs.material.v190)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

@@ -3,6 +3,7 @@ package com.tasty.recipes.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -29,8 +30,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var recipeService: RecipeService
-    private lateinit var rvRecipes: RecyclerView
-    private lateinit var searchView: SearchView
+    private lateinit var rvRecipesPopular: RecyclerView
+    private lateinit var editTextSearch: EditText
     private lateinit var btnAddRecipe: FloatingActionButton
     private lateinit var recipeDAO: RecipeDAO
 
@@ -55,9 +56,9 @@ class MainActivity : AppCompatActivity() {
 
         session = SessionManager(applicationContext)
         recipeService = RetrofitProvider.getRetrofit()
-        rvRecipes = findViewById(R.id.rvRecipes)
-        searchView = findViewById(R.id.search_view)
-        btnAddRecipe = findViewById(R.id.btnAddRecipe)
+        rvRecipesPopular = findViewById(R.id.rvRecipesPopular)
+        editTextSearch = findViewById(R.id.editTextSearch)
+        //btnAddRecipe = findViewById(R.id.btnAddRecipe)
         recipeDAO = RecipeDAO(this)
 
         if (!session.isLoadRecipes("loadRecipe"))
@@ -68,20 +69,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun initListener () {
 
-        searchView.setOnClickListener {
+        editTextSearch.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
 
-        searchView.setOnSearchClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnAddRecipe.setOnClickListener {
+        /*btnAddRecipe.setOnClickListener {
             val intent = Intent(this, AddRecipeActivity::class.java)
             startActivity(intent)
-        }
+        }*/
     }
 
     private fun setupRecyclerView() {
@@ -89,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             //onItemSelect(recipe)
         }
 
-        rvRecipes.apply {
+        rvRecipesPopular.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = recipeAdapter
         }

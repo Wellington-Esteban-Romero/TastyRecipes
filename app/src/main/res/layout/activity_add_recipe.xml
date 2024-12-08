@@ -133,8 +133,6 @@
             android:layout_gravity="center" />
 
         <!-- Botón para guardar -->
-        <!-- Botón para guardar -->
-        <!-- Botón para guardar -->
         <Button
             android:id="@+id/buttonSaveRecipe"
             android:layout_width="match_parent"

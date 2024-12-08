@@ -4,13 +4,20 @@
     <string name="splash_logo">Splash logo recipes</string>
 
     <string name="label_categories">Categories</string>
-    <string name="label_desserts">Postres</string>
-    <string name="label_salty">Salados</string>
-    <string name="label_drinks">Bebidas</string>
+    <string name="label_main">Main</string>
+    <string name="label_desserts">Dessert</string>
+    <string name="label_salad">Salad</string>
+    <string name="label_drinks">Drinks</string>
+    <string name="label_snacks">Snacks</string>
+
     <string name="favourite">Favourite</string>
     <string name="list_shop">Lista de Compras</string>
     <string name="agregar_receta">Agregar receta</string>
     <string name="acceso_r_pido">Acceso Rápido</string>
     <string name="todo">TODO</string>
     <string name="recipes">Recipes</string>
+    <string name="image_recipe">Imagen de receta</string>
+    <string name="select_mage">Select Image</string>
+    <string name="save_recipe">Save Recipe</string>
+    <string name="label_title">Title</string>
 </resources>

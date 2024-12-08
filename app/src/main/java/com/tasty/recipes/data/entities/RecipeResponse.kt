@@ -11,16 +11,16 @@ data class RecipeResponse(
 
 data class Recipe(
     @SerializedName("id") val id: Long,
-    @SerializedName("name") val name: String,
-    @SerializedName("ingredients") val ingredients: List<String>,
-    @SerializedName("instructions") val instructions: List<String>,
-    @SerializedName("prepTimeMinutes") val prepTimeMinutes: Int,
-    @SerializedName("cookTimeMinutes") val cookTimeMinutes: Int,
-    @SerializedName("servings") val servings: String,
-    @SerializedName("difficulty") val difficulty: String,
+    @SerializedName("name") var name: String,
+    @SerializedName("ingredients") var ingredients: List<String> = mutableListOf(),
+    @SerializedName("instructions") var instructions: List<String> = mutableListOf(),
+    @SerializedName("prepTimeMinutes") var prepTimeMinutes: Int = 0,
+    @SerializedName("cookTimeMinutes") var cookTimeMinutes: Int = 0,
+    @SerializedName("servings") var servings: String = "",
+    @SerializedName("difficulty") var difficulty: String = "",
     //@SerializedName("cuisine") val cuisine: String,
     //@SerializedName("caloriesPerServing") val caloriesPerServing: Int,
-    @SerializedName("image") val image: String,
+    @SerializedName("image") var image: String = "",
 ){
 
     companion object {

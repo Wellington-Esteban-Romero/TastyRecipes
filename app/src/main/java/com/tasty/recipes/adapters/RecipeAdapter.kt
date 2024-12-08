@@ -40,12 +40,12 @@ class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(recipe: Recipe, onClickListener: (Recipe) -> Unit) {
         val context = itemView.context
 
-       // itemRecipeBinding.nameItem.text = recipe.name
+        itemRecipeBinding.recipeName.text = recipe.name
 
         if (recipe.image.startsWith("https://"))
-            Picasso.get().load(recipe.image).into(itemRecipeBinding.imgRecipeItem)
+            Picasso.get().load(recipe.image).into(itemRecipeBinding.imgRecipe)
         else
-            itemRecipeBinding.imgRecipeItem.setImageURI(Uri.parse(recipe.image))
+            itemRecipeBinding.imgRecipe.setImageURI(Uri.parse(recipe.image))
 
         itemView.setOnClickListener {
             onClickListener(recipe)

@@ -1,0 +1,147 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
+    tools:context=".activities.AddRecipeActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:spacing="22dp">
+
+        <ImageView
+            android:id="@+id/imageViewSelected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </ImageView>
+
+        <!-- Campo para el título -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldTitleName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/label_title"
+            app:helperText="Maximino 50 characters">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo para los ingredientes -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ingredients">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo para las instrucciones -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Instruccions">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="5" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo para el tiempo de preparación -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldPrepTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Preparation time">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPrepTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo para el tiempo de cocción -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldCookTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tiempo cooking">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextCookTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo para las porciones -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldServings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Servings">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextServings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Campo para Dificultad -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textFieldDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Difficulty">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextDifficulty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Botón para seleccionar una imagen -->
+        <Button
+            android:id="@+id/btnSelectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_mage"
+            android:layout_gravity="center" />
+
+        <!-- Botón para guardar -->
+        <!-- Botón para guardar -->
+        <!-- Botón para guardar -->
+        <Button
+            android:id="@+id/buttonSaveRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_recipe"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+</ScrollView>

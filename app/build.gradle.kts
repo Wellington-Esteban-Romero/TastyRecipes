@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.picasso)
     implementation (libs.material.v190)
+    implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.25")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

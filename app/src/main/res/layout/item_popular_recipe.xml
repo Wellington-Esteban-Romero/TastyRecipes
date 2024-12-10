@@ -1,0 +1,70 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp"
+    android:background="@drawable/item_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+                <!-- Imagen de la receta -->
+                <ImageView
+                    android:id="@+id/recipeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop" />
+
+                <!-- Contenido de la tarjeta -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                        <!-- Nombre y tiempo -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+
+                                <!-- Nombre de la receta -->
+                                <TextView
+                                    android:id="@+id/recipeName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Pizza Margarita"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/roboto_medium"
+                                    android:textColor="@color/black" />
+
+                                <!-- Tiempo de preparación -->
+                                <TextView
+                                    android:id="@+id/preparationTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Tiempo de preparación: 20 min"
+                                    android:textSize="16sp"
+                                    android:textColor="#757575"
+                                    android:layout_marginTop="4dp" />
+                        </LinearLayout>
+
+                        <!-- Icono de favorito -->
+                        <ImageView
+                            android:id="@+id/favoriteIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_favorite"
+                            android:contentDescription="Favorite Icon"
+                            android:visibility="gone"/>
+                </LinearLayout>
+        </LinearLayout>
+</androidx.cardview.widget.CardView>

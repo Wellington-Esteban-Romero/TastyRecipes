@@ -10,7 +10,7 @@
 
         <!-- Imagen en miniatura -->
         <ImageView
-            android:id="@+id/imgRecipe"
+            android:id="@+id/recipeImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
@@ -43,46 +43,6 @@
                     android:layout_height="wrap_content"
                     android:text="Preparación: 10 min · Cocción: 20 min"
                     android:textSize="14sp"
-/>
-
-                <!-- Calificación
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_star_filled"
-                            android:contentDescription="Estrella 1" />
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_star_filled"
-                            android:contentDescription="Estrella 2" />
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_star_filled"
-                            android:contentDescription="Estrella 3" />
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_star_filled"
-                            android:contentDescription="Estrella 4" />
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_star_half"
-                            android:contentDescription="Estrella 5" />
-
-                </LinearLayout>-->
+                    />
         </LinearLayout>
 </LinearLayout>

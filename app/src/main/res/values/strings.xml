@@ -15,7 +15,7 @@
     <string name="agregar_receta">Agregar receta</string>
     <string name="acceso_r_pido">Acceso Rápido</string>
     <string name="todo">TODO</string>
-    <string name="recipes">Recipes</string>
+    <string name="popular_recipes">Popular Recipes</string>
     <string name="image_recipe">Imagen de receta</string>
     <string name="select_mage">Select Image</string>
     <string name="save_recipe">Save Recipe</string>

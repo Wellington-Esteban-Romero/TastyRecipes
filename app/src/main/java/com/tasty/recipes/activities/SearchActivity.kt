@@ -42,7 +42,8 @@ class SearchActivity : AppCompatActivity() {
         searchView = findViewById(R.id.search_view)
         recipeDAO = RecipeDAO(this)
         recipes = recipeDAO.findAll()
-
+        searchView.isIconified = false
+        searchView.requestFocus()
         setupSearchView()
         setupRecyclerView()
 
@@ -60,6 +61,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupSearchView () {
+        searchView.requestFocus()
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false;

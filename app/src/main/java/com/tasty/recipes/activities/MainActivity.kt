@@ -1,8 +1,11 @@
 package com.tasty.recipes.activities
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tasty.recipes.R
+import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.adapters.RecipeAdapter
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.RecipeResponse
@@ -24,9 +28,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var recipeService: RecipeService
     private lateinit var rvRecipesPopular: RecyclerView
     private lateinit var editTextSearch: EditText
@@ -50,6 +55,11 @@ class MainActivity : AppCompatActivity() {
         initListener()
     }
 
+    override fun onResume() {
+        editTextSearch.setBackgroundResource(R.drawable.search_background)
+        super.onResume()
+    }
+
     private fun init () {
 
         session = SessionManager(applicationContext)
@@ -67,25 +77,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun initListener () {
 
-        editTextSearch.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
-            startActivity(intent)
+        editTextSearch.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                // Cambiar el fondo del EditText
+                editTextSearch.setBackgroundResource(R.drawable.edittext_default_background)
+
+                // Iniciar la otra actividad
+                val intent = Intent(this, SearchActivity::class.java)
+                startActivity(intent)
+
+                true // Intercepta el evento
+            } else {
+                false
+            }
         }
 
-        /*btnAddRecipe.setOnClickListener {
-            val intent = Intent(this, AddRecipeActivity::class.java)
-            startActivity(intent)
-        }*/
     }
 
     private fun setupRecyclerView() {
-        recipeAdapter = RecipeAdapter(recipeDAO.findAll().take(5)) { recipe ->
+        popularRecipeAdapter = PopularRecipeAdapter(recipeDAO.findAll().take(5)) { recipe ->
             //onItemSelect(recipe)
         }
 
         rvRecipesPopular.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = recipeAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = popularRecipeAdapter
         }
     }
 
@@ -123,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
         withContext(Dispatchers.Main) {
             session.saveRecipes("loadRecipe", SessionManager.ACTIVE)
-            recipeAdapter.updateRecipes(recipeDAO.findAll())
+            popularRecipeAdapter.updateRecipes(recipeDAO.findAll())
         }
     }
 }

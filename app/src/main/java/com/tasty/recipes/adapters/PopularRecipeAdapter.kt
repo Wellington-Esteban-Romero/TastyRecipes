@@ -8,20 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.databinding.ItemRecipeBinding
+import com.tasty.recipes.databinding.ItemPopularRecipeBinding
 
-class RecipeAdapter (private var recipes: List<Recipe> = emptyList(),
-                     private val onClickListener: (Recipe) -> Unit): RecyclerView.Adapter<RecipeViewHolder>() {
+class PopularRecipeAdapter (private var recipes: List<Recipe> = emptyList(),
+                     private val onClickListener: (Recipe) -> Unit): RecyclerView.Adapter<PopularRecipeViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
-        return RecipeViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_recipe, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularRecipeViewHolder {
+        return PopularRecipeViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_popular_recipe, parent, false)
         )
     }
 
     override fun getItemCount() = recipes.size
 
-    override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PopularRecipeViewHolder, position: Int) {
         holder.bind(recipes[position], onClickListener)
     }
 
@@ -31,9 +31,9 @@ class RecipeAdapter (private var recipes: List<Recipe> = emptyList(),
     }
 }
 
-class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class PopularRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    private val itemRecipeBinding = ItemRecipeBinding.bind(view)
+    private val itemRecipeBinding = ItemPopularRecipeBinding.bind(view)
     //private val favoriteImageView = view.findViewById<ImageView>(R.id.imgFavorite)
 
     fun bind(recipe: Recipe, onClickListener: (Recipe) -> Unit) {

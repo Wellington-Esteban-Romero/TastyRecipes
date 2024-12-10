@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     tools:context=".activities.MainActivity">
 
     <TextView
@@ -18,63 +16,60 @@
 
     <!-- search búsqueda -->
 
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/roboto_medium"
+        android:text="Choose\nYour Favorite Recipe"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSearch" />
+
     <EditText
         android:id="@+id/editTextSearch"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="84dp"
         android:layout_marginEnd="24dp"
         android:autofillHints=""
         android:background="@drawable/search_background"
-        android:ems="10"
-        android:focusable="false"
+        android:drawableStart="@drawable/ic_search"
         android:hint="@string/search_recipe"
         android:inputType="none"
-        android:paddingStart="47dp"
         android:textColorHint="#5A5858"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSearch"
-        tools:ignore="MissingConstraints,RtlSymmetry" />
-
-    <ImageView
-        android:id="@+id/imgEditTextSearh"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="14dp"
-        android:contentDescription="@string/todo"
-        android:padding="5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSearch"
-        android:src="@drawable/ic_search"/>
+        app:layout_constraintTop_toBottomOf="@+id/textSearch" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="140dp"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="56dp">
+            android:layout_marginBottom="56dp"
+            android:orientation="vertical">
 
-            <!-- Categorías -->
+
             <TextView
                 android:id="@+id/categories_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_categories"
-                android:textSize="18sp"
-                android:textColor="@color/black"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto_medium"
-                />
+                android:text="@string/label_categories"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -95,6 +90,7 @@
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/category_button_background"
                         android:text="@string/label_main" />
+
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -128,19 +124,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/recipes"
-                android:textSize="18sp"
-                android:textColor="@color/black"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/roboto_medium" />
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/popular_recipes"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRecipesPopular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:padding="8dp"  />
+                android:clipToPadding="false" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

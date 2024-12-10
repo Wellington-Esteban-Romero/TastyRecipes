@@ -25,6 +25,6 @@ class SplashActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish() // Close the splash activity
-        }, 500) // Set delay time, e.g., 2 seconds
+        }, 2000) // Set delay time, e.g., 2 seconds
     }
 }

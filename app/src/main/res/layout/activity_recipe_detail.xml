@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:title="Recipe Name">
+            >
 
             <!-- Imagen de Fondo -->
             <ImageView
@@ -42,6 +42,7 @@
                 android:fitsSystemWindows="true"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:titleTextColor="@android:color/white"
+                app:title="Recipe Name"
                 app:menu="@menu/recipe_toolbar_menu"/>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

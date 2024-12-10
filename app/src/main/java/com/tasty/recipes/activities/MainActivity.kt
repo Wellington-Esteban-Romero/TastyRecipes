@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tasty.recipes.R
+import com.tasty.recipes.adapters.LastSeeRecipeAdapter
 import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.adapters.RecipeAdapter
 import com.tasty.recipes.data.entities.Recipe
@@ -32,8 +33,10 @@ import kotlinx.coroutines.withContext
 class MainActivity : AppCompatActivity() {
 
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
+    private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
     private lateinit var recipeService: RecipeService
     private lateinit var rvRecipesPopular: RecyclerView
+    private lateinit var rvRecipesLastSee: RecyclerView
     private lateinit var editTextSearch: EditText
     private lateinit var btnAddRecipe: FloatingActionButton
     private lateinit var recipeDAO: RecipeDAO
@@ -65,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         session = SessionManager(applicationContext)
         recipeService = RetrofitProvider.getRetrofit()
         rvRecipesPopular = findViewById(R.id.rvRecipesPopular)
+        rvRecipesLastSee = findViewById(R.id.rvRecipesLastSee)
         editTextSearch = findViewById(R.id.editTextSearch)
         //btnAddRecipe = findViewById(R.id.btnAddRecipe)
         recipeDAO = RecipeDAO(this)
@@ -102,6 +106,15 @@ class MainActivity : AppCompatActivity() {
         rvRecipesPopular.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = popularRecipeAdapter
+        }
+
+        lastSeeRecipeAdapter = LastSeeRecipeAdapter(recipeDAO.findAll().take(1)) { recipe ->
+            onItemSelect(recipe)
+        }
+
+        rvRecipesLastSee.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = lastSeeRecipeAdapter
         }
     }
 

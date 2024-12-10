@@ -171,31 +171,31 @@ class RecipeDAO (val context: Context) {
         return list
     }
 
-    fun findRecipeById(idRecipe:String) : List<Recipe> {
+    fun findRecipeById(idRecipe: String): Recipe? {
         open()
 
-        var list: MutableList<Recipe> = mutableListOf()
+        var recipe: Recipe? = null
 
         try {
             val cursor = db.query(
-                Recipe.TABLE_NAME,                    // The table to query
-                Recipe.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
-                "${Recipe.COLUMN_ID} = ?",                       // The columns for the WHERE clause
-                arrayOf(idRecipe),                   // The values for the WHERE clause
-                null,                       // don't group the rows
-                null,                         // don't filter by row groups
-                null                         // The sort order
+                Recipe.TABLE_NAME,                // The table to query
+                Recipe.COLUMN_NAMES,              // The array of columns to return (pass null to get all)
+                "${Recipe.COLUMN_ID} = ?",        // The columns for the WHERE clause
+                arrayOf(idRecipe),                // The values for the WHERE clause
+                null,                             // don't group the rows
+                null,                             // don't filter by row groups
+                null                              // The sort order
             )
 
-            while (cursor.moveToNext()) {
-                val task = cursorToEntity(cursor)
-                list.add(task)
+            if (cursor.moveToFirst()) {
+                recipe = cursorToEntity(cursor)
             }
         } catch (e: Exception) {
             Log.e("DB", e.stackTraceToString())
         } finally {
             close()
         }
-        return list
+
+        return recipe
     }
 }

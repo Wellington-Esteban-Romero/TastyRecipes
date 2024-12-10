@@ -96,13 +96,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         popularRecipeAdapter = PopularRecipeAdapter(recipeDAO.findAll().take(5)) { recipe ->
-            //onItemSelect(recipe)
+            onItemSelect(recipe)
         }
 
         rvRecipesPopular.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = popularRecipeAdapter
         }
+    }
+
+    private fun onItemSelect(recipe: Recipe) {
+        val intent = Intent(this, RecipeDetailActivity::class.java)
+        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
+        startActivity(intent)
     }
 
     private fun getAllRecipesFromService () {

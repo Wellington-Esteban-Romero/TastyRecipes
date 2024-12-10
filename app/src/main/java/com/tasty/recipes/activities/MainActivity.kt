@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         editTextSearch.setBackgroundResource(R.drawable.search_background)
+        editTextSearch.clearFocus()
         super.onResume()
     }
 

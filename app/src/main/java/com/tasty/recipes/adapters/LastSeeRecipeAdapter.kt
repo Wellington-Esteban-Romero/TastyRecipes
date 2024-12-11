@@ -35,6 +35,7 @@ class LastSeeRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val context = itemView.context
 
         itemRecipeBinding.recipeName.text = recipe.name
+        itemRecipeBinding.preparationTime.text = "${recipe.prepTimeMinutes} min"
 
         if (recipe.image.startsWith("https://"))
             Picasso.get().load(recipe.image).into(itemRecipeBinding.recipeImage)

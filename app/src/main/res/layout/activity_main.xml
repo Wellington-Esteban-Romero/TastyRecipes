@@ -76,6 +76,8 @@
                 android:id="@+id/rvCategories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:scrollbars="horizontal"
                 android:clipToPadding="false" />
 
             <TextView

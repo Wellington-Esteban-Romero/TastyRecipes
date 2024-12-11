@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.tasty.recipes.data.entities.Category
+import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.utils.DatabaseManager
 
 class CategoryDAO (val context: Context) {
@@ -33,6 +34,22 @@ class CategoryDAO (val context: Context) {
         val description = cursor.getString(cursor.getColumnIndexOrThrow(Category.COLUMN_DESCRIPTION))
 
         return Category(id, name, description)
+    }
+
+    fun insert(category: Category) {
+        open()
+
+        // Create a new map of values, where column names are the keys
+        val values = getContentValues(category)
+
+        try {
+            // Insert the new row, returning the primary key value of the new row
+            db.insert(Category.TABLE_NAME, null, values)
+        } catch (e: Exception) {
+            Log.e("DB", e.stackTraceToString())
+        } finally {
+            close()
+        }
     }
 
     fun findAll() : List<Category> {

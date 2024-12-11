@@ -10,6 +10,10 @@
     <!-- search búsqueda -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
+        app:searchIcon="@null"
+        app:searchHintIcon="@drawable/ic_arrow_back"
+        app:closeIcon="@null"
+        android:pointerIcon="hand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

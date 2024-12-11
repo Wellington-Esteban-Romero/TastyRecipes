@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        init()
+        initUI()
         initListener()
     }
 
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
-    private fun init () {
+    private fun initUI () {
 
         session = SessionManager(applicationContext)
         recipeService = RetrofitProvider.getRetrofit()
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         if (!session.isLoadRecipes("loadRecipe"))
             getAllRecipesFromService()
 
-        saveCategories()
+        //saveCategories()
         setupRecyclerView()
     }
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
 
         categoryRecipeAdapter = CategoryAdapter(categoryDAO.findAll()) { category ->
-            //onItemSelect(recipe)
+            onItemSelectCategory(category)
         }
 
         rvCategoryRecipes.apply {
@@ -133,6 +133,12 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = lastSeeRecipeAdapter
         }
+    }
+
+    private fun onItemSelectCategory(category: Category) {
+        val intent = Intent(this, ListRecipeCategoryActivity::class.java)
+        intent.putExtra(ListRecipeCategoryActivity.EXTRA_RECIPE_TAG_ID, category.id.toString())
+        startActivity(intent)
     }
 
     private fun onItemSelect(recipe: Recipe) {
@@ -175,7 +181,7 @@ class MainActivity : AppCompatActivity() {
 
         withContext(Dispatchers.Main) {
             session.saveRecipes("loadRecipe", SessionManager.ACTIVE)
-            //popularRecipeAdapter.updateRecipes(recipeDAO.findAll())
+            popularRecipeAdapter.updateRecipes(recipeDAO.findAll().take(5))
         }
     }
 

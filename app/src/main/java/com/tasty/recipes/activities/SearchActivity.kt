@@ -34,10 +34,10 @@ class SearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        init()
+        initUI()
     }
 
-    private fun init () {
+    private fun initUI () {
 
         searchView = findViewById(R.id.search_view)
         recipeDAO = RecipeDAO(this)

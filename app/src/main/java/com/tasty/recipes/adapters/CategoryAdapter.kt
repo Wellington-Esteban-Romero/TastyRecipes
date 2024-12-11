@@ -32,7 +32,7 @@ class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         itemCategoryBinding.categoryName.text = category.name
 
-        itemView.setOnClickListener {
+        itemCategoryBinding.categoryName.setOnClickListener {
             onClickListener(category)
         }
     }

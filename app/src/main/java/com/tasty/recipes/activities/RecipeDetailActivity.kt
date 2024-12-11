@@ -37,11 +37,11 @@ class RecipeDetailActivity : AppCompatActivity() {
             insets
         }
 
-        init()
+        initUI()
         initListener()
     }
 
-    private fun init () {
+    private fun initUI () {
         val id = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
 
         recipeDAO = RecipeDAO(this)

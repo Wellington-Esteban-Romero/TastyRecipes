@@ -1,17 +1,14 @@
 package com.tasty.recipes.adapters
 
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Category
-import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.databinding.ItemRecipeBinding
+import com.tasty.recipes.databinding.ItemCategoryBinding
 
-class CategoryAdapter (private var recipes: List<Category> = emptyList(),
+class CategoryAdapter (private var categories: List<Category> = emptyList(),
                      private val onClickListener: (Category) -> Unit): RecyclerView.Adapter<CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -20,33 +17,23 @@ class CategoryAdapter (private var recipes: List<Category> = emptyList(),
         )
     }
 
-    override fun getItemCount() = recipes.size
+    override fun getItemCount() = categories.size
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(recipes[position], onClickListener)
-    }
-
-    fun updateRecipes (list: List<Category>) {
-        recipes = list
-        notifyDataSetChanged()
+        holder.bind(categories[position], onClickListener)
     }
 }
 
 class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    private val itemRecipeBinding = ItemRecipeBinding.bind(view)
+    private val itemCategoryBinding = ItemCategoryBinding.bind(view)
 
     fun bind(category: Category, onClickListener: (Category) -> Unit) {
 
-        itemRecipeBinding.recipeName.text = category.name
+        itemCategoryBinding.categoryName.text = category.name
 
         itemView.setOnClickListener {
             onClickListener(category)
         }
-
-       /* if (SessionManager(context).isFavorite(recipe.id.toString()))
-            favoriteImageView.visibility = View.VISIBLE
-        else
-            favoriteImageView.visibility = View.GONE*/
     }
 }

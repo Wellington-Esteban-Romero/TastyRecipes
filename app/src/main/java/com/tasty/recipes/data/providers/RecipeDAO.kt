@@ -8,7 +8,7 @@ import android.util.Log
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.utils.DatabaseManager
 
-class RecipeDAO (val context: Context) {
+class RecipeDAO(val context: Context) {
 
     private lateinit var db: SQLiteDatabase
 
@@ -30,7 +30,6 @@ class RecipeDAO (val context: Context) {
             put(Recipe.COLUMN_SERVINGS, recipe.servings)
             put(Recipe.COLUMN_DIFFICULTY, recipe.difficulty)
             put(Recipe.COLUMN_IMG, recipe.image)
-            //put(Recipe.COLUMN_CATEGORY, recipe.category)
         }
     }
 
@@ -38,15 +37,27 @@ class RecipeDAO (val context: Context) {
         val id = cursor.getLong(cursor.getColumnIndexOrThrow(Recipe.COLUMN_ID))
         val name = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_NAME_TITLE))
         val ingredients = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_INGREDIENTS))
-        val instructions = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_INSTRUCTIONS))
-        val prepTimeMinutes = cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_PREP_TIME_MINUTES))
-        val cookTimeMinutes = cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_COOK_TIME_MINUTES))
+        val instructions =
+            cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_INSTRUCTIONS))
+        val prepTimeMinutes =
+            cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_PREP_TIME_MINUTES))
+        val cookTimeMinutes =
+            cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_COOK_TIME_MINUTES))
         val servings = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_SERVINGS))
         val difficulty = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_DIFFICULTY))
         val image = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_IMG))
-        //val category = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_CATEGORY))
 
-        return Recipe(id, name, ingredients.split("-"), instructions.split("-"), prepTimeMinutes, cookTimeMinutes, servings, difficulty, image)
+        return Recipe(
+            id,
+            name,
+            ingredients.split("-"),
+            instructions.split("-"),
+            prepTimeMinutes,
+            cookTimeMinutes,
+            servings,
+            difficulty,
+            image
+        )
     }
 
     fun insert(recipe: Recipe) {
@@ -98,7 +109,7 @@ class RecipeDAO (val context: Context) {
         }
     }
 
-    fun deleteRecipe(idRecipe:String) {
+    fun deleteRecipe(idRecipe: String) {
         open()
 
         try {
@@ -115,7 +126,7 @@ class RecipeDAO (val context: Context) {
         }
     }
 
-    fun findAll() : List<Recipe> {
+    fun findAll(): List<Recipe> {
         open()
 
         val list: MutableList<Recipe> = mutableListOf()
@@ -126,34 +137,6 @@ class RecipeDAO (val context: Context) {
                 Recipe.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
                 null,// The columns for the WHERE clause
                 null,                   // The values for the WHERE clause
-                null,                       // don't group the rows
-                null,                         // don't filter by row groups
-                null                         // The sort order
-            )
-
-            while (cursor.moveToNext()) {
-                val task = cursorToEntity(cursor)
-                list.add(task)
-            }
-        } catch (e: Exception) {
-            Log.e("DB", e.stackTraceToString())
-        } finally {
-            close()
-        }
-        return list
-    }
-
-    fun findAllByCategory(idCategory:String) : List<Recipe> {
-        open()
-
-        var list: MutableList<Recipe> = mutableListOf()
-
-        try {
-            val cursor = db.query(
-                Recipe.TABLE_NAME,                    // The table to query
-                Recipe.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
-                "${Recipe.COLUMN_NAMES} = ?",                       // The columns for the WHERE clause
-                arrayOf(idCategory),                   // The values for the WHERE clause
                 null,                       // don't group the rows
                 null,                         // don't filter by row groups
                 null                         // The sort order
@@ -195,7 +178,6 @@ class RecipeDAO (val context: Context) {
         } finally {
             close()
         }
-
         return recipe
     }
 }

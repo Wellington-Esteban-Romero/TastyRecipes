@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- Fondo del SearchView -->
-    <solid android:color="#FFFFFF" />
+    <solid android:color="#A8DADC" />
 
     <!-- Bordes redondeados -->
     <corners android:radius="16dp" />

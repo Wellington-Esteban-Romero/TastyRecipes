@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main"
+    android:background="#F1FAEE"
     android:fitsSystemWindows="true">
 
     <!-- AppBar con colapso -->
@@ -39,10 +40,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
-                android:fitsSystemWindows="true"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:titleTextColor="@android:color/white"
                 app:title="Recipe Name"
+                app:titleTextColor="@android:color/white"
+                app:layout_collapseMode="pin"
                 app:menu="@menu/recipe_toolbar_menu"/>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

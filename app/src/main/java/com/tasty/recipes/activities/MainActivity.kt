@@ -21,7 +21,6 @@ import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.RecipeCategory
 import com.tasty.recipes.data.entities.RecipeResponse
 import com.tasty.recipes.data.providers.CategoryDAO
-import com.tasty.recipes.data.providers.Recipe2DAO
 import com.tasty.recipes.data.providers.RecipeCategoryDAO
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.data.providers.RetrofitProvider
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editTextSearch: EditText
     private lateinit var btnAddRecipe: FloatingActionButton
     private lateinit var recipeDAO: RecipeDAO
-    private lateinit var recipe2DAO: Recipe2DAO
     private lateinit var categoryDAO: CategoryDAO
     private lateinit var recipeCategoryDAO: RecipeCategoryDAO
 
@@ -82,7 +80,6 @@ class MainActivity : AppCompatActivity() {
         editTextSearch = findViewById(R.id.editTextSearch)
         //btnAddRecipe = findViewById(R.id.btnAddRecipe)
         recipeDAO = RecipeDAO(this)
-        //recipe2DAO = Recipe2DAO(this)
         categoryDAO = CategoryDAO(this)
         recipeCategoryDAO = RecipeCategoryDAO(this)
 
@@ -91,8 +88,8 @@ class MainActivity : AppCompatActivity() {
         if (!session.isLoadRecipes("loadRecipe"))
             getAllRecipesFromService()
 
-        //saveCategories()
-        //saveRecipeCategory()
+        saveCategories()
+        saveRecipeCategory()
         setupRecyclerView()
     }
 

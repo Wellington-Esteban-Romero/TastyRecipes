@@ -17,6 +17,11 @@ class RecipeCategoryDAO (val context: Context) {
         db = DatabaseManager(context).writableDatabase
     }
 
+    private fun openBeginTransaction() {
+        db = DatabaseManager(context).writableDatabase
+        db.beginTransaction()
+    }
+
     private fun close() {
         db.close()
     }
@@ -74,12 +79,10 @@ class RecipeCategoryDAO (val context: Context) {
     fun insert(recipeCategory: RecipeCategory) {
         open()
 
-        // Create a new map of values, where column names are the keys
         val values = getContentValues(recipeCategory)
 
         try {
-            // Insert the new row, returning the primary key value of the new row
-            val id = db.insert(RecipeCategory.TABLE_NAME, null, values)
+            db.insert(RecipeCategory.TABLE_NAME, null, values)
         } catch (e: Exception) {
             Log.e("DB", e.stackTraceToString())
         } finally {

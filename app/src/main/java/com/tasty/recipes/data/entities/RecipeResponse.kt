@@ -18,9 +18,8 @@ data class Recipe(
     @SerializedName("cookTimeMinutes") var cookTimeMinutes: Int = 0,
     @SerializedName("servings") var servings: String = "",
     @SerializedName("difficulty") var difficulty: String = "",
-    //@SerializedName("cuisine") val cuisine: String,
-    //@SerializedName("caloriesPerServing") val caloriesPerServing: Int,
     @SerializedName("image") var image: String = "",
+    //val category: String = ""
 ){
 
     companion object {
@@ -34,7 +33,7 @@ data class Recipe(
         const val COLUMN_SERVINGS = "servings"
         const val COLUMN_DIFFICULTY = "difficulty"
         const val COLUMN_IMG = "img"
-        //const val COLUMN_CATEGORY = "category"
+        //const val COLUMN_CATEGORY = "categories"
         val COLUMN_NAMES = arrayOf(
             COLUMN_ID,
             COLUMN_NAME_TITLE,
@@ -44,7 +43,7 @@ data class Recipe(
             COLUMN_COOK_TIME_MINUTES,
             COLUMN_SERVINGS,
             COLUMN_DIFFICULTY,
-            COLUMN_IMG
+            COLUMN_IMG,
             //COLUMN_CATEGORY
         )
     }

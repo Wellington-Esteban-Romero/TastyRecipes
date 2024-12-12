@@ -19,5 +19,4 @@ data class Category(
             COLUMN_DESCRIPTION
         )
     }
-
 }

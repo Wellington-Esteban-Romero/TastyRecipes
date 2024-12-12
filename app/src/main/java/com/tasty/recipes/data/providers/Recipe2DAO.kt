@@ -5,19 +5,24 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
+import com.tasty.recipes.utils.DatabaseHelper
 import com.tasty.recipes.utils.DatabaseManager
 
-class RecipeDAO(val context: Context) {
+class Recipe2DAO(val context: Context) {
 
     private lateinit var db: SQLiteDatabase
+    private lateinit var dh: SQLiteDatabase
 
     private fun open() {
         db = DatabaseManager(context).writableDatabase
+        dh = DatabaseHelper(context).openDatabase()
     }
 
     private fun close() {
         db.close()
+        dh.close()
     }
 
     private fun getContentValues(recipe: Recipe): ContentValues {
@@ -46,7 +51,6 @@ class RecipeDAO(val context: Context) {
         val servings = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_SERVINGS))
         val difficulty = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_DIFFICULTY))
         val image = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_IMG))
-        //val category = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_CATEGORY))
 
         return Recipe(
             id,
@@ -58,8 +62,35 @@ class RecipeDAO(val context: Context) {
             servings,
             difficulty,
             image
-            //category
         )
+    }
+
+    fun findAll() : List<Recipe> {
+        open()
+
+        val list: MutableList<Recipe> = mutableListOf()
+
+        try {
+            val cursor = dh.query(
+                Recipe.TABLE_NAME,                    // The table to query
+                Recipe.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
+                null,// The columns for the WHERE clause
+                null,                   // The values for the WHERE clause
+                null,                       // don't group the rows
+                null,                         // don't filter by row groups
+                null                         // The sort order
+            )
+
+            while (cursor.moveToNext()) {
+                val category = cursorToEntity(cursor)
+                list.add(category)
+            }
+        } catch (e: Exception) {
+            Log.e("DB", e.stackTraceToString())
+        } finally {
+            close()
+        }
+        return list
     }
 
     fun insert(recipe: Recipe) {
@@ -126,34 +157,6 @@ class RecipeDAO(val context: Context) {
         } finally {
             close()
         }
-    }
-
-    fun findAll(): List<Recipe> {
-        open()
-
-        val list: MutableList<Recipe> = mutableListOf()
-
-        try {
-            val cursor = db.query(
-                Recipe.TABLE_NAME,                    // The table to query
-                Recipe.COLUMN_NAMES,                  // The array of columns to return (pass null to get all)
-                null,// The columns for the WHERE clause
-                null,                   // The values for the WHERE clause
-                null,                       // don't group the rows
-                null,                         // don't filter by row groups
-                null                         // The sort order
-            )
-
-            while (cursor.moveToNext()) {
-                val task = cursorToEntity(cursor)
-                list.add(task)
-            }
-        } catch (e: Exception) {
-            Log.e("DB", e.stackTraceToString())
-        } finally {
-            close()
-        }
-        return list
     }
 
     fun findAllByCategory(idCategory:String): List<Recipe> {

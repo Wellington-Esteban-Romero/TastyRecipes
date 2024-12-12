@@ -18,8 +18,11 @@ import com.tasty.recipes.adapters.LastSeeRecipeAdapter
 import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
+import com.tasty.recipes.data.entities.RecipeCategory
 import com.tasty.recipes.data.entities.RecipeResponse
 import com.tasty.recipes.data.providers.CategoryDAO
+import com.tasty.recipes.data.providers.Recipe2DAO
+import com.tasty.recipes.data.providers.RecipeCategoryDAO
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.data.providers.RetrofitProvider
 import com.tasty.recipes.services.RecipeService
@@ -42,7 +45,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editTextSearch: EditText
     private lateinit var btnAddRecipe: FloatingActionButton
     private lateinit var recipeDAO: RecipeDAO
+    private lateinit var recipe2DAO: Recipe2DAO
     private lateinit var categoryDAO: CategoryDAO
+    private lateinit var recipeCategoryDAO: RecipeCategoryDAO
 
     companion object {
         lateinit var session: SessionManager
@@ -77,12 +82,17 @@ class MainActivity : AppCompatActivity() {
         editTextSearch = findViewById(R.id.editTextSearch)
         //btnAddRecipe = findViewById(R.id.btnAddRecipe)
         recipeDAO = RecipeDAO(this)
+        //recipe2DAO = Recipe2DAO(this)
         categoryDAO = CategoryDAO(this)
+        recipeCategoryDAO = RecipeCategoryDAO(this)
+
+       //val recipes: List<Recipe> = recipe2DAO.findAll()
 
         if (!session.isLoadRecipes("loadRecipe"))
             getAllRecipesFromService()
 
         //saveCategories()
+        //saveRecipeCategory()
         setupRecyclerView()
     }
 
@@ -188,8 +198,25 @@ class MainActivity : AppCompatActivity() {
     private fun saveCategories () {
         categoryDAO.insert(Category(1, "Main", ""))
         categoryDAO.insert(Category(2, "Dessert", ""))
-        categoryDAO.insert(Category(3, "Drinks", ""))
-        categoryDAO.insert(Category(4, "Lunch", ""))
-        categoryDAO.insert(Category(5, "Snacks", ""))
+        categoryDAO.insert(Category(3, "Salad", ""))
+        categoryDAO.insert(Category(4, "Italian", ""))
+        categoryDAO.insert(Category(5, "Asian", ""))
+        categoryDAO.insert(Category(6, "Salsa", ""))
+        categoryDAO.insert(Category(7, "Japanese", ""))
+        categoryDAO.insert(Category(8, "Soup", ""))
+        categoryDAO.insert(Category(9, "Cocktail", ""))
+        categoryDAO.insert(Category(10, "Spanish", ""))
+        categoryDAO.insert(Category(11, "Snack", ""))
+        categoryDAO.insert(Category(12, "Kebabs", ""))
+        categoryDAO.insert(Category(13, "Lunch", ""))
+        categoryDAO.insert(Category(14, "Indian", ""))
+    }
+
+    private fun saveRecipeCategory () {
+        recipeCategoryDAO.insert(RecipeCategory(1,4))
+        recipeCategoryDAO.insert(RecipeCategory(2,5))
+        recipeCategoryDAO.insert(RecipeCategory(2,7))
+        //recipeCategoryDAO.insert(RecipeCategory(1,4))
+        //recipeCategoryDAO.insert(RecipeCategory(1,4))
     }
 }

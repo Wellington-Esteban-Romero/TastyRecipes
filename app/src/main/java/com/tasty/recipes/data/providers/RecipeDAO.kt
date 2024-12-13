@@ -5,7 +5,9 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
+import com.tasty.recipes.data.entities.RecipeCategory
 import com.tasty.recipes.utils.DatabaseManager
 
 class RecipeDAO(val context: Context) {
@@ -209,5 +211,26 @@ class RecipeDAO(val context: Context) {
             close()
         }
         return recipe
+    }
+
+    fun findRecipeByCategory(categoryName: String): List<Recipe> {
+        open()
+        val recipes = mutableListOf<Recipe>()
+
+        val query = "SELECT r.* FROM ${Recipe.TABLE_NAME} r " +
+            "JOIN ${RecipeCategory.TABLE_NAME} rc ON r.id = rc.recipeId " +
+            "JOIN ${Category.TABLE_NAME} c ON c.id = rc.categoryId " +
+            "WHERE c.name = ?"
+
+        val cursor = db.rawQuery(query, arrayOf(categoryName))
+
+        if (cursor.moveToFirst()) {
+            do {
+                recipes.add(cursorToEntity(cursor))
+            } while (cursor.moveToNext())
+        }
+        close()
+
+        return recipes
     }
 }

@@ -17,6 +17,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
 
     companion object {
         val EXTRA_RECIPE_TAG_ID = "EXTRA_RECIPE_TAG_ID"
+        val EXTRA_RECIPE_TAG_NAME = "EXTRA_RECIPE_TAG_NAME"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,8 +36,15 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
     }
 
     private fun initUI () {
+
+        recipeDAO = RecipeDAO(this)
+
         val id = intent.getStringExtra(EXTRA_RECIPE_TAG_ID).orEmpty()
+        val name = intent.getStringExtra(EXTRA_RECIPE_TAG_NAME).orEmpty()
         println(id)
+
+        val recipes = recipeDAO.findRecipeByCategory(name)
+        recipes.forEach { println(it) }
 
     }
 }

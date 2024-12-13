@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity() {
     private fun onItemSelectCategory(category: Category) {
         val intent = Intent(this, ListRecipeCategoryActivity::class.java)
         intent.putExtra(ListRecipeCategoryActivity.EXTRA_RECIPE_TAG_ID, category.id.toString())
+        intent.putExtra(ListRecipeCategoryActivity.EXTRA_RECIPE_TAG_NAME, category.name)
         startActivity(intent)
     }
 

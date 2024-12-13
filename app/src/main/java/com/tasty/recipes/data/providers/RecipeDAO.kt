@@ -22,7 +22,7 @@ class RecipeDAO(val context: Context) {
 
     private fun getContentValues(recipe: Recipe): ContentValues {
         return ContentValues().apply {
-            put(Recipe.COLUMN_NAME_TITLE, recipe.name)
+            put(Recipe.COLUMN_NAME, recipe.name)
             put(Recipe.COLUMN_INGREDIENTS, recipe.ingredients.joinToString(", "))
             put(Recipe.COLUMN_INSTRUCTIONS, recipe.instructions.joinToString(", "))
             put(Recipe.COLUMN_PREP_TIME_MINUTES, recipe.prepTimeMinutes)
@@ -35,7 +35,7 @@ class RecipeDAO(val context: Context) {
 
     private fun cursorToEntity(cursor: Cursor): Recipe {
         val id = cursor.getLong(cursor.getColumnIndexOrThrow(Recipe.COLUMN_ID))
-        val name = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_NAME_TITLE))
+        val name = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_NAME))
         val ingredients = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_INGREDIENTS))
         val instructions =
             cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_INSTRUCTIONS))
@@ -43,7 +43,7 @@ class RecipeDAO(val context: Context) {
             cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_PREP_TIME_MINUTES))
         val cookTimeMinutes =
             cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_COOK_TIME_MINUTES))
-        val servings = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_SERVINGS))
+        val servings = cursor.getInt(cursor.getColumnIndexOrThrow(Recipe.COLUMN_SERVINGS))
         val difficulty = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_DIFFICULTY))
         val image = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_IMG))
         //val category = cursor.getString(cursor.getColumnIndexOrThrow(Recipe.COLUMN_CATEGORY))

@@ -174,9 +174,9 @@ class AddRecipeActivity : AppCompatActivity() {
             recipe.cookTimeMinutes = binding.textFieldCookTime.editText?.text.toString().toInt()
         }
         if (binding.textFieldServings.editText?.text.toString().isEmpty()){
-            recipe.servings = "0"
+            recipe.servings = 0
         } else {
-            recipe.servings = binding.textFieldServings.editText?.text.toString()
+            recipe.servings = binding.textFieldServings.editText?.text.toString().toInt()
         }
         recipe.difficulty = binding.textFieldDifficulty.editText?.text.toString()
 

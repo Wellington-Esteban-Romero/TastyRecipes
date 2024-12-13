@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.tasty.recipes.data.entities.Category
-import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.utils.DatabaseManager
 
 class CategoryDAO (val context: Context) {

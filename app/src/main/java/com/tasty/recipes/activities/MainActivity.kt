@@ -19,12 +19,9 @@ import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.RecipeCategory
-import com.tasty.recipes.data.entities.RecipeResponse
 import com.tasty.recipes.data.providers.CategoryDAO
 import com.tasty.recipes.data.providers.RecipeCategoryDAO
 import com.tasty.recipes.data.providers.RecipeDAO
-import com.tasty.recipes.data.providers.RetrofitProvider
-import com.tasty.recipes.services.RecipeService
 import com.tasty.recipes.utils.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var categoryRecipeAdapter: CategoryAdapter
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
-    private lateinit var recipeService: RecipeService
     private lateinit var rvCategoryRecipes: RecyclerView
     private lateinit var rvRecipesPopular: RecyclerView
     private lateinit var rvRecipesLastSee: RecyclerView
@@ -70,10 +66,9 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
     }
 
-    private fun initUI () {
+    private fun initUI() {
 
         session = SessionManager(applicationContext)
-        recipeService = RetrofitProvider.getRetrofit()
         rvCategoryRecipes = findViewById(R.id.rvCategories)
         rvRecipesPopular = findViewById(R.id.rvRecipesPopular)
         rvRecipesLastSee = findViewById(R.id.rvRecipesLastSee)
@@ -83,17 +78,14 @@ class MainActivity : AppCompatActivity() {
         categoryDAO = CategoryDAO(this)
         recipeCategoryDAO = RecipeCategoryDAO(this)
 
-       //val recipes: List<Recipe> = recipe2DAO.findAll()
-
-        if (!session.isLoadRecipes("loadRecipe"))
-            getAllRecipesFromService()
-
-        saveCategories()
-        saveRecipeCategory()
+        if (!session.isLoadRecipes("loadRecipe")) {
+            saveCategories()
+            saveRecipeCategory()
+        }
         setupRecyclerView()
     }
 
-    private fun initListener () {
+    private fun initListener() {
 
         editTextSearch.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
@@ -119,7 +111,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         rvCategoryRecipes.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryRecipeAdapter
         }
 
@@ -128,7 +121,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         rvRecipesPopular.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = popularRecipeAdapter
         }
 
@@ -154,45 +148,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun getAllRecipesFromService () {
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val response = recipeService.findAll()
-
-            if (response.isSuccessful) {
-                response.body()?.let { recipeResponse ->
-                    Log.i("RecipesAPI", "Fetched recipes: ${recipeResponse.recipes.size}")
-                    saveAndLoadRecipes(recipeResponse)
-                }
-            }
-        }
-    }
-
-    private suspend fun saveAndLoadRecipes (recipeResponse:RecipeResponse) {
-
-        recipeResponse.recipes.forEach { recipe ->
-            recipeDAO.insert(
-                Recipe(
-                    id = recipe.id,
-                    name = recipe.name,
-                    ingredients = recipe.ingredients,
-                    instructions = recipe.instructions,
-                    prepTimeMinutes = recipe.prepTimeMinutes,
-                    cookTimeMinutes = recipe.cookTimeMinutes,
-                    servings = recipe.servings,
-                    difficulty = recipe.difficulty,
-                    image = recipe.image
-                )
-            )
-        }
-
-        withContext(Dispatchers.Main) {
-            session.saveRecipes("loadRecipe", SessionManager.ACTIVE)
-            popularRecipeAdapter.updateRecipes(recipeDAO.findAll().take(5))
-        }
-    }
-
-    private fun saveCategories () {
+    private fun saveCategories() {
         categoryDAO.insert(Category(1, "Main", ""))
         categoryDAO.insert(Category(2, "Dessert", ""))
         categoryDAO.insert(Category(3, "Salad", ""))
@@ -207,13 +163,16 @@ class MainActivity : AppCompatActivity() {
         categoryDAO.insert(Category(12, "Kebabs", ""))
         categoryDAO.insert(Category(13, "Lunch", ""))
         categoryDAO.insert(Category(14, "Indian", ""))
+
+
+        session.saveRecipes("loadRecipe", SessionManager.ACTIVE)
+        //popularRecipeAdapter.updateRecipes(recipeDAO.findAll().take(5))
+
     }
 
-    private fun saveRecipeCategory () {
-        recipeCategoryDAO.insert(RecipeCategory(1,4))
-        recipeCategoryDAO.insert(RecipeCategory(2,5))
-        recipeCategoryDAO.insert(RecipeCategory(2,7))
-        //recipeCategoryDAO.insert(RecipeCategory(1,4))
-        //recipeCategoryDAO.insert(RecipeCategory(1,4))
+    private fun saveRecipeCategory() {
+        recipeCategoryDAO.insert(RecipeCategory(1, 4))
+        recipeCategoryDAO.insert(RecipeCategory(2, 5))
+        recipeCategoryDAO.insert(RecipeCategory(2, 7))
     }
 }

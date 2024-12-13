@@ -39,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initUI () {
 
-        searchView = findViewById(R.id.search_view)
+        //searchView = findViewById(R.id.search_view)
         recipeDAO = RecipeDAO(this)
         recipes = recipeDAO.findAll()
         searchView.isIconified = false

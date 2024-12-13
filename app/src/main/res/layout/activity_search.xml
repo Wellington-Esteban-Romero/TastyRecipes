@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activities.SearchActivity">
+
+    <ImageView
+        android:id="@+id/imageViewBack"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
+        android:src="@drawable/ic_arrow_back"
+        android:padding="5dp"
+        android:background="@drawable/item_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black"
+        tools:ignore="MissingConstraints" />
 
     <!-- search búsqueda -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
         app:searchIcon="@null"
-        app:searchHintIcon="@drawable/ic_arrow_back"
         app:closeIcon="@null"
         android:pointerIcon="hand"
         android:layout_width="match_parent"
@@ -22,7 +36,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:background="@drawable/search_background"
-        android:elevation="4dp" />
+        android:elevation="4dp"
+        tools:ignore="MissingConstraints" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -40,4 +55,4 @@
 
     </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

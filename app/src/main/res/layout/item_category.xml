@@ -8,7 +8,7 @@
     android:padding="8dp">
 
     <Button
-        android:id="@+id/categoryName"
+        android:id="@+id/ItemCategoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_main" />

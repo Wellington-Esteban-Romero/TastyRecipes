@@ -7,7 +7,8 @@ import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.RecipeCategory
 
-class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseManager(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         // If you change the database schema, you must increment the database version.
@@ -51,13 +52,13 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
                 "20, 15, 4, 'Easy', 'https://cdn.dummyjson.com/recipe-images/1.webp')"
 
         private const val SQL_INSERT_RECIPE_2_TABLE = "INSERT INTO ${Recipe.TABLE_NAME} " +
-        "(id, name, ingredients, instructions, prepTimeMinutes, cookTimeMinutes, servings, difficulty, image) " +
-        "VALUES " +
-        "(2, 'Vegetarian Stir-Fry', 'Tofu, cubed, Broccoli florets, Carrots, sliced, Bell peppers, sliced, Soy sauce, Ginger, minced, Garlic, minced, Sesame oil, Cooked rice for serving', " +
-        "'In a wok, heat sesame oil over medium-high heat. Add minced ginger and garlic, sauté until fragrant. " +
-        "Add cubed tofu and stir-fry until golden brown. Add broccoli, carrots, and bell peppers. Cook until vegetables are tender-crisp. " +
-        "Pour soy sauce over the stir-fry and toss to combine. Serve over cooked rice.', " +
-        "15, 20, 3, 'Medium', 'https://cdn.dummyjson.com/recipe-images/2.webp')"
+                "(id, name, ingredients, instructions, prepTimeMinutes, cookTimeMinutes, servings, difficulty, image) " +
+                "VALUES " +
+                "(2, 'Vegetarian Stir-Fry', 'Tofu, cubed, Broccoli florets, Carrots, sliced, Bell peppers, sliced, Soy sauce, Ginger, minced, Garlic, minced, Sesame oil, Cooked rice for serving', " +
+                "'In a wok, heat sesame oil over medium-high heat. Add minced ginger and garlic, sauté until fragrant. " +
+                "Add cubed tofu and stir-fry until golden brown. Add broccoli, carrots, and bell peppers. Cook until vegetables are tender-crisp. " +
+                "Pour soy sauce over the stir-fry and toss to combine. Serve over cooked rice.', " +
+                "15, 20, 3, 'Medium', 'https://cdn.dummyjson.com/recipe-images/2.webp')"
 
         private const val SQL_INSERT_RECIPE_3_TABLE = "INSERT INTO ${Recipe.TABLE_NAME} " +
                 "(id, name, ingredients, instructions, prepTimeMinutes, cookTimeMinutes, servings, difficulty, image) " +
@@ -70,8 +71,10 @@ class DatabaseManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
                 "15, 10, 24, 'Easy', 'https://cdn.dummyjson.com/recipe-images/3.webp')"
 
         private const val SQL_DELETE_TABLE = "DROP TABLE IF EXISTS ${Recipe.TABLE_NAME}"
-        private const val SQL_DELETE_TABLE_CATEGORIES = "DROP TABLE IF EXISTS ${Category.TABLE_NAME}"
-        private const val SQL_DELETE_TABLE_RECIPES_CATEGORIES = "DROP TABLE IF EXISTS ${RecipeCategory.TABLE_NAME}"
+        private const val SQL_DELETE_TABLE_CATEGORIES =
+            "DROP TABLE IF EXISTS ${Category.TABLE_NAME}"
+        private const val SQL_DELETE_TABLE_RECIPES_CATEGORIES =
+            "DROP TABLE IF EXISTS ${RecipeCategory.TABLE_NAME}"
     }
 
     override fun onCreate(db: SQLiteDatabase) {

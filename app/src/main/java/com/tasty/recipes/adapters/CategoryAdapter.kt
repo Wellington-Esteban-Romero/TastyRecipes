@@ -30,9 +30,9 @@ class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(category: Category, onClickListener: (Category) -> Unit) {
 
-        itemCategoryBinding.categoryName.text = category.name
+        itemCategoryBinding.ItemCategoryName.text = category.name
 
-        itemCategoryBinding.categoryName.setOnClickListener {
+        itemCategoryBinding.ItemCategoryName.setOnClickListener {
             onClickListener(category)
         }
     }

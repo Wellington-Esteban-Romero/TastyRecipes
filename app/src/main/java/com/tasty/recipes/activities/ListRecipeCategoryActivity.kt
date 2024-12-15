@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.ListRecipeCategoryAdapter
 import com.tasty.recipes.data.entities.Recipe
@@ -17,7 +16,6 @@ import com.tasty.recipes.databinding.ActivityListRecipeCategoryBinding
 class ListRecipeCategoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListRecipeCategoryBinding
     private lateinit var listCategoryRecipeAdapter: ListRecipeCategoryAdapter
-    private lateinit var rvRecipesCategory: RecyclerView
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipes: List<Recipe>
 
@@ -39,6 +37,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
             insets
         }
         initUI()
+        initListener()
     }
 
     private fun initUI () {
@@ -47,10 +46,16 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         val name = intent.getStringExtra(EXTRA_RECIPE_TAG_NAME).orEmpty()
 
         recipeDAO = RecipeDAO(this)
-        rvRecipesCategory = findViewById(R.id.rvRecipesCategory)
         recipes = recipeDAO.findRecipeByCategory(name)
-        //recipes.forEach { println(it) }
+        binding.titleRecipe.text = name
+
         setupRecyclerView()
+    }
+
+    private fun initListener () {
+        binding.goBackHome.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -59,7 +64,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
             onItemSelect(recipe)
         }
 
-        rvRecipesCategory.apply {
+        binding.rvRecipesCategory.apply {
             layoutManager = LinearLayoutManager(this@ListRecipeCategoryActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = listCategoryRecipeAdapter
         }

@@ -20,7 +20,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recipes:List<Recipe>
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var recipeDAO: RecipeDAO
-    private lateinit var searchView:SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +38,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initUI () {
 
-        //searchView = findViewById(R.id.search_view)
         recipeDAO = RecipeDAO(this)
         recipes = recipeDAO.findAll()
-        searchView.isIconified = false
-        searchView.requestFocus()
+        binding.searchView.isIconified = false
+        binding.searchView.requestFocus()
         setupSearchView()
         setupRecyclerView()
 
@@ -61,8 +59,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupSearchView () {
-        searchView.requestFocus()
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.searchView.requestFocus()
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false;
             }

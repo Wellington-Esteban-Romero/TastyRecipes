@@ -6,20 +6,17 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.appbar.MaterialToolbar
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
-import com.tasty.recipes.databinding.ActivitySearchBinding
 
 class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRecipeDetailBinding
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipe:Recipe
-    private lateinit var toolbar:MaterialToolbar
 
     companion object {
         val EXTRA_RECIPE_ID = "EXTRA_RECIPE_ID"
@@ -36,7 +33,6 @@ class RecipeDetailActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         initUI()
         initListener()
     }
@@ -46,7 +42,6 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         recipeDAO = RecipeDAO(this)
 
-        toolbar = findViewById(R.id.toolbar)
         recipe = recipeDAO.findRecipeById(id)!!
 
         createDetails(recipe)
@@ -56,10 +51,10 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun initListener () {
 
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-        toolbar.setOnMenuItemClickListener { item ->
+        binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_favorite -> {
                     Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()

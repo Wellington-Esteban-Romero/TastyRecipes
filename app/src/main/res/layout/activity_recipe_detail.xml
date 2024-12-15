@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main"
-    android:background="#F1FAEE"
+    android:background="@color/color_background"
     android:fitsSystemWindows="true">
 
     <!-- AppBar con colapso -->
@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             >
 
             <!-- Imagen de Fondo -->
@@ -42,9 +41,7 @@
                 android:background="@android:color/transparent"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:title="Recipe Name"
-                app:titleTextColor="@android:color/white"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/recipe_toolbar_menu"/>
+                app:menu="@menu/recipe_toolbar_menu" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

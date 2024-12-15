@@ -72,7 +72,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun createDetails (recipe: Recipe) {
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name
-
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.white))
         //binding.txtInstructions.text = recipes[0].instructions.split(", ").joinToString("\n\n")
 
     }

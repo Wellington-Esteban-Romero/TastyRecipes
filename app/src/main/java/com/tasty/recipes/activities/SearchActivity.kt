@@ -36,17 +36,22 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
         initUI()
+        initListener()
     }
 
     private fun initUI () {
 
         recipeDAO = RecipeDAO(this)
         recipes = recipeDAO.findAll()
-        //binding.searchView.isIconified = false
         binding.searchView.requestFocus()
         setupSearchView()
         setupRecyclerView()
+    }
 
+    private fun initListener () {
+        binding.imageViewBack.setOnClickListener {
+            finish()
+        }
     }
 
     private fun setupRecyclerView() {

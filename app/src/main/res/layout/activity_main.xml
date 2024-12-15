@@ -43,6 +43,7 @@
         android:inputType="none"
         android:textColorHint="#5A5858"
         android:textSize="17sp"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

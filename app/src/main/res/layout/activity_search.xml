@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     tools:context=".activities.SearchActivity">
 
     <EditText
@@ -13,12 +14,12 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:inputType="textFilter"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/item_background"
         android:hint="Search Recipe"
-        android:textColorHint="#5A5858"
+        android:textColorHint="@color/color_hint_background_search"
         android:fontFamily="@font/roboto_medium"
         android:paddingStart="48dp"
         android:textSize="16sp"
@@ -32,18 +33,18 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginTop="30dp"
-        android:layout_marginStart="26dp"
+        android:layout_marginStart="20dp"
         android:src="@drawable/ic_arrow_back"
-        android:padding="5dp"
+        android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/black"
+        app:tint="#5A5858"
         tools:ignore="MissingConstraints" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:padding="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 

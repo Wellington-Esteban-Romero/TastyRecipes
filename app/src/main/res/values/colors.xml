@@ -4,5 +4,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="color_background">#F5F5F5</color>
+    <color name="color_background_search">#76C80018</color>
+    <color name="color_hint_background_search">#5A5858</color>
+    <color name="color_background_menu_bottom">#C80018</color>
     <color name="colorAccent">#03DAC5</color>
 </resources>

@@ -2,7 +2,6 @@ package com.tasty.recipes.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
@@ -23,11 +22,6 @@ import com.tasty.recipes.data.providers.CategoryDAO
 import com.tasty.recipes.data.providers.RecipeCategoryDAO
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.utils.SessionManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
 
 class MainActivity : AppCompatActivity() {
 

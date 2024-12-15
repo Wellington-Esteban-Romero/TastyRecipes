@@ -1,10 +1,12 @@
 package com.tasty.recipes.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
 
         recipeDAO = RecipeDAO(this)
         recipes = recipeDAO.findAll()
-        binding.searchView.isIconified = false
+        //binding.searchView.isIconified = false
         binding.searchView.requestFocus()
         setupSearchView()
         setupRecyclerView()
@@ -49,7 +51,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         recipeAdapter = RecipeAdapter(recipes) { recipe ->
-            //onItemSelect(recipe)
+            onItemSelect(recipe)
         }
 
         binding.rvRecipes.apply {
@@ -60,17 +62,19 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupSearchView () {
         binding.searchView.requestFocus()
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false;
+        binding.searchView.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable?) {
+                searchByName(s.toString())
             }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                searchByName(newText.orEmpty())
-                return false
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
     }
-
 
     private fun searchByName (name: String) {
 
@@ -84,5 +88,11 @@ class SearchActivity : AppCompatActivity() {
             //msg_empty.visibility = View.GONE
             recipeAdapter.updateRecipes(filteredList)
         }
+    }
+
+    private fun onItemSelect(recipe: Recipe) {
+        val intent = Intent(this, RecipeDetailActivity::class.java)
+        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
+        startActivity(intent)
     }
 }

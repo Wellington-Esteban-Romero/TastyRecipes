@@ -15,7 +15,7 @@ class LastSeeRecipeAdapter (private var recipes: List<Recipe> = emptyList(),
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LastSeeRecipeViewHolder {
         return LastSeeRecipeViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_popular_recipe, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_lastsee_recipe, parent, false)
         )
     }
 
@@ -32,7 +32,6 @@ class LastSeeRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     //private val favoriteImageView = view.findViewById<ImageView>(R.id.imgFavorite)
 
     fun bind(recipe: Recipe, onClickListener: (Recipe) -> Unit) {
-        val context = itemView.context
 
         itemRecipeBinding.recipeName.text = recipe.name
         itemRecipeBinding.preparationTime.text = "${recipe.prepTimeMinutes} min"

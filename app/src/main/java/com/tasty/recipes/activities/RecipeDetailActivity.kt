@@ -70,7 +70,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         val inflater = menuInflater
         inflater.inflate(R.menu.recipe_toolbar_menu, menu)
         if (session.isFavorite(idRecipe))
-            menu?.findItem(R.id.actionFavorite)?.setIcon(R.drawable.ic_favorite)
+            menu?.findItem(R.id.action_favorite)?.setIcon(R.drawable.ic_favorite)
         return true
     }
 
@@ -78,7 +78,6 @@ class RecipeDetailActivity : AppCompatActivity() {
         println(item.icon)
         when (item.itemId) {
             R.id.action_favorite -> {
-                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
                 if (!session.isFavorite(idRecipe)) {
                     session.saveRecipe(idRecipe, SessionManager.ACTIVE)
                     item.setIcon(R.drawable.ic_favorite)

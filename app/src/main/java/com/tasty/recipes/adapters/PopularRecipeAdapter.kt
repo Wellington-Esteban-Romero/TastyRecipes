@@ -9,6 +9,7 @@ import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ItemPopularRecipeBinding
+import com.tasty.recipes.utils.SessionManager
 
 class PopularRecipeAdapter (private var recipes: List<Recipe> = emptyList(),
                      private val onClickListener: (Recipe) -> Unit): RecyclerView.Adapter<PopularRecipeViewHolder>() {
@@ -34,7 +35,6 @@ class PopularRecipeAdapter (private var recipes: List<Recipe> = emptyList(),
 class PopularRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val itemRecipeBinding = ItemPopularRecipeBinding.bind(view)
-    //private val favoriteImageView = view.findViewById<ImageView>(R.id.imgFavorite)
 
     fun bind(recipe: Recipe, onClickListener: (Recipe) -> Unit) {
         val context = itemView.context
@@ -51,9 +51,9 @@ class PopularRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             onClickListener(recipe)
         }
 
-       /* if (SessionManager(context).isFavorite(recipe.id.toString()))
-            favoriteImageView.visibility = View.VISIBLE
+        if (SessionManager(context).isFavorite(recipe.id.toString()))
+            itemRecipeBinding.favoriteIcon.visibility = View.VISIBLE
         else
-            favoriteImageView.visibility = View.GONE*/
+            itemRecipeBinding.favoriteIcon.visibility = View.GONE
     }
 }

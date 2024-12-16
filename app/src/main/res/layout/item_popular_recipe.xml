@@ -73,8 +73,9 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_favorite"
+                            app:tint="@color/color_background_favorite"
                             android:contentDescription="Favorite Icon"
-                            android:visibility="gone"/>
+                            android:visibility="invisible"/>
                 </LinearLayout>
         </LinearLayout>
 </androidx.cardview.widget.CardView>

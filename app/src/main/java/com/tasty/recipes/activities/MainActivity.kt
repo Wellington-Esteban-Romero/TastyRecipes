@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         binding.editTextSearch.setBackgroundResource(R.drawable.search_background)
         binding.editTextSearch.clearFocus()
+        popularRecipeAdapter.notifyDataSetChanged()
         super.onResume()
     }
 
@@ -136,6 +137,10 @@ class MainActivity : AppCompatActivity() {
     private fun onItemSelect(recipe: Recipe) {
         val intent = Intent(this, RecipeDetailActivity::class.java)
         intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
+
+        if (!session.isFavorite(recipe.id.toString()))
+            session.saveRecipe(recipe.id.toString(), SessionManager.DES_ACTIVE)
+
         startActivity(intent)
     }
 

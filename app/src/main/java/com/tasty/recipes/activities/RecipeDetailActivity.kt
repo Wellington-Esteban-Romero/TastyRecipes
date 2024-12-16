@@ -1,5 +1,6 @@
 package com.tasty.recipes.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,6 +15,7 @@ import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
 import com.tasty.recipes.utils.SessionManager
+
 
 class RecipeDetailActivity : AppCompatActivity() {
 
@@ -88,7 +90,12 @@ class RecipeDetailActivity : AppCompatActivity() {
                 true
             }
             R.id.action_share -> {
-                Toast.makeText(this, "Sharing Recipe...", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.setType("text/plain")
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
+
+                intent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                startActivity(Intent.createChooser(intent, "Share Via"))
                 true
             }
             else -> false

@@ -1,12 +1,14 @@
 package com.tasty.recipes.activities
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.squareup.picasso.Picasso
@@ -15,6 +17,9 @@ import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
 import com.tasty.recipes.utils.SessionManager
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class RecipeDetailActivity : AppCompatActivity() {
@@ -90,17 +95,51 @@ class RecipeDetailActivity : AppCompatActivity() {
                 true
             }
             R.id.action_share -> {
-                val intent = Intent(Intent.ACTION_SEND)
-                intent.setType("text/plain")
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here")
 
-                intent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-                startActivity(Intent.createChooser(intent, "Share Via"))
+                binding.imageRecipe.isDrawingCacheEnabled = true
+                val bitmap: Bitmap = Bitmap.createBitmap(binding.imageRecipe.drawingCache)
+                binding.imageRecipe.isDrawingCacheEnabled = false
+
+                shareTextAndImage(binding.toolbar.title.toString(), bitmap);
                 true
             }
             else -> false
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun shareTextAndImage(text: String, bitmap: Bitmap) {
+        // Save the bitmap to cache directory
+        val imageUri: Uri = saveImageToCache(bitmap)!!
+
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.setType("image/*")
+        shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri)
+        shareIntent.putExtra(Intent.EXTRA_TEXT, text)
+
+        // Grant permission to read the image URI
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        startActivity(Intent.createChooser(shareIntent, "Share Recipe via"))
+    }
+
+    private fun saveImageToCache(bitmap: Bitmap): Uri? {
+        val cachePath = File(cacheDir, "images")
+        cachePath.mkdirs()
+        val file = File(cachePath, binding.toolbar.title.trim().replace(Regex(" "), "_") + ".png")
+        try {
+            FileOutputStream(file).use { stream ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                return FileProvider.getUriForFile(
+                    this,
+                    "com.tasty.recipes",
+                    file
+                )
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     private fun createDetails (recipe: Recipe) {

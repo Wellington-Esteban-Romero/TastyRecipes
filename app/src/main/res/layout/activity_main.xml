@@ -120,10 +120,11 @@
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-        app:navigationIcon="@drawable/ic_home"
+        app:navigationIcon="@drawable/ic_search"
+        app:navigationIconTint="@color/white"
         app:backgroundTint="@color/color_background_menu_bottom"
         app:menu="@menu/bottom_app_bar"
         />
@@ -132,6 +133,7 @@
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
         app:layout_anchor="@id/bottomAppBar"
         app:srcCompat="@drawable/ic_add" />
 

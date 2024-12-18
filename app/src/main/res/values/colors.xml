@@ -9,4 +9,8 @@
     <color name="color_background_menu_bottom">#4B4E53</color>
     <color name="color_background_favorite">#FF001B</color>
     <color name="colorAccent">#03DAC5</color>
+
+    <color name="color_background_easy">#1AFD22</color>
+    <color name="color_background_medium">#FF5722</color>
+    <color name="color_background_hard">#FF001B</color>
 </resources>

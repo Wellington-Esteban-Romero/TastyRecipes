@@ -50,6 +50,7 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:layout_marginTop="4dp"
                                     android:orientation="horizontal">
                                         <ImageView
                                             android:layout_width="wrap_content"
@@ -63,6 +64,21 @@
                                             android:text="20"
                                             android:textSize="16sp"
                                             android:textColor="#757575" />
+
+                                        <TextView
+                                            android:id="@+id/tvDifficulty"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@color/black"
+                                            android:background="@drawable/item_background_difficulty_easy"
+                                            android:text="Easy"
+                                            android:layout_marginStart="80dp"
+                                            android:layout_marginEnd="80dp"
+                                            android:fontFamily="@font/roboto_medium"
+                                            android:textSize="16sp"
+                                            android:gravity="center">
+
+                                        </TextView>
 
                                 </LinearLayout>
                         </LinearLayout>

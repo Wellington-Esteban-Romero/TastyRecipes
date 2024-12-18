@@ -9,6 +9,7 @@ import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ItemPopularRecipeBinding
+import com.tasty.recipes.utils.Difficulty
 import com.tasty.recipes.utils.SessionManager
 
 class PopularRecipeAdapter (private var recipes: List<Recipe> = emptyList(),
@@ -42,14 +43,30 @@ class PopularRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         itemRecipeBinding.recipeName.text = recipe.name
         itemRecipeBinding.preparationTime.text = "${recipe.prepTimeMinutes} min"
 
+        //Load image
+
         if (recipe.image.startsWith("https://"))
             Picasso.get().load(recipe.image).into(itemRecipeBinding.recipeImage)
         else
-            itemRecipeBinding.recipeImage.setImageURI(Uri.parse(recipe.image))
+            itemRecipeBinding. recipeImage.setImageURI(Uri.parse(recipe.image))
 
+        //onclick
         itemView.setOnClickListener {
             onClickListener(recipe)
         }
+
+        //Difficulty
+
+        itemRecipeBinding.tvDifficulty.text = recipe.difficulty
+
+        if (Difficulty.EASY.toString() == recipe.difficulty.uppercase())
+            itemRecipeBinding.tvDifficulty.setBackgroundResource(R.drawable.item_background_difficulty_easy)
+        if (Difficulty.MEDIUM.toString() == recipe.difficulty.uppercase())
+            itemRecipeBinding.tvDifficulty.setBackgroundResource(R.drawable.item_background_difficulty_medium)
+        if (Difficulty.HARD.toString() == recipe.difficulty.uppercase())
+            itemRecipeBinding.tvDifficulty.setBackgroundResource(R.drawable.item_background_difficulty_hard)
+
+        //session
 
         if (SessionManager(context).isFavorite(recipe.id.toString()))
             itemRecipeBinding.favoriteIcon.visibility = View.VISIBLE

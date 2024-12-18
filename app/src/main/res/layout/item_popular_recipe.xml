@@ -72,8 +72,8 @@
                                             android:textColor="@color/black"
                                             android:background="@drawable/item_background_difficulty_easy"
                                             android:text="Easy"
-                                            android:layout_marginStart="80dp"
-                                            android:layout_marginEnd="80dp"
+                                            android:layout_marginStart="10dp"
+                                            android:layout_marginEnd="160dp"
                                             android:fontFamily="@font/roboto_medium"
                                             android:textSize="16sp"
                                             android:gravity="center">

@@ -8,6 +8,7 @@
     app:cardElevation="6dp"
     android:background="@drawable/item_background">
 
+        <!-- Contenedor principal -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +19,8 @@
                     android:id="@+id/recipeImage"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Recipe Image" />
 
                 <!-- Contenido de la tarjeta -->
                 <LinearLayout
@@ -28,7 +30,7 @@
                     android:padding="16dp"
                     android:gravity="center_vertical">
 
-                        <!-- Nombre y tiempo -->
+                        <!-- Información de la receta -->
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -44,54 +46,62 @@
                                     android:textSize="20sp"
                                     android:textStyle="bold"
                                     android:fontFamily="@font/roboto_medium"
-                                    android:textColor="@color/black" />
+                                    android:textColor="@color/black"
+                                    android:maxLines="1"
+                                    android:ellipsize="end" />
 
-                                <!-- Tiempo de preparación -->
+                                <!-- Tiempo de preparación y dificultad -->
                                 <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="4dp"
-                                    android:orientation="horizontal">
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical">
+
+                                        <!-- Icono y tiempo de preparación -->
                                         <ImageView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:src="@drawable/ic_schedule" />
+                                            android:layout_width="20dp"
+                                            android:layout_height="20dp"
+                                            android:src="@drawable/ic_schedule"
+                                            android:contentDescription="Time Icon" />
+
                                         <TextView
                                             android:id="@+id/preparationTime"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginStart="6dp"
-                                            android:text="20"
+                                            android:text="20 min"
                                             android:textSize="16sp"
                                             android:textColor="#757575" />
 
+                                        <!-- Dificultad -->
                                         <TextView
                                             android:id="@+id/tvDifficulty"
-                                            android:layout_width="match_parent"
+                                            android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:textColor="@color/black"
+                                            android:layout_marginStart="20dp"
+                                            android:paddingHorizontal="8dp"
+                                            android:paddingVertical="4dp"
                                             android:background="@drawable/item_background_difficulty_easy"
                                             android:text="Easy"
-                                            android:layout_marginStart="10dp"
-                                            android:layout_marginEnd="160dp"
+                                            android:textSize="14sp"
+                                            android:textColor="@color/black"
                                             android:fontFamily="@font/roboto_medium"
-                                            android:textSize="16sp"
-                                            android:gravity="center">
-
-                                        </TextView>
-
+                                            android:gravity="center" />
                                 </LinearLayout>
                         </LinearLayout>
 
                         <!-- Icono de favorito -->
                         <ImageView
                             android:id="@+id/favoriteIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
                             android:src="@drawable/ic_favorite"
                             app:tint="@color/color_background_favorite"
-                            android:contentDescription="Favorite Icon"
-                            android:visibility="invisible"/>
+                            android:contentDescription="@string/favorite_icon"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="4dp" />
                 </LinearLayout>
         </LinearLayout>
 </androidx.cardview.widget.CardView>

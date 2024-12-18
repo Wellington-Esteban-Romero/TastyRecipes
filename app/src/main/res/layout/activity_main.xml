@@ -135,6 +135,8 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/todo"
         app:layout_anchor="@id/bottomAppBar"
+        android:backgroundTint="@color/color_background_tint_add"
+        android:tint="@color/white"
         app:srcCompat="@drawable/ic_add" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

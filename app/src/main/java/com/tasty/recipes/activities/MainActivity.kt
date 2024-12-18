@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.CategoryAdapter
 import com.tasty.recipes.adapters.LastSeeRecipeAdapter
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var categoryRecipeAdapter: CategoryAdapter
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
-    private lateinit var btnAddRecipe: FloatingActionButton
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var categoryDAO: CategoryDAO
     private lateinit var recipeCategoryDAO: RecipeCategoryDAO
@@ -80,17 +78,20 @@ class MainActivity : AppCompatActivity() {
 
         binding.editTextSearch.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                // Cambiar el fondo del EditText
                 binding.editTextSearch.setBackgroundResource(R.drawable.edittext_default_background)
 
-                // Iniciar la otra actividad
                 val intent = Intent(this, SearchActivity::class.java)
                 startActivity(intent)
 
-                true // Intercepta el evento
+                true
             } else {
                 false
             }
+        }
+
+        binding.floatingActionButton.setOnClickListener {
+            val intent = Intent(this, AddRecipeActivity::class.java)
+            startActivity(intent)
         }
 
     }

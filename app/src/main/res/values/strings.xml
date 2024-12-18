@@ -22,4 +22,5 @@
     <string name="label_title">Title</string>
     <string name="search_recipe">Search recipe</string>
     <string name="main">Main</string>
+    <string name="favorite_icon">Favorite Icon</string>
 </resources>

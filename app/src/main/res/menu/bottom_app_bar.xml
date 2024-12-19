@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/actionFavorite"
+        android:id="@+id/mainActionFavorite"
         android:enabled="true"
         android:icon="@drawable/ic_favorite_empty"
         android:title="@string/favourite"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/actionList"
+        android:id="@+id/user"
         android:enabled="true"
         android:icon="@drawable/ic_person"
         android:title="@string/list_shop"

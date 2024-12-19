@@ -89,6 +89,27 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.bottomAppBar.setNavigationOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.bottomAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.mainActionFavorite -> {
+
+                    true
+                }
+
+                R.id.user -> {
+
+                    true
+                }
+                else -> false
+            }
+
+        }
+
         binding.floatingActionButton.setOnClickListener {
             val intent = Intent(this, AddRecipeActivity::class.java)
             startActivity(intent)

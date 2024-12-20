@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.tasty.recipes.R
+import com.google.firebase.auth.FirebaseUser
 import com.tasty.recipes.databinding.ActivityLoginBinding
 import com.tasty.recipes.utils.AuthHelper
 
@@ -45,4 +43,46 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val currentUser = authHelper.getCurrentUser()
+        if (currentUser != null) {
+            reload()
+        }
+    }
+
+    private fun reload() {
+        val currentUser = authHelper.getCurrentUser()
+        currentUser?.reload()?.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(this, "Usuario recargado exitosamente.", Toast.LENGTH_SHORT).show()
+                // Puedes usar la información actualizada del usuario aquí
+                updateUI(currentUser)
+            } else {
+                Toast.makeText(
+                    this,
+                    "Error al recargar usuario: ${task.exception?.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            Toast.makeText(this, "Bienvenido ${user.email}", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("USEREMAIL", user.email)
+            startActivity(intent)
+
+            finish()
+        } else {
+            Toast.makeText(
+                this,
+                "Por favor, verifica tus credenciales e inténtalo de nuevo.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 }

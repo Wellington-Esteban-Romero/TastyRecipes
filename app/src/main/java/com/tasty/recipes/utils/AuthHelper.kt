@@ -1,6 +1,7 @@
 package com.tasty.recipes.utils
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 
 class AuthHelper {
@@ -16,6 +17,10 @@ class AuthHelper {
                     callback(false, task.exception?.message)
                 }
             }
+    }
+
+    fun getCurrentUser(): FirebaseUser? {
+        return auth.currentUser
     }
 
 }

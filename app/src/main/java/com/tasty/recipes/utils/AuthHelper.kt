@@ -19,6 +19,10 @@ class AuthHelper {
             }
     }
 
+    fun getFirebaseAuth(): FirebaseAuth {
+        return auth;
+    }
+
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
     }

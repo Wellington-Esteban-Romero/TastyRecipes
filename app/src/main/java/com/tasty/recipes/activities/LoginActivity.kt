@@ -41,6 +41,10 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.btnRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
     }
 
     override fun onStart() {

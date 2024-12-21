@@ -51,32 +51,28 @@ class RegisterActivity : AppCompatActivity() {
         var isValid = true
 
         if (username.isEmpty()) {
-            binding.etUserNameRegister.error = "ingresa un nombre de usuario"
-            Toast.makeText(this, "Por favor ingresa un nombre de usuario", Toast.LENGTH_SHORT).show()
+            binding.etFieldUserNameRegister.error = "ingresa un nombre de usuario"
             isValid = false
         } else {
-            binding.etUserNameRegister.error = null
+            binding.etFieldUserNameRegister.error = null
         }
 
         if (email.isEmpty()) {
-            binding.etEmailRegister.error = "Ingresa un correo electrónico"
-            Toast.makeText(this, "Por favor ingresa un correo electrónico", Toast.LENGTH_SHORT).show()
+            binding.etFieldEmailRegister.error = "Ingresa un correo electrónico"
             isValid = false
         } else {
-            binding.etEmailRegister.error = null
+            binding.etFieldEmailRegister.error = null
         }
 
         if (password.isEmpty()) {
-            binding.etPasswordRegister.error = "Ingresa una contraseña"
-            Toast.makeText(this, "Por favor ingresa una contraseña", Toast.LENGTH_SHORT).show()
+            binding.etFieldPasswordRegister.error = "Ingresa una contraseña"
             isValid = false
         } else {
-            binding.etEmailRegister.error = null
+            binding.etFieldPasswordRegister.error = null
         }
 
         if (password.length < 6) {
-            binding.etPasswordRegister.error = "La contraseña debe tener al menos 6 caracteres"
-            Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
+            binding.etFieldPasswordRegister.error = "La contraseña debe tener al menos 6 caracteres"
             isValid = false
         }
         return isValid

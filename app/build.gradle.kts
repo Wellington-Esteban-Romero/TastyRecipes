@@ -49,7 +49,6 @@ dependencies {
     implementation (libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.picasso)
-    implementation (libs.material.v190)
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.25")
 
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))

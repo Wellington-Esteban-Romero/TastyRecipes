@@ -22,8 +22,9 @@
             android:layout_marginBottom="24dp"
             android:textColor="?attr/colorPrimary" />
 
-        <!-- Email -->
+        <!-- Username -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etFieldUserNameRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Username">
@@ -32,14 +33,16 @@
                 android:id="@+id/etUserNameRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etFieldEmailRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email">
+            android:hint="Email"
+            android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmailRegister"
@@ -50,6 +53,7 @@
 
         <!-- Password -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etFieldPasswordRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
@@ -64,6 +68,7 @@
 
         <!-- Repeat Password -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etFieldRepeatPasswordRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Repeat Password"

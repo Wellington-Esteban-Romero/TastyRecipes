@@ -101,11 +101,11 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.user -> {
+                /*R.id.user -> {
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     true
-                }
+                }*/
                 else -> false
             }
 

@@ -35,7 +35,8 @@
             android:exported="false" />
         <activity
             android:name=".activities.RecipeDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/AppTheme.TranslucentStatus"/>
         <activity
             android:name=".activities.AddRecipeActivity"
             android:exported="false" />

@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.tasty.recipes.R
+import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityRegisterBinding
 import com.tasty.recipes.utils.AuthHelper
 
@@ -23,11 +21,14 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.btnCreateUser.setOnClickListener {
-            val username = binding.etPasswordRegister.text.toString()
+            val username = binding.etUserNameRegister.text.toString()
             val email =  binding.etEmailRegister.text.toString()
             val password = binding.etPasswordRegister.text.toString()
+            val repeatPassword = binding.etRepeatPasswordRegister.text.toString()
 
-            if (validate(username, email, password)) {
+            val user = User(username, email, password, repeatPassword)
+
+            if (validate(user)) {
                 createAccount(email, password)
             }
         }
@@ -47,32 +48,47 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    private fun validate(username: String, email: String, password: String): Boolean {
+    private fun validate(user: User): Boolean {
         var isValid = true
 
-        if (username.isEmpty()) {
+        if (user.username.isEmpty()) {
             binding.etFieldUserNameRegister.error = "ingresa un nombre de usuario"
             isValid = false
         } else {
             binding.etFieldUserNameRegister.error = null
         }
 
-        if (email.isEmpty()) {
+        if (user.email.isEmpty()) {
             binding.etFieldEmailRegister.error = "Ingresa un correo electrónico"
+            isValid = false
+        } else if (!user.email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
+            binding.etFieldEmailRegister.error = "Ingresa un correo electrónico válido"
             isValid = false
         } else {
             binding.etFieldEmailRegister.error = null
         }
 
-        if (password.isEmpty()) {
+        if (user.password.isEmpty()) {
             binding.etFieldPasswordRegister.error = "Ingresa una contraseña"
             isValid = false
         } else {
             binding.etFieldPasswordRegister.error = null
         }
 
-        if (password.length < 6) {
+        if (user.password.length < 6) {
             binding.etFieldPasswordRegister.error = "La contraseña debe tener al menos 6 caracteres"
+            isValid = false
+        }
+
+        if (user.repeatPassword.isEmpty()) {
+            binding.etFieldRepeatPasswordRegister.error = "Repite la contraseña"
+            isValid = false
+        } else {
+            binding.etFieldRepeatPasswordRegister.error = null
+        }
+
+        if (user.password != user.repeatPassword) {
+            binding.etFieldRepeatPasswordRegister.error = "Las contraseñas no coinciden"
             isValid = false
         }
         return isValid

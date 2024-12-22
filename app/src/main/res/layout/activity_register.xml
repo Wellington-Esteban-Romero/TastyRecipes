@@ -16,7 +16,7 @@
             android:id="@+id/tvLoginTitleRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:text="@string/title_register"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"
@@ -27,7 +27,7 @@
             android:id="@+id/etFieldUserNameRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username">
+            android:hint="@string/username">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUserNameRegister"
@@ -41,7 +41,7 @@
             android:id="@+id/etFieldEmailRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:hint="@string/email"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -56,7 +56,7 @@
             android:id="@+id/etFieldPasswordRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"
+            android:hint="@string/password"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -71,7 +71,7 @@
             android:id="@+id/etFieldRepeatPasswordRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Repeat Password"
+            android:hint="@string/repeat_password"
             android:layout_marginTop="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -87,6 +87,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Create User" />
+            android:text="@string/create_user" />
     </LinearLayout>
 </ScrollView>

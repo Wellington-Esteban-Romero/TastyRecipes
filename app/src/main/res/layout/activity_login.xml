@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/white"
     tools:context=".activities.LoginActivity">
 
     <LinearLayout
@@ -25,6 +26,7 @@
 
         <!-- Email -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etFieldEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email">
@@ -38,6 +40,7 @@
 
         <!-- Password -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/etFieldPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password"

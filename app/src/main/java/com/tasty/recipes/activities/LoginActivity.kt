@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
+            if (validate(email, password)) {
                 authHelper.signIn(email, password) { success, message ->
                     if (success) {
                         Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
@@ -88,5 +88,31 @@ class LoginActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun validate(email: String, password: String): Boolean {
+        var isValid = true
+        if (email.isEmpty()) {
+            binding.etFieldEmail.error = "Ingresa un correo electrónico"
+            isValid = false
+        } else if (!email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
+            binding.etFieldEmail.error = "Ingresa un correo electrónico válido"
+            isValid = false
+        } else {
+            binding.etFieldEmail.error = null
+        }
+
+        if (password.isEmpty()) {
+            binding.etFieldPassword.error = "Ingresa una contraseña"
+            isValid = false
+        } else {
+            binding.etFieldPassword.error = null
+        }
+
+        if (password.length < 6) {
+            binding.etFieldPassword.error = "La contraseña debe tener al menos 6 caracteres"
+            isValid = false
+        }
+        return isValid
     }
 }

@@ -6,7 +6,6 @@ import android.view.MotionEvent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.CategoryAdapter
@@ -19,6 +18,7 @@ import com.tasty.recipes.data.providers.CategoryDAO
 import com.tasty.recipes.data.providers.RecipeCategoryDAO
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityMainBinding
+import com.tasty.recipes.utils.AuthHelper
 import com.tasty.recipes.utils.SessionManager
 
 class MainActivity : AppCompatActivity() {
@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         initUI()
         initListener()
@@ -88,7 +87,19 @@ class MainActivity : AppCompatActivity() {
 
         // Abrir el menú lateral al hacer clic en el ícono de perfil
         binding.iconProfile.setOnClickListener {
-           binding.main.openDrawer(GravityCompat.START)
+           binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        binding.navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_logout -> {
+                    logout()
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    AuthHelper().getFirebaseAuth().signOut()
+                }
+            }
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            true
         }
 
         binding.bottomAppBar.setNavigationOnClickListener {
@@ -166,6 +177,12 @@ class MainActivity : AppCompatActivity() {
         if (!session.isFavorite(recipe.id.toString()))
             session.saveRecipe(recipe.id.toString(), SessionManager.DES_ACTIVE)
 
+        startActivity(intent)
+    }
+
+    private fun logout() {
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 

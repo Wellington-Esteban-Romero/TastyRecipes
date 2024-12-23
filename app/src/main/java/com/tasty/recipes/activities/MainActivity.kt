@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.CategoryAdapter
@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var categoryDAO: CategoryDAO
     private lateinit var recipeCategoryDAO: RecipeCategoryDAO
 
+
     companion object {
         lateinit var session: SessionManager
     }
@@ -42,11 +43,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
         initUI()
         initListener()
     }
@@ -87,6 +84,11 @@ class MainActivity : AppCompatActivity() {
             } else {
                 false
             }
+        }
+
+        // Abrir el menú lateral al hacer clic en el ícono de perfil
+        binding.iconProfile.setOnClickListener {
+           binding.main.openDrawer(GravityCompat.START)
         }
 
         binding.bottomAppBar.setNavigationOnClickListener {

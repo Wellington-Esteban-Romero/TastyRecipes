@@ -31,5 +31,6 @@
     <string name="password">Password</string>
     <string name="repeat_password">Repeat Password</string>
     <string name="create_user">Create User</string>
+    <string name="shared_with_me">Shared with me</string>
 
 </resources>

@@ -54,6 +54,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.1")
+    implementation ("com.google.firebase:firebase-core:21.1.1")
+    implementation ("com.google.firebase:firebase-firestore:24.8.0")
+    implementation ("com.google.firebase:firebase-database:20.4.0")
 
     implementation ("androidx.drawerlayout:drawerlayout:1.0.0")
 

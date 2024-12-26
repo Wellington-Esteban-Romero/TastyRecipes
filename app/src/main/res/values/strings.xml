@@ -11,6 +11,8 @@
     <string name="login_log_in_google">Sign in with Google</string>
     <string name="login_log_in_facebook">Sign in with Facebook</string>
 
+    <string name="msg_main">Choose\nYour Favorite Recipe</string>
+
     <string name="splash_logo">Splash logo recipes</string>
 
     <string name="label_categories">Categories</string>
@@ -27,6 +29,7 @@
     <string name="acceso_r_pido">Acceso Rápido</string>
     <string name="todo">TODO</string>
     <string name="popular_recipes">Popular Recipes</string>
+    <string name="last_see">Last See</string>
     <string name="image_recipe">Imagen de receta</string>
     <string name="select_mage">Select Image</string>
     <string name="save_recipe">Save Recipe</string>

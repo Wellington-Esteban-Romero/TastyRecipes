@@ -11,9 +11,8 @@
         android:id="@+id/ItemCategoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#D7CCC8"
-        android:textColor="@color/black"
-        android:textStyle="bold"
+        android:backgroundTint="#E53935"
+        android:textColor="#424242"
         android:textSize="16sp"
         android:text="@string/label_main" />
 

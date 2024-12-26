@@ -11,7 +11,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_background">
+        android:background="@color/white">
 
     <TextView
         android:id="@+id/textSearch"
@@ -58,9 +58,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="90dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="Choose\nYour Favorite Recipe"
+        android:text="@string/msg_main"
         android:textSize="22sp"
-        android:textColor="#424242"
+        android:textColor="@color/color_background_text_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iconProfile" />
 
@@ -78,7 +78,7 @@
         android:hint="@string/search_recipe"
         android:inputType="none"
         android:paddingStart="10sp"
-        android:textColorHint="#5A5858"
+        android:textColorHint="@color/color_background_text_second"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -107,7 +107,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/label_categories"
-                android:textColor="@color/black"
+                android:textColor="@color/color_background_text_main"
                 android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -124,7 +124,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto_medium"
                 android:text="@string/popular_recipes"
-                android:textColor="@color/black"
+                android:textColor="@color/color_background_text_main"
                 android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -139,8 +139,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="Last See"
-                android:textColor="@color/black"
+                android:text="@string/last_see"
+                android:textColor="@color/color_background_text_main"
                 android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView

@@ -11,18 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:layout_marginTop="26dp">
 
         <!-- Title -->
         <TextView
             android:id="@+id/tvLoginTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Iniciar Sesión"
+            android:text="@string/login"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"
-            android:textColor="?attr/colorPrimary" />
+            android:textColor="@color/color_background_btn_main"/>
 
         <!-- Email -->
         <com.google.android.material.textfield.TextInputLayout
@@ -35,7 +36,9 @@
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="@color/color_background_text_main"
+                android:textColorHint="@color/color_background_text_second"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password -->
@@ -50,7 +53,9 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/color_background_text_main"
+                android:textColorHint="@color/color_background_text_second"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Forgot Password -->
@@ -58,54 +63,62 @@
             android:id="@+id/cbForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="¿Olvidó su contraseña?"
+            android:text="@string/login_forgot_password"
             android:layout_marginTop="8dp" />
 
         <!-- Login Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Acceder"
             android:layout_marginTop="24dp"
-            style="@style/Widget.MaterialComponents.Button" />
+            android:text="@string/login_log_in"
+            app:backgroundTint="@color/color_background_btn_main"/>
 
         <!-- Register Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Registrarse"
+            android:text="@string/login_register"
             android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:textColor="@color/color_background_text_main"
+            app:strokeColor="@color/color_background_btn_o_icon_second"
+            app:iconTint="@color/color_background_btn_o_icon_second"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="O"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:textColor="?attr/colorPrimary" />
+            android:layout_marginBottom="16dp" />
 
         <!-- Social Media Buttons -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLoginGoogle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Acceder con Google"
+            android:text="@string/login_log_in_google"
             android:layout_marginTop="8dp"
+            android:textColor="@color/color_background_text_main"
             app:icon="@drawable/ic_google"
             app:iconGravity="textStart"
+            app:strokeColor="@color/color_background_btn_o_icon_second"
+            app:iconTint="@color/color_background_btn_o_icon_second"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLoginFacebook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Acceder con Facebook"
+            android:text="@string/login_log_in_facebook"
             android:layout_marginTop="8dp"
+            android:textColor="@color/color_background_text_main"
             app:icon="@drawable/ic_facebook"
             app:iconGravity="textStart"
+            app:strokeColor="@color/color_background_btn_o_icon_second"
+            app:iconTint="@color/color_background_btn_o_icon_second"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
     </LinearLayout>
 </ScrollView>

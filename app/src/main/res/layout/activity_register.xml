@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:layout_marginTop="26dp">
 
         <!-- Title -->
         <TextView
@@ -22,7 +23,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"
-            android:textColor="?attr/colorPrimary" />
+            android:textColor="@color/color_background_btn_main" />
 
         <!-- Username -->
         <com.google.android.material.textfield.TextInputLayout
@@ -35,7 +36,9 @@
                 android:id="@+id/etUserNameRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/color_background_text_main"
+                android:textColorHint="@color/color_background_text_second"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email -->
@@ -50,7 +53,9 @@
                 android:id="@+id/etEmailRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="@color/color_background_text_main"
+                android:textColorHint="@color/color_background_text_second"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Password -->
@@ -65,7 +70,9 @@
                 android:id="@+id/etPasswordRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/color_background_text_main"
+                android:textColorHint="@color/color_background_text_second"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Repeat Password -->
@@ -80,7 +87,9 @@
                 android:id="@+id/etRepeatPasswordRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/color_background_text_main"
+                android:textColorHint="@color/color_background_text_second"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Select Image -->
@@ -91,7 +100,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/select_image"
             android:textSize="16sp"
-            android:textColor="?attr/colorPrimary" />
+            android:backgroundTint="@color/color_background_text_second" />
 
         <ImageView
             android:id="@+id/ivSelectedImage"
@@ -104,12 +113,15 @@
             app:tint="@color/color_hint_background_search" />
 
         <!-- Create User Button -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSelectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/upload_image" />
+            android:text="@string/upload_image"
+            android:textSize="16sp"
+            app:backgroundTint="@color/color_background_btn_o_icon_second" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCreateUser"
@@ -117,7 +129,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="@string/create_user" />
+            android:text="@string/create_user"
+            app:backgroundTint="@color/color_background_btn_main"/>
 
     </LinearLayout>
 </ScrollView>

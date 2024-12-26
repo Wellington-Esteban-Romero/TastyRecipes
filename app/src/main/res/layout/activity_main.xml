@@ -160,7 +160,7 @@
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         app:navigationIcon="@drawable/ic_search"
         app:navigationIconTint="@color/white"
-        app:backgroundTint="@color/color_background_getStarted"
+        app:backgroundTint="@color/color_background_btn_main"
         app:menu="@menu/bottom_app_bar"
         tools:ignore="BottomAppBar" />
 

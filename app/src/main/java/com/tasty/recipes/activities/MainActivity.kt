@@ -3,6 +3,7 @@ package com.tasty.recipes.activities
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -88,6 +89,10 @@ class MainActivity : AppCompatActivity() {
         // Abrir el menú lateral al hacer clic en el ícono de perfil
         binding.iconProfile.setOnClickListener {
            binding.drawerLayout.openDrawer(GravityCompat.START)
+
+            findViewById<ImageView>(R.id.profile_image).setOnClickListener {
+                startActivity(Intent(this, EditProfileUser::class.java))
+            }
         }
 
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->

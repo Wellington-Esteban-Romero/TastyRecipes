@@ -16,6 +16,9 @@
         android:theme="@style/Theme.TastyRecipes"
         tools:targetApi="31">
         <activity
+            android:name=".activities.EditProfileUser"
+            android:exported="false" />
+        <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity
@@ -36,7 +39,7 @@
         <activity
             android:name=".activities.RecipeDetailActivity"
             android:exported="false"
-            android:theme="@style/AppTheme.TranslucentStatus"/>
+            android:theme="@style/AppTheme.TranslucentStatus" />
         <activity
             android:name=".activities.AddRecipeActivity"
             android:exported="false" />

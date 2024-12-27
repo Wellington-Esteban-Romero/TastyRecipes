@@ -2,9 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:id="@+id/main_group">
         <item
+            android:id="@+id/nav_my_recipes"
+            android:title="@string/my_recipes" />
+        <item
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/ic_favorite"
+            android:title="Favorites" />
+        <item
             android:id="@+id/nav_shared_with_me"
             android:icon="@drawable/ic_share"
             android:title="@string/shared_with_me" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_setting"
+            android:title="Setting" />
     </group>
 
     <!-- Separador y Logout -->

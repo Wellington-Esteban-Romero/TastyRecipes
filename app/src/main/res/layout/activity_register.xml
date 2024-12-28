@@ -102,6 +102,7 @@
             android:textSize="16sp"
             android:backgroundTint="@color/color_background_text_second" />
 
+        <!-- Create User Button -->
         <ImageView
             android:id="@+id/ivSelectedImage"
             android:layout_width="100dp"
@@ -109,10 +110,8 @@
             android:layout_marginTop="8dp"
             android:contentDescription="@string/selected_image_preview"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_camera"
-            app:tint="@color/color_hint_background_search" />
+            android:src="@drawable/ic_camera" />
 
-        <!-- Create User Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSelectImage"
             android:layout_width="wrap_content"

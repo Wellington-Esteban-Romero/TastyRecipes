@@ -1,6 +1,7 @@
 package com.tasty.recipes.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -8,12 +9,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import com.tasty.recipes.data.entities.User
-import com.tasty.recipes.data.providers.UserDAO
 import com.tasty.recipes.databinding.ActivityRegisterBinding
 import com.tasty.recipes.utils.AuthHelper
+import java.io.File
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -24,21 +25,27 @@ class RegisterActivity : AppCompatActivity() {
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let {
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            this.contentResolver.takePersistableUriPermission(uri, flag)
-            photoUrl = uri.toString()
-            Toast.makeText(this, "Se ha cargado la imagen correctamente", Toast.LENGTH_SHORT).show()
+            try {
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                this.contentResolver.takePersistableUriPermission(uri, flag)
+                photoUrl = uri.toString()
 
-            // show the imagen
-            Log.d("ImagePicker", "URI seleccionado: $uri")
-            /*Picasso.get()
-                .load(uri)
-                .into(binding.ivSelectedImage)*/
+                // Copiar el URI a un archivo local
+                val localFile = copyUriToFile(uri)
+                if (localFile != null) {
+                    // Cargar la imagen desde el archivo
+                    Picasso.get()
+                        .load(localFile)
+                        .into(binding.ivSelectedImage)
 
-            //val inputStream = contentResolver.openInputStream(uri)
-            //val bitmap = BitmapFactory.decodeStream(inputStream)
-            binding.ivSelectedImage.setImageURI(uri)
-            //inputStream?.close()
+                    Toast.makeText(this, "Imagen cargada correctamente", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "No se pudo cargar la imagen", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("ImagePicker", "Error al procesar la imagen: ${e.message}", e)
+                Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -119,6 +126,20 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun copyUriToFile(uri: Uri): File? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri)
+            val tempFile = File.createTempFile("temp_image", ".jpg", cacheDir)
+            tempFile.outputStream().use { outputStream ->
+                inputStream?.copyTo(outputStream)
+            }
+            tempFile
+        } catch (e: Exception) {
+            Log.e("ImagePicker", "Error al copiar URI a archivo: ${e.message}", e)
+            null
+        }
     }
 
     private fun validate(user: User): Boolean {

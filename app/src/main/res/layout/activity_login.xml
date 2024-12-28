@@ -59,12 +59,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Forgot Password -->
-        <CheckBox
+        <TextView
             android:id="@+id/cbForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_forgot_password"
-            android:layout_marginTop="8dp" />
+            android:textSize="14sp"
+            android:layout_marginTop="10dp" />
 
         <!-- Login Button -->
         <com.google.android.material.button.MaterialButton

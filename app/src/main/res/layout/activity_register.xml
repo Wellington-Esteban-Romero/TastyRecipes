@@ -11,19 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="26dp">
+        android:gravity="center_horizontal">
 
-        <!-- Title -->
-        <TextView
-            android:id="@+id/tvLoginTitleRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_register"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"
-            android:textColor="@color/color_background_btn_main" />
+        <!-- title -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+            app:title="Register"
+            app:titleTextColor="@color/color_background_btn_main"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/color_background_btn_main"/>
 
         <!-- Username -->
         <com.google.android.material.textfield.TextInputLayout
@@ -113,7 +113,6 @@
             app:tint="@color/color_hint_background_search" />
 
         <!-- Create User Button -->
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSelectImage"
             android:layout_width="wrap_content"

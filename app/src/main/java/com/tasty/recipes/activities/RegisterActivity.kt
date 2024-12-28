@@ -54,6 +54,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun initListener () {
 
+        binding.topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         binding.btnCreateUser.setOnClickListener {
             val username = binding.etUserNameRegister.text.toString()
             val email =  binding.etEmailRegister.text.toString()

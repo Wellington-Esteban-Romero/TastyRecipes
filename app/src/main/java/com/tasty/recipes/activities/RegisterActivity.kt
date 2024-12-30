@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.data.entities.User
@@ -21,19 +22,21 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private val authHelper: AuthHelper = AuthHelper()
     private lateinit var register_user:User
-    private lateinit var photoUrl: String
+    private lateinit var photoUrl:String
+
+    companion object {
+        private const val TAG = "Register"
+    }
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let {
             try {
                 val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 this.contentResolver.takePersistableUriPermission(uri, flag)
-                photoUrl = uri.toString()
 
-                // Copiar el URI a un archivo local
                 val localFile = copyUriToFile(uri)
                 if (localFile != null) {
-                    // Cargar la imagen desde el archivo
+                    photoUrl = localFile.toString()
                     Picasso.get()
                         .load(localFile)
                         .into(binding.ivSelectedImage)
@@ -71,7 +74,8 @@ class RegisterActivity : AppCompatActivity() {
             val password = binding.etPasswordRegister.text.toString()
             val repeatPassword = binding.etRepeatPasswordRegister.text.toString()
 
-            this.register_user = User("", username, email, password, repeatPassword)
+            register_user = User("", username, email, password, repeatPassword)
+            register_user.photoUrl = this.photoUrl
 
             if (validate(register_user)) {
                 createAccount(register_user.email, register_user.password)
@@ -89,43 +93,73 @@ class RegisterActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = task.result?.user
-                    val userId = user?.uid
+                    user?.let {
+                        sendVerificationEmail(it)
+                        Toast.makeText(this, "Verifica tu email antes de continuar.", Toast.LENGTH_LONG).show()
 
-                    val userData: MutableMap<String, Any> = HashMap()
-                    userData["id"] = user!!.uid
-                    userData["username"] = this.register_user.username
-                    userData["email"] = user.email!!
-                    userData["photoUrl"] = register_user.photoUrl
-
-                    FirebaseFirestore.getInstance().collection("users")
-                        .document(userId!!)
-                        .set(userData)
-                        .addOnSuccessListener { aVoid: Void? ->
-                            Log.d(
-                                "Firestore",
-                                "Usuario añadido correctamente"
-                            )
-                            val currentUser = authHelper.getCurrentUser()
-                            if (currentUser != null) {
-                                authHelper.getFirebaseAuth().signOut()
-                                startActivity(Intent(this, LoginActivity::class.java))
-                            }
-                        }
-                        .addOnFailureListener { e: Exception? ->
-                            user.delete()
-                                .addOnCompleteListener { deleteTask ->
-                                    if (deleteTask.isSuccessful) {
-                                        Log.e("Firestore", "Error al guardar usuario, Auth revertido", e)
-                                    } else {
-                                        Log.e("Firestore", "Error al guardar usuario y fallo al eliminar de Auth", deleteTask.exception)
-                                    }
-                                }
-                        }
+                        val userData = createUserDataMap(user)
+                        saveUserToFirestore(user.uid, userData, user)
+                    }
                 } else {
-                    // Si el registro falla, muestra un mensaje al usuario
                     Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun sendVerificationEmail(user: FirebaseUser) {
+        authHelper.getCurrentUser()?.sendEmailVerification()
+            ?.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Log.i(TAG, "VerificationSent")
+                } else {
+                    Log.e(TAG, "Failed to send verification email: ${it.exception?.message}")
+                }
+            }
+    }
+
+    private fun createUserDataMap(user: FirebaseUser): MutableMap<String, Any> {
+        return mutableMapOf(
+            "id" to user.uid,
+            "username" to this.register_user.username,
+            "email" to user.email!!,
+            "photoUrl" to this.register_user.photoUrl,
+            "createdAt" to System.currentTimeMillis()
+        )
+    }
+
+    private fun saveUserToFirestore(userId: String, userData: Map<String, Any>, user: FirebaseUser) {
+        FirebaseFirestore.getInstance().collection("users")
+            .document(userId)
+            .set(userData)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Usuario añadido correctamente")
+                signOutAndRedirectToLogin()
+            }
+            .addOnFailureListener { exception ->
+                handleFirestoreFailure(exception, user)
+            }
+    }
+
+    private fun handleFirestoreFailure(exception: Exception, user: FirebaseUser) {
+        user.delete().addOnCompleteListener { deleteTask ->
+            if (deleteTask.isSuccessful) {
+                Log.e("Firestore", "Error al guardar usuario, Auth revertido", exception)
+            } else {
+                Log.e(
+                    "Firestore",
+                    "Error al guardar usuario y fallo al eliminar de Auth",
+                    deleteTask.exception
+                )
+            }
+        }
+    }
+
+    private fun signOutAndRedirectToLogin() {
+        val currentUser = authHelper.getCurrentUser()
+        if (currentUser != null) {
+            authHelper.getFirebaseAuth().signOut()
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
     }
 
     private fun copyUriToFile(uri: Uri): File? {

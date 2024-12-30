@@ -41,9 +41,10 @@ class LoginActivity : AppCompatActivity() {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success")
                             val user = authHelper.getCurrentUser()
-                            updateUI(user)
+                            user?.let {
+                                checkEmailVerification()
+                            }
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmailAndPassword:failure", task.exception)
                             Toast.makeText(
                                 baseContext,
@@ -74,7 +75,6 @@ class LoginActivity : AppCompatActivity() {
         currentUser?.reload()?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(this, "Usuario recargado exitosamente.", Toast.LENGTH_SHORT).show()
-                // Puedes usar la información actualizada del usuario aquí
                 updateUI(currentUser)
             } else {
                 Toast.makeText(
@@ -103,6 +103,30 @@ class LoginActivity : AppCompatActivity() {
             ).show()
         }
     }
+
+    private fun checkEmailVerification() {
+        val user = authHelper.getCurrentUser()
+        if (user != null) {
+            user.reload().addOnCompleteListener { reloadTask ->
+                if (reloadTask.isSuccessful) {
+                    if (user.isEmailVerified) {
+                        Log.i(TAG, "El usuario ha verificado su email.")
+                        updateUI(user)
+                    } else {
+                        Log.i(TAG, "El email no está verificado.")
+                        Toast.makeText(this, "Por favor, verifica tu email para continuar.", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Log.e(TAG, "Error al recargar el usuario: ${reloadTask.exception?.message}")
+                    Toast.makeText(this, "Error al comprobar la verificación.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Log.e(TAG, "Usuario no autenticado.")
+            Toast.makeText(this, "Debes iniciar sesión para verificar el email.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun validate(email: String, password: String): Boolean {
         var isValid = true

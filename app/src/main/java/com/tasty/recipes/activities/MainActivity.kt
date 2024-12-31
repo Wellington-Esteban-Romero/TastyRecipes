@@ -8,6 +8,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.CategoryAdapter
 import com.tasty.recipes.adapters.LastSeeRecipeAdapter
@@ -21,6 +23,7 @@ import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.AuthHelper
 import com.tasty.recipes.utils.SessionManager
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -69,6 +72,20 @@ class MainActivity : AppCompatActivity() {
             saveRecipeCategory()
         }
         setupRecyclerView()
+
+        val db = FirebaseFirestore.getInstance()
+        val userCollection = db.collection("users")
+
+        userCollection.whereEqualTo("email", session.getUserEmail(this))
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    println(document.data["photoUrl"] as String)
+                    Picasso.get()
+                        .load(File(document.data["photoUrl"].toString()))
+                        .into(binding.iconProfile)
+                }
+            }
     }
 
     private fun initListener() {
@@ -101,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                     logout()
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     AuthHelper().getFirebaseAuth().signOut()
+                    session.clearSession(this)
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)

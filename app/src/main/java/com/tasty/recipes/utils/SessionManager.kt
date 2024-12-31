@@ -4,6 +4,9 @@ import android.content.Context
 
 class SessionManager(context: Context) {
 
+    private  val PREF_NAME = "user_session"
+    private  val EMAIL_KEY = "user_email"
+
     companion object {
         const val ACTIVE = "1"
         const val DES_ACTIVE = "0"
@@ -37,5 +40,24 @@ class SessionManager(context: Context) {
 
     private fun getRecipes (key:String):String {
         return storage.getString(SHARED_NAME_RECIPES + key, "")!!
+    }
+
+    fun saveUserEmail(context: Context, email: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(EMAIL_KEY, email)
+        editor.apply()
+    }
+
+    fun getUserEmail(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(EMAIL_KEY, null)
+    }
+
+    fun clearSession(context: Context) {
+        val sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.clear()
+        editor.apply()
     }
 }

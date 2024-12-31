@@ -22,7 +22,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private val authHelper: AuthHelper = AuthHelper()
     private lateinit var register_user:User
-    private lateinit var photoUrl:String
+    private var photoUrl:String = ""
 
     companion object {
         private const val TAG = "Register"
@@ -77,9 +77,8 @@ class RegisterActivity : AppCompatActivity() {
             register_user = User("", username, email, password, repeatPassword)
             register_user.photoUrl = this.photoUrl
 
-            if (validate(register_user)) {
+            if (validate(register_user))
                 createAccount(register_user.email, register_user.password)
-            }
         }
 
         binding.btnSelectImage.setOnClickListener {
@@ -89,19 +88,28 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun createAccount(email: String, password: String) {
-        authHelper.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = task.result?.user
-                    user?.let {
-                        sendVerificationEmail(it)
-                        Toast.makeText(this, "Verifica tu email antes de continuar.", Toast.LENGTH_LONG).show()
+        val db = FirebaseFirestore.getInstance()
+        val userCollection = db.collection("users")
+        userCollection.whereEqualTo("email", email).get()
+            .addOnSuccessListener { query ->
+                if (query.isEmpty) {
+                    authHelper.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                val user = task.result?.user
+                                user?.let {
+                                    sendVerificationEmail(it)
+                                    Toast.makeText(this, "Verifica tu email antes de continuar.", Toast.LENGTH_LONG).show()
 
-                        val userData = createUserDataMap(user)
-                        saveUserToFirestore(user.uid, userData, user)
-                    }
-                } else {
-                    Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    val userData = createUserDataMap(user)
+                                    saveUserToFirestore(user.uid, userData, user)
+                                }
+                            } else {
+                                Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }  else {
+                    Toast.makeText(this, "Este email ya está registrado.", Toast.LENGTH_SHORT).show()
                 }
             }
     }

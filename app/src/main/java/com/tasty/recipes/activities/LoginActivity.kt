@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
 import com.tasty.recipes.databinding.ActivityLoginBinding
 import com.tasty.recipes.utils.AuthHelper
+import com.tasty.recipes.utils.SessionManager
 
 class LoginActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class LoginActivity : AppCompatActivity() {
     private val authHelper: AuthHelper = AuthHelper()
 
     companion object {
+        lateinit var sessionManager: SessionManager
         private const val TAG = "EmailPassword"
     }
 
@@ -25,6 +27,8 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sessionManager = SessionManager(applicationContext)
 
         initListener()
     }
@@ -90,8 +94,8 @@ class LoginActivity : AppCompatActivity() {
         if (user != null) {
             Toast.makeText(this, "Bienvenido ${user.email}", Toast.LENGTH_SHORT).show()
 
+            sessionManager.saveUserEmail(this, user.email ?: "")
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("USEREMAIL", user.email)
             startActivity(intent)
 
             finish()

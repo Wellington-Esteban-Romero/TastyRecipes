@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -71,21 +72,8 @@ class MainActivity : AppCompatActivity() {
             saveCategories()
             saveRecipeCategory()
         }
+        showInfoProfile(binding.iconProfile)
         setupRecyclerView()
-
-        val db = FirebaseFirestore.getInstance()
-        val userCollection = db.collection("users")
-
-        userCollection.whereEqualTo("email", session.getUserEmail(this))
-            .get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    println(document.data["photoUrl"] as String)
-                    Picasso.get()
-                        .load(File(document.data["photoUrl"].toString()))
-                        .into(binding.iconProfile)
-                }
-            }
     }
 
     private fun initListener() {
@@ -105,9 +93,12 @@ class MainActivity : AppCompatActivity() {
 
         // Abrir el menú lateral al hacer clic en el ícono de perfil
         binding.iconProfile.setOnClickListener {
-           binding.drawerLayout.openDrawer(GravityCompat.START)
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+            val icoProfile = findViewById<ImageView>(R.id.profile_image);
 
-            findViewById<ImageView>(R.id.profile_image).setOnClickListener {
+            showInfoProfile(icoProfile)
+
+            icoProfile.setOnClickListener {
                 startActivity(Intent(this, EditProfileUser::class.java))
             }
         }
@@ -152,6 +143,24 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+    }
+
+    private fun showInfoProfile(imageView: ImageView) {
+        val db = FirebaseFirestore.getInstance()
+        val userCollection = db.collection("users")
+
+        userCollection.whereEqualTo("email", session.getUserEmail(this))
+            .get()
+            .addOnSuccessListener { documents ->
+                Picasso.get()
+                    .load(File(documents.documents[0]["photoUrl"].toString()))
+                    .into(imageView)
+                findViewById<TextView>(R.id.user_name).text =
+                    documents.documents[0]["username"].toString()
+                findViewById<TextView>(R.id.user_email).text =
+                    documents.documents[0]["email"].toString()
+
+            }
     }
 
     private fun setupRecyclerView() {

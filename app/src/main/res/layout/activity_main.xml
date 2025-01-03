@@ -36,8 +36,7 @@
                 android:background="@drawable/profile_picture_background"
                 android:clipToOutline="true"
                 android:contentDescription="@string/todo"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_home" />
+                android:scaleType="centerCrop" />
 
             <View
                 android:layout_width="0dp"

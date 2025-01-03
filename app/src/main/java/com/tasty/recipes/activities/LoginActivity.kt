@@ -10,11 +10,15 @@ import com.google.firebase.auth.FirebaseUser
 import com.tasty.recipes.databinding.ActivityLoginBinding
 import com.tasty.recipes.utils.AuthHelper
 import com.tasty.recipes.utils.SessionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val authHelper: AuthHelper = AuthHelper()
+    private lateinit var googleSingIn: GoogleSingIn
 
     companion object {
         lateinit var sessionManager: SessionManager
@@ -30,7 +34,12 @@ class LoginActivity : AppCompatActivity() {
 
         sessionManager = SessionManager(applicationContext)
 
+        initUI()
         initListener()
+    }
+
+    private fun initUI () {
+        googleSingIn = GoogleSingIn(this)
     }
 
     private fun initListener() {
@@ -63,6 +72,17 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        //sing in with red socials
+        binding.btnLoginGoogle.setOnClickListener {
+            CoroutineScope(Dispatchers.Main).launch {
+                if (googleSingIn.signIn()) {
+                    val currentUser = authHelper.getCurrentUser()
+                    updateUI(currentUser)
+                }
+            }
+
         }
     }
 

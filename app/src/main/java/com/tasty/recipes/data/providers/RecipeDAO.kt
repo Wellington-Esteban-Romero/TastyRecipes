@@ -26,7 +26,7 @@ class RecipeDAO(val context: Context) {
         return ContentValues().apply {
             put(Recipe.COLUMN_NAME, recipe.name)
             put(Recipe.COLUMN_INGREDIENTS, recipe.ingredients.joinToString(", "))
-            put(Recipe.COLUMN_INSTRUCTIONS, recipe.instructions.joinToString(", "))
+            put(Recipe.COLUMN_INSTRUCTIONS, recipe.instructions)
             put(Recipe.COLUMN_PREP_TIME_MINUTES, recipe.prepTimeMinutes)
             put(Recipe.COLUMN_COOK_TIME_MINUTES, recipe.cookTimeMinutes)
             put(Recipe.COLUMN_SERVINGS, recipe.servings)
@@ -54,7 +54,7 @@ class RecipeDAO(val context: Context) {
             id,
             name,
             ingredients.split("-"),
-            instructions.split("-"),
+            instructions,
             prepTimeMinutes,
             cookTimeMinutes,
             servings,

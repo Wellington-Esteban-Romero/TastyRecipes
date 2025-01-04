@@ -4,17 +4,16 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
 import com.tasty.recipes.utils.SessionManager
 import java.io.File
@@ -26,8 +25,6 @@ import java.util.UUID
 class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRecipeDetailBinding
-    private lateinit var recipeDAO: RecipeDAO
-    private lateinit var recipe:Recipe
     private lateinit var idRecipe: String
 
     companion object {
@@ -50,16 +47,18 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun initUI () {
 
         session = SessionManager(applicationContext)
-
         idRecipe = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
 
-        recipeDAO = RecipeDAO(this)
-
-        recipe = recipeDAO.findRecipeById(idRecipe)!!
-
-        createDetails(recipe)
-
-        println(idRecipe)
+        FirebaseFirestore.getInstance().collection("recipes")
+            .whereEqualTo("id", idRecipe.toLong())
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val recipe = querySnapshot.documents[0].toObject(Recipe::class.java)
+               createDetails(recipe!!)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
     }
 
     private fun initListener () {

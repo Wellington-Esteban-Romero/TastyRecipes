@@ -78,7 +78,7 @@ class AddRecipeActivity : AppCompatActivity() {
    private fun loadData() {
         binding.editTextTitle.setText(recipe.name)
         binding.editTextIngredients.setText(recipe.ingredients.joinToString { "," })
-        binding.editTextInstructions.setText(recipe.instructions.joinToString { "," })
+        binding.editTextInstructions.setText(recipe.instructions)
         binding.editTextPrepTime.setText(recipe.prepTimeMinutes.toString())
         binding.editTextCookTime.setText(recipe.cookTimeMinutes.toString())
         binding.editTextServings.setText(recipe.servings)
@@ -162,7 +162,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private fun saveRecipe() {
         recipe.name = binding.textFieldTitleName.editText?.text.toString()
         recipe.ingredients = listOf(binding.textFieldIngredients.editText?.text.toString())
-        recipe.instructions = listOf(binding.textFieldInstructions.editText?.text.toString())
+        recipe.instructions = binding.textFieldInstructions.editText?.text.toString()
         if (binding.textFieldPrepTime.editText?.text.toString().isEmpty()){
             recipe.prepTimeMinutes = 0
         } else {

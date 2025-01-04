@@ -1,10 +1,10 @@
 package com.tasty.recipes.data.entities
 
 data class Recipe(
-        val id: Long,
-        var name: String,
+        val id: Long = 0L,
+        var name: String = "",
         var ingredients: List<String> = mutableListOf(),
-        var instructions: List<String> = mutableListOf(),
+        var instructions: String = "",
         var prepTimeMinutes: Int = 0,
         var cookTimeMinutes: Int = 0,
         var servings: Int = 0,

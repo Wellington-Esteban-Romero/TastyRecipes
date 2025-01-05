@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
@@ -18,7 +19,6 @@ import com.tasty.recipes.adapters.LastSeeRecipeAdapter
 import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.data.providers.RecipeCategoryDAO
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.AuthHelper
@@ -32,9 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
     private lateinit var recipeDAO: RecipeDAO
-
-    //private lateinit var categoryDAO: CategoryDAO
-    private lateinit var recipeCategoryDAO: RecipeCategoryDAO
 
     private val categoryList: MutableList<Category> = mutableListOf()
     private val recipeList: MutableList<Recipe> = mutableListOf()
@@ -56,50 +53,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        binding.editTextSearch.setBackgroundResource(R.drawable.search_background)
-        binding.editTextSearch.clearFocus()
+        resetSearchField()
         //popularRecipeAdapter.notifyDataSetChanged()
         super.onResume()
     }
 
     private fun initUI() {
-
         session = SessionManager(applicationContext)
         recipeDAO = RecipeDAO(this)
-        //categoryDAO = CategoryDAO(this)
-        recipeCategoryDAO = RecipeCategoryDAO(this)
-
-        binding.editTextSearch.clearFocus()
-
+        showUserProfileInfo(false)
+        resetSearchField()
         loadCategories()
         loadRecipes()
-        showInfoProfile(binding.iconProfile)
-
     }
 
     private fun initListener() {
+        setupSearchListener()
+        setupProfileMenuListeners()
+        setupBottomAppBarListeners()
+        setupFloatingActionButton()
+    }
 
+    private fun resetSearchField() {
+        with(binding.editTextSearch) {
+            setBackgroundResource(R.drawable.search_background)
+            clearFocus()
+        }
+    }
+
+    private fun setupSearchListener() {
         binding.editTextSearch.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 binding.editTextSearch.setBackgroundResource(R.drawable.edittext_default_background)
-
-                val intent = Intent(this, SearchActivity::class.java)
-                startActivity(intent)
-
+                startActivity(Intent(this, SearchActivity::class.java))
                 true
             } else {
                 false
             }
         }
+    }
 
-        // Abrir el menú lateral al hacer clic en el ícono de perfil
+    private fun setupProfileMenuListeners() {
         binding.iconProfile.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
-            val icoProfile = findViewById<ImageView>(R.id.profile_image);
+            showUserProfileInfo(true)
 
-            showInfoProfile(icoProfile)
-
-            icoProfile.setOnClickListener {
+            binding.navigationView.findViewById<ImageView>(R.id.profile_image).setOnClickListener {
                 startActivity(Intent(this, EditProfileUser::class.java))
             }
         }
@@ -111,12 +110,15 @@ class MainActivity : AppCompatActivity() {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     AuthHelper().getFirebaseAuth().signOut()
                     session.clearSession(this)
+                    session.clearSessionLastProvider(this)
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true
         }
+    }
 
+    private fun setupBottomAppBarListeners() {
         binding.bottomAppBar.setNavigationOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
@@ -138,30 +140,75 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-
-        binding.floatingActionButton.setOnClickListener {
-            val intent = Intent(this, AddRecipeActivity::class.java)
-            startActivity(intent)
-        }
-
     }
 
-    private fun showInfoProfile(imageView: ImageView) {
+    private fun setupFloatingActionButton() {
+        binding.floatingActionButton.setOnClickListener {
+            startActivity(Intent(this, AddRecipeActivity::class.java))
+        }
+    }
+
+    private fun showUserProfileInfo (openMenu:Boolean) {
+        when (val lastProvider = session.getLastProvider(this)) {
+            "google.com" -> {
+                showInfoProfileByRedSocial(openMenu)
+                Log.i("", "Inicio de sesión con Google")
+            }
+
+            "facebook.com" -> {
+                showInfoProfileByRedSocial(openMenu)
+                println("Inicio de sesión con Facebook")
+            }
+
+            "password" -> {
+                showInfoProfileByPassword(openMenu)
+                Log.i("", "Inicio de sesión con correo/contraseña")
+            }
+
+            else -> {
+                println("Proveedor desconocido: $lastProvider")
+            }
+        }
+    }
+
+    private fun showInfoProfileByPassword(openMenu:Boolean) {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")
 
         userCollection.whereEqualTo("email", session.getUserEmail(this))
             .get()
             .addOnSuccessListener { documents ->
+               val image:ImageView =  if (openMenu) {
+                   binding.navigationView.findViewById(R.id.profile_image)
+               } else {
+                   binding.iconProfile
+               }
                 Picasso.get()
                     .load(File(documents.documents[0]["photoUrl"].toString()))
-                    .into(imageView)
+                    .into(image)
                 findViewById<TextView>(R.id.user_name).text =
                     documents.documents[0]["username"].toString()
                 findViewById<TextView>(R.id.user_email).text =
                     documents.documents[0]["email"].toString()
-
             }
+    }
+
+    private fun showInfoProfileByRedSocial (openMenu:Boolean) {
+        FirebaseAuth.getInstance().currentUser?.providerData?.forEach { userInfo ->
+            val image:ImageView =  if (openMenu) {
+                binding.navigationView.findViewById(R.id.profile_image)
+            } else {
+                binding.iconProfile
+            }
+            Picasso.get()
+                .load(userInfo.photoUrl.toString())
+                .into(image)
+
+            if (openMenu) {
+                findViewById<TextView>(R.id.user_name).text = userInfo.displayName!!
+                findViewById<TextView>(R.id.user_email).text = userInfo.email!!
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -233,7 +280,6 @@ class MainActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar categorías: ${exception.message}")
             }
-
     }
 
     private fun loadRecipes() {

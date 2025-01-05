@@ -51,11 +51,11 @@ class LoginActivity : AppCompatActivity() {
                 authHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success")
                             val user = authHelper.getCurrentUser()
                             user?.let {
                                 checkEmailVerification()
+                                sessionManager.saveLastProvider(this, "password")
                             }
                         } else {
                             Log.w(TAG, "signInWithEmailAndPassword:failure", task.exception)
@@ -76,13 +76,13 @@ class LoginActivity : AppCompatActivity() {
 
         //sing in with red socials
         binding.btnLoginGoogle.setOnClickListener {
+            sessionManager.saveLastProvider(this, "google.com")
             CoroutineScope(Dispatchers.Main).launch {
                 if (googleSingIn.signIn()) {
                     val currentUser = authHelper.getCurrentUser()
                     updateUI(currentUser)
                 }
             }
-
         }
     }
 

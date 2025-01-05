@@ -151,17 +151,17 @@ class MainActivity : AppCompatActivity() {
     private fun showUserProfileInfo (openMenu:Boolean) {
         when (val lastProvider = session.getLastProvider(this)) {
             "google.com" -> {
-                showInfoProfileByRedSocial(openMenu)
+                showProfileInfoFromSocialProvider(openMenu)
                 Log.i("", "Inicio de sesión con Google")
             }
 
             "facebook.com" -> {
-                showInfoProfileByRedSocial(openMenu)
+                showProfileInfoFromSocialProvider(openMenu)
                 println("Inicio de sesión con Facebook")
             }
 
             "password" -> {
-                showInfoProfileByPassword(openMenu)
+                showInfoProfileByEmail(openMenu)
                 Log.i("", "Inicio de sesión con correo/contraseña")
             }
 
@@ -171,43 +171,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showInfoProfileByPassword(openMenu:Boolean) {
+    private fun showInfoProfileByEmail(openMenu:Boolean) {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")
 
         userCollection.whereEqualTo("email", session.getUserEmail(this))
             .get()
             .addOnSuccessListener { documents ->
-               val image:ImageView =  if (openMenu) {
-                   binding.navigationView.findViewById(R.id.profile_image)
-               } else {
-                   binding.iconProfile
-               }
-                Picasso.get()
-                    .load(File(documents.documents[0]["photoUrl"].toString()))
-                    .into(image)
-                findViewById<TextView>(R.id.user_name).text =
-                    documents.documents[0]["username"].toString()
-                findViewById<TextView>(R.id.user_email).text =
-                    documents.documents[0]["email"].toString()
+                if (documents.isEmpty) return@addOnSuccessListener
+
+                val userInfo = documents.documents[0]
+                updateProfile(
+                    openMenu,
+                    userInfo["photoUrl"].toString(),
+                    userInfo["username"].toString(),
+                    userInfo["email"].toString()
+                )
             }
     }
 
-    private fun showInfoProfileByRedSocial (openMenu:Boolean) {
-        FirebaseAuth.getInstance().currentUser?.providerData?.forEach { userInfo ->
-            val image:ImageView =  if (openMenu) {
-                binding.navigationView.findViewById(R.id.profile_image)
-            } else {
-                binding.iconProfile
-            }
-            Picasso.get()
-                .load(userInfo.photoUrl.toString())
-                .into(image)
+    private fun showProfileInfoFromSocialProvider (openMenu:Boolean) {
+        FirebaseAuth.getInstance().currentUser?.providerData?.let { user ->
+            val data = user.firstOrNull() ?: return
+            updateProfile(openMenu, data.photoUrl.toString(),
+                data.displayName ?: "",
+                data.email ?: "")
 
-            if (openMenu) {
-                findViewById<TextView>(R.id.user_name).text = userInfo.displayName!!
-                findViewById<TextView>(R.id.user_email).text = userInfo.email!!
-            }
+        }
+    }
+
+    private fun updateProfile(openMenu: Boolean, photoUrl: String, username: String, email: String) {
+        val profileImage = if (openMenu) binding.navigationView.findViewById(R.id.profile_image) else binding.iconProfile
+
+        when (session.getLastProvider(this)) {
+            "google.com" -> Picasso.get().load(photoUrl).into(profileImage)
+            "password" -> Picasso.get().load(File(photoUrl)).into(profileImage)
+        }
+
+        if (openMenu) {
+            binding.navigationView.findViewById<TextView>(R.id.user_name).text = username
+            binding.navigationView.findViewById<TextView>(R.id.user_email).text = email
         }
     }
 

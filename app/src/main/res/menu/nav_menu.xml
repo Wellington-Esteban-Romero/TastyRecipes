@@ -3,6 +3,7 @@
     <group android:id="@+id/main_group">
         <item
             android:id="@+id/nav_my_recipes"
+            android:icon="@drawable/ic_menu_recipes"
             android:title="@string/my_recipes" />
         <item
             android:id="@+id/nav_favorites"

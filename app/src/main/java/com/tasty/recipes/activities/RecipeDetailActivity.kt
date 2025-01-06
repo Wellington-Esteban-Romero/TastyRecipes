@@ -10,11 +10,14 @@ import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
+import com.tasty.recipes.fragments.IngredientsFragment
+import com.tasty.recipes.fragments.StepsFragment
 import com.tasty.recipes.utils.SessionManager
 import java.io.File
 import java.io.FileOutputStream
@@ -45,26 +48,53 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun initUI () {
-
         session = SessionManager(applicationContext)
         idRecipe = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
+        getRecipeById()
+    }
 
+    private fun initListener () {
+        setupToolBarListeners()
+        selectBottomNavigationView()
+    }
+
+    private fun getRecipeById () {
         FirebaseFirestore.getInstance().collection("recipes")
             .whereEqualTo("id", idRecipe.toLong())
             .get()
             .addOnSuccessListener { querySnapshot ->
                 val recipe = querySnapshot.documents[0].toObject(Recipe::class.java)
-               createDetails(recipe!!)
+                createDetails(recipe!!)
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
             }
     }
 
-    private fun initListener () {
-
+    private fun setupToolBarListeners() {
         binding.toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun selectBottomNavigationView () {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, IngredientsFragment())
+            .commit()
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            var selectedFragment: Fragment? = null
+            when (item.itemId) {
+                R.id.nav_ingredients -> selectedFragment = IngredientsFragment()
+                R.id.nav_steps -> selectedFragment = StepsFragment()
+            }
+
+            if (selectedFragment != null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, selectedFragment)
+                    .commit()
+            }
+            true
         }
     }
 

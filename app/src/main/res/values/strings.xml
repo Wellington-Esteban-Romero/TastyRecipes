@@ -50,5 +50,7 @@
     <string name="select_image">Select Image</string>
     <string name="selected_image_preview">Selected image preview</string>
     <string name="upload_image">Upload image</string>
+    <string name="steps">Steps</string>
+    <string name="ingredients">Ingredients</string>
 
 </resources>

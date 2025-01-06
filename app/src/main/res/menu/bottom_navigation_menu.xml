@@ -2,14 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_ingredients"
-        android:icon="@drawable/ic_share"
-        android:title="Ingredients"/>
+        android:icon="@drawable/ic_ingredients"
+        android:title="@string/ingredients"/>
     <item
         android:id="@+id/nav_steps"
-        android:icon="@drawable/ic_share"
-        android:title="Steps"/>
-    <item
-        android:id="@+id/nav_nutrition"
-        android:icon="@drawable/ic_share"
-        android:title="Nutrition"/>
+        android:icon="@drawable/ic_steps"
+        android:title="@string/steps"/>
 </menu>

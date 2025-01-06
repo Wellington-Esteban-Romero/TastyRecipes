@@ -21,36 +21,39 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
     private val authHelper: AuthHelper = AuthHelper()
-    private lateinit var register_user:User
-    private var photoUrl:String = ""
+    private lateinit var register_user: User
+    private var photoUrl: String = ""
 
     companion object {
         private const val TAG = "Register"
     }
 
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        uri?.let {
-            try {
-                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                this.contentResolver.takePersistableUriPermission(uri, flag)
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                try {
+                    val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    this.contentResolver.takePersistableUriPermission(uri, flag)
 
-                val localFile = copyUriToFile(uri)
-                if (localFile != null) {
-                    photoUrl = localFile.toString()
-                    Picasso.get()
-                        .load(localFile)
-                        .into(binding.ivSelectedImage)
+                    val localFile = copyUriToFile(uri)
+                    if (localFile != null) {
+                        photoUrl = localFile.toString()
+                        Picasso.get()
+                            .load(localFile)
+                            .into(binding.ivSelectedImage)
 
-                    Toast.makeText(this, "Imagen cargada correctamente", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "No se pudo cargar la imagen", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Imagen cargada correctamente", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(this, "No se pudo cargar la imagen", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                } catch (e: Exception) {
+                    Log.e("ImagePicker", "Error al procesar la imagen: ${e.message}", e)
+                    Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                Log.e("ImagePicker", "Error al procesar la imagen: ${e.message}", e)
-                Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +65,7 @@ class RegisterActivity : AppCompatActivity() {
         initListener()
     }
 
-    private fun initListener () {
+    private fun initListener() {
 
         binding.topAppBar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
@@ -70,7 +73,7 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.btnCreateUser.setOnClickListener {
             val username = binding.etUserNameRegister.text.toString()
-            val email =  binding.etEmailRegister.text.toString()
+            val email = binding.etEmailRegister.text.toString()
             val password = binding.etPasswordRegister.text.toString()
             val repeatPassword = binding.etRepeatPasswordRegister.text.toString()
 
@@ -82,7 +85,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnSelectImage.setOnClickListener {
-            if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
+            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
                 pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
@@ -99,17 +102,26 @@ class RegisterActivity : AppCompatActivity() {
                                 val user = task.result?.user
                                 user?.let {
                                     sendVerificationEmail(it)
-                                    Toast.makeText(this, "Verifica tu email antes de continuar.", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(
+                                        this,
+                                        "Verifica tu email antes de continuar.",
+                                        Toast.LENGTH_LONG
+                                    ).show()
 
                                     val userData = createUserDataMap(user)
                                     saveUserToFirestore(user.uid, userData, user)
                                 }
                             } else {
-                                Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    this,
+                                    "Error: ${task.exception?.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
-                }  else {
-                    Toast.makeText(this, "Este email ya está registrado.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Este email ya está registrado.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
     }
@@ -135,7 +147,11 @@ class RegisterActivity : AppCompatActivity() {
         )
     }
 
-    private fun saveUserToFirestore(userId: String, userData: Map<String, Any>, user: FirebaseUser) {
+    private fun saveUserToFirestore(
+        userId: String,
+        userData: Map<String, Any>,
+        user: FirebaseUser
+    ) {
         FirebaseFirestore.getInstance().collection("users")
             .document(userId)
             .set(userData)
@@ -172,12 +188,18 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun copyUriToFile(uri: Uri): File? {
         return try {
+            val directory = File(filesDir, "images")
+            if (!directory.exists()) {
+                directory.mkdir()
+            }
+
             val inputStream = contentResolver.openInputStream(uri)
-            val tempFile = File.createTempFile("temp_image", ".jpg", cacheDir)
-            tempFile.outputStream().use { outputStream ->
+            val file = File(directory, "image_${System.currentTimeMillis()}.jpg")
+
+            file.outputStream().use { outputStream ->
                 inputStream?.copyTo(outputStream)
             }
-            tempFile
+            file
         } catch (e: Exception) {
             Log.e("ImagePicker", "Error al copiar URI a archivo: ${e.message}", e)
             null
@@ -206,6 +228,13 @@ class RegisterActivity : AppCompatActivity() {
 
         if (user.password.isEmpty()) {
             binding.etFieldPasswordRegister.error = "Ingresa una contraseña"
+            isValid = false
+        } else if (!user.password.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
+            binding.etFieldPasswordRegister.error = "Mínimo debe haber 1 letra mayúscula.\n" +
+                    "Mínimo debe haber 1 letra minúscula.\n" +
+                    "Mínimo debe haber 1 número.\n" +
+                    "Mínimo debe haber 1 símbolo especial [@\$!%*?&#].\n" +
+                    "Longitud mínima de 6 caracteres."
             isValid = false
         } else {
             binding.etFieldPasswordRegister.error = null

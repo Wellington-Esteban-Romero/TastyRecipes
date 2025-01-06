@@ -160,12 +160,16 @@ class LoginActivity : AppCompatActivity() {
         } else if (!email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
             binding.etFieldEmail.error = "Ingresa un correo electrónico válido"
             isValid = false
-        } else {
+        }  else {
             binding.etFieldEmail.error = null
         }
 
         if (password.isEmpty()) {
             binding.etFieldPassword.error = "Ingresa una contraseña"
+            isValid = false
+        } else if (!password.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
+            binding.etFieldPassword.error = "Mínimo debe haber 1 letra mayúscula," +
+                    "Mínimo debe haber 1 letra minúscula."
             isValid = false
         } else {
             binding.etFieldPassword.error = null

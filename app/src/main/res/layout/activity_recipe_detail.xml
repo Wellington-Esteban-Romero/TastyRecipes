@@ -90,27 +90,36 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Bottom Navigation -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:itemIconTint="@color/design_default_color_primary"
-        app:itemTextColor="@color/design_default_color_primary"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_info_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintTop_toBottomOf="@+id/user_info_container"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="200dp"
+        app:strokeColor="@color/color_background_btn_main"
+        app:strokeWidth="2dp">
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemIconTint="@color/color_background_btn_o_icon_second"
+        app:itemTextColor="@color/color_background_text_main"
         app:menu="@menu/bottom_navigation_menu" />
-
+    </com.google.android.material.card.MaterialCardView>
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bottom_navigation"
+        app:layout_constraintTop_toBottomOf="@+id/card_bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

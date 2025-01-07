@@ -29,11 +29,13 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRecipeDetailBinding
     private lateinit var idRecipe: String
+    private lateinit var recipe: Recipe
 
     companion object {
         val EXTRA_RECIPE_ID = "EXTRA_RECIPE_ID"
         lateinit var session: SessionManager
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -42,29 +44,29 @@ class RecipeDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        session = SessionManager(applicationContext)
 
         initUI()
         initListener()
     }
 
-    private fun initUI () {
-        session = SessionManager(applicationContext)
+    private fun initUI() {
         idRecipe = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
-        getRecipeById()
+        loadRecipeById()
     }
 
-    private fun initListener () {
+    private fun initListener() {
         setupToolBarListeners()
-        selectBottomNavigationView()
+        setupBottomNavigationView()
     }
 
-    private fun getRecipeById () {
+    private fun loadRecipeById() {
         FirebaseFirestore.getInstance().collection("recipes")
             .whereEqualTo("id", idRecipe.toLong())
             .get()
             .addOnSuccessListener { querySnapshot ->
-                val recipe = querySnapshot.documents[0].toObject(Recipe::class.java)
-                createDetails(recipe!!)
+                recipe = querySnapshot.documents[0].toObject(Recipe::class.java)!!
+                createDetails()
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
@@ -77,16 +79,12 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun selectBottomNavigationView () {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, IngredientsFragment())
-            .commit()
-
+    private fun setupBottomNavigationView() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             var selectedFragment: Fragment? = null
             when (item.itemId) {
-                R.id.nav_ingredients -> selectedFragment = IngredientsFragment()
-                R.id.nav_steps -> selectedFragment = StepsFragment()
+                R.id.nav_ingredients -> selectedFragment = IngredientsFragment(recipe.ingredients)
+                R.id.nav_steps -> selectedFragment = StepsFragment(recipe.instructions.split("."))
             }
 
             if (selectedFragment != null) {
@@ -119,6 +117,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                 }
                 true
             }
+
             R.id.action_share -> {
 
                 binding.imageRecipe.isDrawingCacheEnabled = true
@@ -128,6 +127,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                 shareTextAndImage(binding.toolbar.title.toString(), bitmap);
                 true
             }
+
             else -> false
         }
         return super.onOptionsItemSelected(item)
@@ -166,11 +166,12 @@ class RecipeDetailActivity : AppCompatActivity() {
         return null
     }
 
-    private fun createDetails (recipe: Recipe) {
+    private fun createDetails() {
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name
-        binding.toolbar.setTitleTextColor(resources.getColor(R.color.white))
-        //binding.txtInstructions.text = recipes[0].instructions.split(", ").joinToString("\n\n")
-
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.colorAccent))
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, IngredientsFragment(recipe.ingredients))
+            .commit()
     }
 }

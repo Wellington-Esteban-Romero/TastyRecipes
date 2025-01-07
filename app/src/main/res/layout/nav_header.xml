@@ -13,6 +13,7 @@
         android:scaleType="centerCrop"
         android:layout_gravity="center"
         android:clipToOutline="true"
+        android:src="@drawable/ic_user_default"
         android:background="@drawable/profile_picture_background" />
 
     <TextView

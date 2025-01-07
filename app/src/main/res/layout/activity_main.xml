@@ -34,6 +34,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/profile_picture_background"
+                android:src="@drawable/ic_user_default"
                 android:clipToOutline="true"
                 android:contentDescription="@string/todo"
                 android:scaleType="centerCrop" />

@@ -15,6 +15,18 @@
         android:layout_marginEnd="16dp"
         android:spacing="22dp">
 
+        <!-- title -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+            app:title="Add Recipe"
+            app:titleTextColor="@color/color_background_btn_main"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/color_background_btn_main"/>
+
         <ImageView
             android:id="@+id/imageViewSelected"
             android:layout_width="match_parent"
@@ -71,6 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Add"
+                android:backgroundTint="@color/color_background_btn_o_icon_second"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
@@ -162,6 +175,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_mage"
+            android:backgroundTint="@color/color_background_btn_o_icon_second"
             android:layout_gravity="center" />
 
         <Button
@@ -170,6 +184,7 @@
             android:layout_height="wrap_content"
             android:text="@string/save_recipe"
             android:textColor="@android:color/white"
+            android:backgroundTint="@color/color_background_btn_main"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

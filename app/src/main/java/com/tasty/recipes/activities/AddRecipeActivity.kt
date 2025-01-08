@@ -68,6 +68,7 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     private fun initListener () {
+        setupToolBarListeners()
 
         binding.buttonSelectImage.setOnClickListener {
             if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
@@ -88,6 +89,12 @@ class AddRecipeActivity : AppCompatActivity() {
         }
 
         setupRecyclerView()
+    }
+
+    private fun setupToolBarListeners() {
+        binding.topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun setupRecyclerView() {

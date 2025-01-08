@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tasty.recipes.R
+import com.tasty.recipes.adapters.AddIngredientsAdapter
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityAddRecipeBinding
@@ -18,6 +20,8 @@ import com.tasty.recipes.databinding.ActivityAddRecipeBinding
 class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddRecipeBinding
+    private lateinit var addIngredientsAdapter: AddIngredientsAdapter
+    private val ingredientsList = mutableListOf<String>()
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipe: Recipe
     var isEditing: Boolean = false
@@ -50,11 +54,11 @@ class AddRecipeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        init()
+        initUI()
         initListener()
     }
 
-    private fun init () {
+    private fun initUI () {
 
         recipeDAO = RecipeDAO(this)
 
@@ -65,24 +69,45 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun initListener () {
 
+        binding.buttonSelectImage.setOnClickListener {
+            if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
+                pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+
+        binding.buttonAddIngredient.setOnClickListener {
+            val ingredient =  binding.editTextIngredient.text.toString()
+            if (ingredient.isNotEmpty()) {
+                ingredientsList.add(ingredient)
+                addIngredientsAdapter.notifyItemInserted(ingredientsList.size - 1)
+                binding.editTextIngredient.text?.clear()
+            }
+        }
+
         binding.buttonSaveRecipe.setOnClickListener {
             saveRecipe()
         }
 
-        binding.btnSelectImage.setOnClickListener {
-            if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
-                pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+
+        addIngredientsAdapter = AddIngredientsAdapter(ingredientsList)
+
+        binding.rvAddIngredients.apply {
+            layoutManager = LinearLayoutManager(this@AddRecipeActivity)
+            adapter = addIngredientsAdapter
         }
     }
 
    private fun loadData() {
         binding.editTextTitle.setText(recipe.name)
-        binding.editTextIngredients.setText(recipe.ingredients.joinToString { "," })
+        binding.editTextIngredient.setText(recipe.ingredients.joinToString { "," })
         binding.editTextInstructions.setText(recipe.instructions)
         binding.editTextPrepTime.setText(recipe.prepTimeMinutes.toString())
         binding.editTextCookTime.setText(recipe.cookTimeMinutes.toString())
-        binding.editTextServings.setText(recipe.servings)
-        binding.editTextDifficulty.setText(recipe.difficulty)
+        binding.editTextServings.setText(recipe.servings.toString())
+        //binding.editTextDifficulty.setText(recipe.difficulty)
         binding.imageViewSelected.setImageURI(recipe.image.toUri())
         /* if (!isEditing) {
             binding.btnSaveRecipe.text = "Save Recipe"
@@ -108,10 +133,10 @@ class AddRecipeActivity : AppCompatActivity() {
         }
 
         if (recipe.ingredients.isEmpty()) {
-            binding.textFieldIngredients.error = "Write the ingredients"
+            binding.textFieldIngredient.error = "Write the ingredients"
             isValid = false
         } else {
-            binding.textFieldIngredients.error = null
+            binding.textFieldIngredient.error = null
         }
 
         if (recipe.instructions.isEmpty()) {
@@ -135,25 +160,25 @@ class AddRecipeActivity : AppCompatActivity() {
             binding.textFieldCookTime.error = null
         }
 
-        if (recipe.servings.toInt() <= 0) {
+        if (recipe.servings <= 0) {
             binding.textFieldServings.error = "Servings must be greater than 0"
             isValid = false
         } else {
             binding.textFieldServings.error = null
         }
 
-        if (recipe.difficulty.trim().isEmpty()) {
+       /* if (recipe.difficulty.trim().isEmpty()) {
             binding.textFieldDifficulty.error = "Select a difficulty"
             isValid = false
         } else {
             binding.textFieldDifficulty.error = null
-        }
+        }*/
 
         if (recipe.image.trim().isEmpty()) {
-            binding.btnSelectImage.error = "Provides a valid image"
+            binding.buttonSelectImage.error = "Provides a valid image"
             isValid = false
         } else {
-            binding.btnSelectImage.error = null
+            binding.buttonSelectImage.error = null
         }
         return isValid
     }
@@ -161,7 +186,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun saveRecipe() {
         recipe.name = binding.textFieldTitleName.editText?.text.toString()
-        recipe.ingredients = listOf(binding.textFieldIngredients.editText?.text.toString())
+        recipe.ingredients = listOf(binding.textFieldIngredient.editText?.text.toString())
         recipe.instructions = binding.textFieldInstructions.editText?.text.toString()
         if (binding.textFieldPrepTime.editText?.text.toString().isEmpty()){
             recipe.prepTimeMinutes = 0
@@ -178,7 +203,7 @@ class AddRecipeActivity : AppCompatActivity() {
         } else {
             recipe.servings = binding.textFieldServings.editText?.text.toString().toInt()
         }
-        recipe.difficulty = binding.textFieldDifficulty.editText?.text.toString()
+       // recipe.difficulty = binding.textFieldDifficulty.editText?.text.toString()
 
        /* if (!isEditing) {
             recipe.category = intent.getStringExtra(EXTRA_RECIPE_CREATE_TAG_ID).orEmpty()

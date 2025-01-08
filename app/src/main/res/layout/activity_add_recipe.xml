@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground"
+    android:background="@color/white"
     tools:context=".activities.AddRecipeActivity">
 
     <LinearLayout
@@ -39,19 +39,48 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo para los ingredientes -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldIngredients"
+        <TextView
+            android:id="@+id/textViewIngredientsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ingredients">
+            android:text="Ingredients"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextIngredients"
-                android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textFieldIngredient"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:minLines="3" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_weight="1"
+                android:hint="Add Ingredient">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextIngredient"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/buttonAddIngredient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- RecyclerView para mostrar la lista de ingredientes -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvAddIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="vertical" />
 
         <!-- Campo para las instrucciones -->
         <com.google.android.material.textfield.TextInputLayout
@@ -111,28 +140,30 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Campo para Dificultad -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textFieldDifficulty"
+        <TextView
+            android:id="@+id/textViewDifficultyLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Difficulty">
+            android:text="Difficulty"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextDifficulty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <Spinner
+            android:id="@+id/spinnerDifficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:entries="@array/difficulty_options"
+            android:layout_marginTop="8dp" />
 
         <!-- Botón para seleccionar una imagen -->
         <Button
-            android:id="@+id/btnSelectImage"
+            android:id="@+id/buttonSelectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_mage"
             android:layout_gravity="center" />
 
-        <!-- Botón para guardar -->
         <Button
             android:id="@+id/buttonSaveRecipe"
             android:layout_width="match_parent"

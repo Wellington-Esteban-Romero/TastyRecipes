@@ -91,37 +91,27 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun createAccount(email: String, password: String) {
-        val db = FirebaseFirestore.getInstance()
-        val userCollection = db.collection("users")
-        userCollection.whereEqualTo("email", email).get()
-            .addOnSuccessListener { query ->
-                if (query.isEmpty) {
-                    authHelper.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                val user = task.result?.user
-                                user?.let {
-                                    sendVerificationEmail(it)
-                                    Toast.makeText(
-                                        this,
-                                        "Verifica tu email antes de continuar.",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+        authHelper.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = task.result?.user
+                    user?.let {
+                        sendVerificationEmail(it)
+                        Toast.makeText(
+                            this,
+                            "Verifica tu email antes de continuar.",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                                    val userData = createUserDataMap(user)
-                                    saveUserToFirestore(user.uid, userData, user)
-                                }
-                            } else {
-                                Toast.makeText(
-                                    this,
-                                    "Error: ${task.exception?.message}",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
+                        val userData = createUserDataMap(user)
+                        saveUserToFirestore(user.uid, userData, user)
+                    }
                 } else {
-                    Toast.makeText(this, "Este email ya está registrado.", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(
+                        this,
+                        "Error: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.databinding.ActivityLoginBinding
 import com.tasty.recipes.utils.AuthHelper
 import com.tasty.recipes.utils.SessionManager
@@ -76,11 +77,21 @@ class LoginActivity : AppCompatActivity() {
 
         //sing in with red socials
         binding.btnLoginGoogle.setOnClickListener {
-            sessionManager.saveLastProvider(this, "google.com")
+            sessionManager.saveLastProvider(this, "google.com") // mirar lo si hay que quitar más a delante
             CoroutineScope(Dispatchers.Main).launch {
                 if (googleSingIn.signIn()) {
-                    val currentUser = authHelper.getCurrentUser()
-                    updateUI(currentUser)
+                    val currentUser = authHelper.getCurrentUser()!!
+                    val db = FirebaseFirestore.getInstance()
+                    val userCollection = db.collection("users")
+                    userCollection.whereEqualTo("email", currentUser.email).get()
+                        .addOnSuccessListener { query ->
+                            if (query.isEmpty) {
+                                val userData = createUserDataMap(currentUser)
+                                saveUserToFirestore(currentUser.uid, userData, currentUser)
+                            } else {
+                                updateUI(currentUser)
+                            }
+                        }
                 }
             }
         }
@@ -148,6 +159,47 @@ class LoginActivity : AppCompatActivity() {
         } else {
             Log.e(TAG, "Usuario no autenticado.")
             Toast.makeText(this, "Debes iniciar sesión para verificar el email.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun createUserDataMap(user: FirebaseUser): MutableMap<String, Any> {
+        return mutableMapOf(
+            "id" to user.uid,
+            "username" to user.displayName.toString(),
+            "email" to user.email!!,
+            "photoUrl" to user.photoUrl.toString(),
+            "createdAt" to System.currentTimeMillis()
+        )
+    }
+
+    private fun saveUserToFirestore(
+        userId: String,
+        userData: Map<String, Any>,
+        user: FirebaseUser
+    ) {
+        FirebaseFirestore.getInstance().collection("users")
+            .document(userId)
+            .set(userData)
+            .addOnSuccessListener {
+                Log.d("Firestore", "Usuario añadido correctamente")
+                updateUI(user)
+            }
+            .addOnFailureListener { exception ->
+                handleFirestoreFailure(exception, user)
+            }
+    }
+
+    private fun handleFirestoreFailure(exception: Exception, user: FirebaseUser) {
+        user.delete().addOnCompleteListener { deleteTask ->
+            if (deleteTask.isSuccessful) {
+                Log.e("Firestore", "Error al guardar usuario, Auth revertido", exception)
+            } else {
+                Log.e(
+                    "Firestore",
+                    "Error al guardar usuario y fallo al eliminar de Auth",
+                    deleteTask.exception
+                )
+            }
         }
     }
 

@@ -47,6 +47,7 @@
     <string name="shared_with_me">Shared with me</string>
     <string name="my_recipes">My recipes</string>
     <string name="logout">Logout</string>
+    <string name="delete_account">Delete account</string>
     <string name="select_image">Select Image</string>
     <string name="selected_image_preview">Selected image preview</string>
     <string name="upload_image">Upload image</string>

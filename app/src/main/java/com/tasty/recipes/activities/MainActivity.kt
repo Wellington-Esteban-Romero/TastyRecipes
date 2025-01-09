@@ -19,7 +19,6 @@ import com.tasty.recipes.adapters.LastSeeRecipeAdapter
 import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.AuthHelper
 import com.tasty.recipes.utils.SessionManager
@@ -31,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var categoryRecipeAdapter: CategoryAdapter
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
-    private lateinit var recipeDAO: RecipeDAO
 
     private val categoryList: MutableList<Category> = mutableListOf()
     private val recipeList: MutableList<Recipe> = mutableListOf()
@@ -60,8 +58,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         session = SessionManager(applicationContext)
-        recipeDAO = RecipeDAO(this)
-        showUserProfileInfo(false)
+        showInfoProfile(false)
+        setupRecyclerView()
         resetSearchField()
         loadCategories()
         loadRecipes()
@@ -96,7 +94,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupProfileMenuListeners() {
         binding.iconProfile.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
-            showUserProfileInfo(true)
+            showInfoProfile(true)
 
             binding.navigationView.findViewById<ImageView>(R.id.profile_image).setOnClickListener {
                 startActivity(Intent(this, EditProfileUser::class.java))
@@ -109,8 +107,6 @@ class MainActivity : AppCompatActivity() {
                     logout()
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     AuthHelper().getFirebaseAuth().signOut()
-                    session.clearSession(this)
-                    session.clearSessionLastProvider(this)
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -148,34 +144,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showUserProfileInfo (openMenu:Boolean) {
-        when (val lastProvider = session.getLastProvider(this)) {
-            "google.com" -> {
-                showProfileInfoFromSocialProvider(openMenu)
-                Log.i("", "Inicio de sesión con Google")
-            }
-
-            "facebook.com" -> {
-                showProfileInfoFromSocialProvider(openMenu)
-                println("Inicio de sesión con Facebook")
-            }
-
-            "password" -> {
-                showInfoProfileByEmail(openMenu)
-                Log.i("", "Inicio de sesión con correo/contraseña")
-            }
-
-            else -> {
-                println("Proveedor desconocido: $lastProvider")
-            }
-        }
-    }
-
-    private fun showInfoProfileByEmail(openMenu:Boolean) {
+    private fun showInfoProfile(openMenu:Boolean) {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")
 
-        userCollection.whereEqualTo("email", session.getUserEmail(this))
+        userCollection.whereEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) return@addOnSuccessListener
@@ -190,24 +163,9 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private fun showProfileInfoFromSocialProvider (openMenu:Boolean) {
-        FirebaseAuth.getInstance().currentUser?.providerData?.let { user ->
-            val data = user.firstOrNull() ?: return
-            updateProfile(openMenu, data.photoUrl.toString(),
-                data.displayName ?: "",
-                data.email ?: "")
-
-        }
-    }
-
     private fun updateProfile(openMenu: Boolean, photoUrl: String, username: String, email: String) {
         val profileImage = if (openMenu) binding.navigationView.findViewById(R.id.profile_image) else binding.iconProfile
-
-        when (session.getLastProvider(this)) {
-            "google.com" -> Picasso.get().load(photoUrl).into(profileImage)
-            "password" -> Picasso.get().load(File(photoUrl)).into(profileImage)
-        }
-
+        Picasso.get().load(photoUrl).into(profileImage)
         if (openMenu) {
             binding.navigationView.findViewById<TextView>(R.id.user_name).text = username
             binding.navigationView.findViewById<TextView>(R.id.user_email).text = email
@@ -236,7 +194,7 @@ class MainActivity : AppCompatActivity() {
             adapter = popularRecipeAdapter
         }
 
-        lastSeeRecipeAdapter = LastSeeRecipeAdapter(recipeDAO.findAll().take(1)) { recipe ->
+        lastSeeRecipeAdapter = LastSeeRecipeAdapter(recipeList) { recipe ->
             onItemSelect(recipe)
         }
 
@@ -278,7 +236,7 @@ class MainActivity : AppCompatActivity() {
                     val category = document.toObject(Category::class.java)
                     categoryList.add(category)
                 }
-                setupRecyclerView()
+                categoryRecipeAdapter.notifyItemInserted(categoryList.size - 1)
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar categorías: ${exception.message}")
@@ -294,7 +252,8 @@ class MainActivity : AppCompatActivity() {
                     val recipe = document.toObject(Recipe::class.java)
                     recipeList.add(recipe)
                 }
-                setupRecyclerView()
+                categoryRecipeAdapter.notifyItemInserted(recipeList.size - 1)
+                lastSeeRecipeAdapter.notifyItemRangeInserted(0,1)
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")

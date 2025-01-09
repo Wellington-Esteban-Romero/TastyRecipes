@@ -9,8 +9,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityRegisterBinding
@@ -21,8 +24,9 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
     private val authHelper: AuthHelper = AuthHelper()
+    private val storageRef = FirebaseStorage.getInstance().reference
     private lateinit var register_user: User
-    private var photoUrl: String = ""
+    private lateinit var photoUrl: String
 
     companion object {
         private const val TAG = "Register"
@@ -34,20 +38,7 @@ class RegisterActivity : AppCompatActivity() {
                 try {
                     val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                     this.contentResolver.takePersistableUriPermission(uri, flag)
-
-                    val localFile = copyUriToFile(uri)
-                    if (localFile != null) {
-                        photoUrl = localFile.toString()
-                        Picasso.get()
-                            .load(localFile)
-                            .into(binding.ivSelectedImage)
-
-                        Toast.makeText(this, "Imagen cargada correctamente", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        Toast.makeText(this, "No se pudo cargar la imagen", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+                    uploadImage(uri)
                 } catch (e: Exception) {
                     Log.e("ImagePicker", "Error al procesar la imagen: ${e.message}", e)
                     Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
@@ -105,6 +96,8 @@ class RegisterActivity : AppCompatActivity() {
 
                         val userData = createUserDataMap(user)
                         saveUserToFirestore(user.uid, userData, user)
+                        if (register_user.photoUrl.isNotEmpty())
+                            saveImageUriToDatabase(register_user.photoUrl)
                     }
                 } else {
                     Toast.makeText(
@@ -176,24 +169,36 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun copyUriToFile(uri: Uri): File? {
-        return try {
-            val directory = File(filesDir, "images")
-            if (!directory.exists()) {
-                directory.mkdir()
+    private fun uploadImage(imageUri: Uri) {
+        val fileRef = storageRef.child("profile_pictures/image_${System.currentTimeMillis()}.jpg")
+        val uploadTask = fileRef.putFile(imageUri)
+        uploadTask.addOnSuccessListener {
+            fileRef.downloadUrl.addOnSuccessListener { uri ->
+                Picasso.get()
+                    .load(uri)
+                    .into(binding.ivSelectedImage)
+                Toast.makeText(this, "Imagen cargada correctamente", Toast.LENGTH_SHORT)
+                    .show()
+                this.photoUrl = uri.toString()
             }
-
-            val inputStream = contentResolver.openInputStream(uri)
-            val file = File(directory, "image_${System.currentTimeMillis()}.jpg")
-
-            file.outputStream().use { outputStream ->
-                inputStream?.copyTo(outputStream)
-            }
-            file
-        } catch (e: Exception) {
-            Log.e("ImagePicker", "Error al copiar URI a archivo: ${e.message}", e)
-            null
+        }.addOnFailureListener { e ->
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun saveImageUriToDatabase(downloadUrl: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default_user"
+        FirebaseDatabase.getInstance().reference.child("users").child(userId).child("photoUrl").setValue(downloadUrl)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    photoUrl = downloadUrl
+                    Picasso.get()
+                        .load(downloadUrl)
+                        .into(binding.ivSelectedImage)
+                } else {
+                    Toast.makeText(this, "Error al guardar URL", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun validate(user: User): Boolean {

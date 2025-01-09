@@ -44,6 +44,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initListener() {
+
+        binding.tvForgotPassword.setOnClickListener {
+            println("tvForgotPassword")
+        }
+
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
@@ -77,7 +82,6 @@ class LoginActivity : AppCompatActivity() {
 
         //sing in with red socials
         binding.btnLoginGoogle.setOnClickListener {
-            sessionManager.saveLastProvider(this, "google.com") // mirar lo si hay que quitar más a delante
             CoroutineScope(Dispatchers.Main).launch {
                 if (googleSingIn.signIn()) {
                     val currentUser = authHelper.getCurrentUser()!!
@@ -125,7 +129,6 @@ class LoginActivity : AppCompatActivity() {
         if (user != null) {
             Toast.makeText(this, "Bienvenido ${user.email}", Toast.LENGTH_SHORT).show()
 
-            sessionManager.saveUserEmail(this, user.email ?: "")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
 

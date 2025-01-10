@@ -70,6 +70,10 @@ class AddRecipeActivity : AppCompatActivity() {
     private fun initListener () {
         setupToolBarListeners()
 
+        binding.buttonSelectCategories.setOnClickListener{
+            startActivity(Intent(this, CategorySelectionActivity::class.java))
+        }
+
         binding.buttonSelectImage.setOnClickListener {
             if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
                 pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

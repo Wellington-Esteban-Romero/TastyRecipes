@@ -169,6 +169,24 @@
             android:entries="@array/difficulty_options"
             android:layout_marginTop="8dp" />
 
+        <!-- Botón para abrir la selección de categorías -->
+        <Button
+            android:id="@+id/buttonSelectCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Categories"
+            android:backgroundTint="@color/color_background_btn_o_icon_second"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp" />
+
+        <!-- RecyclerView para mostrar las categorías seleccionadas -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSelectedCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="vertical" />
+
         <!-- Botón para seleccionar una imagen -->
         <Button
             android:id="@+id/buttonSelectImage"

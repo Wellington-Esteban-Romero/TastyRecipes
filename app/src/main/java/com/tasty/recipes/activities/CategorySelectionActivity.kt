@@ -1,5 +1,6 @@
 package com.tasty.recipes.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -34,6 +35,13 @@ class CategorySelectionActivity : AppCompatActivity() {
         setupRecyclerView()
         loadCategories()
         setupToolBarListeners()
+        selectedCategories()
+    }
+
+    private fun setupToolBarListeners() {
+        binding.topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun loadCategories() {
@@ -66,11 +74,12 @@ class CategorySelectionActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupToolBarListeners() {
-        binding.topAppBar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+    private fun selectedCategories () {
+        binding.buttonDone.setOnClickListener {
+            val intent = Intent(this, AddRecipeActivity::class.java)
+            intent.putStringArrayListExtra("selectedCategories", ArrayList(selectedCategories))
+            startActivity(intent)
         }
     }
-
 
 }

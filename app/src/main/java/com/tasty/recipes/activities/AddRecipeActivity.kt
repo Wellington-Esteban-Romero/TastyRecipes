@@ -68,7 +68,9 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     private fun initListener () {
-        setupToolBarListeners()
+        binding.topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         binding.buttonSelectCategories.setOnClickListener{
             startActivity(Intent(this, CategorySelectionActivity::class.java))
@@ -95,16 +97,19 @@ class AddRecipeActivity : AppCompatActivity() {
         setupRecyclerView()
     }
 
-    private fun setupToolBarListeners() {
-        binding.topAppBar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+    override fun onResume() {
+        super.onResume()
+        val selectedCategories =  intent.getStringArrayExtra("selectedCategories")
+        if (!selectedCategories.isNullOrEmpty()) {
+            println(selectedCategories)
         }
     }
 
     private fun setupRecyclerView() {
-
-        addIngredientsAdapter = AddIngredientsAdapter(ingredientsList)
-
+        addIngredientsAdapter = AddIngredientsAdapter(ingredientsList) { pos ->
+            ingredientsList.remove(ingredientsList[pos]) // mirar esto no lo hace bien
+            addIngredientsAdapter.notifyItemRemoved(pos - 1)
+        }
         binding.rvAddIngredients.apply {
             layoutManager = LinearLayoutManager(this@AddRecipeActivity)
             adapter = addIngredientsAdapter

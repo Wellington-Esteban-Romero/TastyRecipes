@@ -27,8 +27,7 @@ class SelectedCategoriesAdapter(
 
     override fun onBindViewHolder(holder: SelectedCategoriesViewHolder, position: Int) {
         holder.bind(
-            categories[position], categories.contains(categories[position]),
-            onCategoryChecked
+            categories[position], onCategoryChecked
         )
     }
 
@@ -46,13 +45,12 @@ class SelectedCategoriesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val itemSelectedCategoriesBinding = ItemSelectedCategoriesBinding.bind(view)
 
     fun bind(
-        category: Category, isSelected: Boolean,
-        onCategoryChecked: (Category, Boolean) -> Unit
+        category: Category, onCategoryChecked: (Category, Boolean) -> Unit
     ) {
         itemSelectedCategoriesBinding.checkbox.text = category.name
 
-        itemSelectedCategoriesBinding.checkbox.setOnCheckedChangeListener { compoundButton, b ->
-            onCategoryChecked(category, isSelected)
+        itemSelectedCategoriesBinding.checkbox.setOnCheckedChangeListener { _, b ->
+            onCategoryChecked(category, b)
         }
     }
 

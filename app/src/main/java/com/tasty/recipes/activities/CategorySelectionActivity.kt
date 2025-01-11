@@ -53,7 +53,7 @@ class CategorySelectionActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         selectedCategoriesAdapter = SelectedCategoriesAdapter(categoryList) { category, isChecked ->
-            if (isChecked) { // esta mal
+            if (isChecked) {
                 selectedCategories.add(category.name)
             } else {
                 selectedCategories.remove(category.name)

@@ -33,6 +33,7 @@ class CategorySelectionActivity : AppCompatActivity() {
 
         setupRecyclerView()
         loadCategories()
+        setupToolBarListeners()
     }
 
     private fun loadCategories() {
@@ -62,6 +63,12 @@ class CategorySelectionActivity : AppCompatActivity() {
         binding.rvSelectCategories.apply {
             layoutManager = LinearLayoutManager(this@CategorySelectionActivity)
             adapter = selectedCategoriesAdapter
+        }
+    }
+
+    private fun setupToolBarListeners() {
+        binding.topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
         }
     }
 

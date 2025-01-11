@@ -16,6 +16,7 @@ import com.tasty.recipes.databinding.ActivityCategorySelectionBinding
 class CategorySelectionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCategorySelectionBinding
     private val categoryList: MutableList<Category> = mutableListOf()
+    private var selectedCategories: MutableList<String> = mutableListOf()
     private lateinit var selectedCategoriesAdapter: SelectedCategoriesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +52,13 @@ class CategorySelectionActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        selectedCategoriesAdapter = SelectedCategoriesAdapter(categoryList)
+        selectedCategoriesAdapter = SelectedCategoriesAdapter(categoryList) { category, isChecked ->
+            if (isChecked) { // esta mal
+                selectedCategories.add(category.name)
+            } else {
+                selectedCategories.remove(category.name)
+            }
+        }
         binding.rvSelectCategories.apply {
             layoutManager = LinearLayoutManager(this@CategorySelectionActivity)
             adapter = selectedCategoriesAdapter

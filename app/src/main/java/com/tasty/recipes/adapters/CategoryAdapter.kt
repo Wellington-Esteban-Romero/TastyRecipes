@@ -8,8 +8,10 @@ import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.databinding.ItemCategoryBinding
 
-class CategoryAdapter (private var categories: List<Category> = emptyList(),
-                     private val onClickListener: (Category) -> Unit): RecyclerView.Adapter<CategoryViewHolder>() {
+class CategoryAdapter(
+    private var categories: List<Category> = emptyList(),
+    private val onClickListener: (Category) -> Unit
+) : RecyclerView.Adapter<CategoryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
         return CategoryViewHolder(

@@ -11,11 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:spacing="22dp">
+        android:padding="16dp"
+        android:spacing="16dp">
 
-        <!-- title -->
+        <!-- Title Bar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
@@ -25,39 +24,46 @@
             app:title="Add Recipe"
             app:titleTextColor="@color/color_background_btn_main"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="@color/color_background_btn_main"/>
+            app:navigationIconTint="@color/color_background_btn_main" />
 
+        <!-- Recipe Image -->
         <ImageView
             android:id="@+id/imageViewSelected"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/ic_camera"
+            android:contentDescription="@string/todo"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-        </ImageView>
-
-        <!-- Campo para el título -->
+        <!-- Recipe Title -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldTitleName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_title"
-            app:helperText="Maximino 50 characters">
+            app:helperText="Max 50 characters">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:hint="@string/recipe_title"
+                android:inputType="text"
+                android:textColor="#424242"
+                android:textColorHint="#E0E0E0"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo para los ingredientes -->
+        <!-- Ingredients Section -->
         <TextView
             android:id="@+id/textViewIngredientsLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ingredients"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp" />
+            android:text="@string/ingredients"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#424242"
+            android:layout_marginBottom="8dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,97 +74,114 @@
                 android:id="@+id/textFieldIngredient"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Add Ingredient">
+                android:layout_weight="1">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextIngredient"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:hint="@string/add_ingredient"
+                    android:inputType="text"
+                    android:textColor="#424242"
+                    android:textColorHint="#E0E0E0"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonAddIngredient"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add"
+                android:layout_marginStart="8dp"
                 android:backgroundTint="@color/color_background_btn_o_icon_second"
-                android:layout_marginStart="8dp" />
+                android:text="@string/add"
+                android:textColor="#FFFFFF"
+                app:icon="@android:drawable/ic_input_add"
+                app:iconPadding="4dp"
+                app:iconTint="@android:color/white"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
         </LinearLayout>
 
-        <!-- RecyclerView para mostrar la lista de ingredientes -->
+        <!-- Ingredients List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAddIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:scrollbars="vertical" />
+            android:overScrollMode="never"
+            android:scrollbars="none" />
 
-        <!-- Campo para las instrucciones -->
+        <!-- Instructions Section -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldInstructions"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Instruccions">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextInstructions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/instructions"
                 android:inputType="textMultiLine"
-                android:minLines="5" />
+                android:minLines="5"
+                android:textColor="#424242"
+                android:textColorHint="#E0E0E0"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo para el tiempo de preparación -->
+        <!-- Preparation Time -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldPrepTime"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Preparation time">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextPrepTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:hint="@string/preparation_time_mins"
+                android:inputType="number"
+                android:textColor="#424242"
+                android:textColorHint="#E0E0E0"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo para el tiempo de cocción -->
+        <!-- Cook Time -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldCookTime"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Tiempo cooking">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextCookTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:hint="@string/cooking_time_mins"
+                android:inputType="number"
+                android:textColor="#424242"
+                android:textColorHint="#E0E0E0"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo para las porciones -->
+        <!-- Servings -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldServings"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Servings">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextServings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:hint="@string/servings"
+                android:inputType="number"
+                android:textColor="#424242"
+                android:textColorHint="#E0E0E0"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Campo para Dificultad -->
+        <!-- Difficulty -->
         <TextView
             android:id="@+id/textViewDifficultyLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Difficulty"
-            android:textSize="16sp"
+            android:text="@string/difficulty"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_marginTop="16dp" />
 
         <Spinner
@@ -169,41 +192,45 @@
             android:entries="@array/difficulty_options"
             android:layout_marginTop="8dp" />
 
-        <!-- Botón para abrir la selección de categorías -->
-        <Button
+        <!-- Category Selector -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSelectCategories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Categories"
-            android:backgroundTint="@color/color_background_btn_o_icon_second"
+            android:text="@string/select_categories"
+            app:icon="@android:drawable/ic_search_category_default"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+            android:backgroundTint="#A5D6A7"
+            android:textColor="#424242"/>
 
-        <!-- RecyclerView para mostrar las categorías seleccionadas -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSelectedCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:scrollbars="vertical" />
+            android:overScrollMode="never" />
 
-        <!-- Botón para seleccionar una imagen -->
-        <Button
+        <!-- Image Selector -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSelectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/select_mage"
-            android:backgroundTint="@color/color_background_btn_o_icon_second"
-            android:layout_gravity="center" />
+            android:text="@string/select_image"
+            app:icon="@android:drawable/ic_menu_report_image"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_gravity="center"
+            android:backgroundTint="#A5D6A7"
+            android:textColor="#424242"/>
 
-        <Button
+        <!-- Save Recipe Button -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSaveRecipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save_recipe"
-            android:textColor="@android:color/white"
             android:backgroundTint="@color/color_background_btn_main"
-            android:layout_marginTop="16dp" />
-
+            android:textColor="@android:color/white"
+            style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>
 </ScrollView>

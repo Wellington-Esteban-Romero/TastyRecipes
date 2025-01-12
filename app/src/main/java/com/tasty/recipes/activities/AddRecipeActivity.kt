@@ -107,8 +107,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         addIngredientsAdapter = AddIngredientsAdapter(ingredientsList) { pos ->
-            ingredientsList.remove(ingredientsList[pos]) // mirar esto no lo hace bien
-            addIngredientsAdapter.notifyItemRemoved(pos - 1)
+            addIngredientsAdapter.removeIngredient(pos)
         }
         binding.rvAddIngredients.apply {
             layoutManager = LinearLayoutManager(this@AddRecipeActivity)

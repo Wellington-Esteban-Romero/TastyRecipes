@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.databinding.ActivityLoginBinding
 import com.tasty.recipes.utils.AuthHelper
-import com.tasty.recipes.utils.SessionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +21,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSingIn: GoogleSingIn
 
     companion object {
-        lateinit var sessionManager: SessionManager
         private const val TAG = "EmailPassword"
     }
 
@@ -32,8 +30,6 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        sessionManager = SessionManager(applicationContext)
 
         initUI()
         initListener()
@@ -61,7 +57,6 @@ class LoginActivity : AppCompatActivity() {
                             val user = authHelper.getCurrentUser()
                             user?.let {
                                 checkEmailVerification()
-                                sessionManager.saveLastProvider(this, "password")
                             }
                         } else {
                             Log.w(TAG, "signInWithEmailAndPassword:failure", task.exception)
@@ -223,8 +218,7 @@ class LoginActivity : AppCompatActivity() {
             binding.etFieldPassword.error = "Ingresa una contraseña"
             isValid = false
         } else if (!password.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
-            binding.etFieldPassword.error = "Mínimo debe haber 1 letra mayúscula," +
-                    "Mínimo debe haber 1 letra minúscula."
+            binding.etFieldPassword.error = "La contraseña debe contener al menos una letra mayúscula, una minúscula, un número y un símbolo especial."
             isValid = false
         } else {
             binding.etFieldPassword.error = null

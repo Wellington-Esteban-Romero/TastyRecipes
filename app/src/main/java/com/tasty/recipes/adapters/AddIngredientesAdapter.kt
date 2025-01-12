@@ -24,6 +24,14 @@ class AddIngredientsAdapter(
 
     override fun getItemCount(): Int = ingredients.size
 
+    fun removeIngredient(position: Int) {
+        if (position in ingredients.indices) {
+            ingredients.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, ingredients.size)
+        }
+    }
+
     class IngredientViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private var itemAddIngredientBinding = ItemAddIngredientBinding.bind(view)
 

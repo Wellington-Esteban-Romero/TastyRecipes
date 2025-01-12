@@ -5,12 +5,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
-import com.tasty.recipes.activities.MainActivity.Companion.session
 import com.tasty.recipes.databinding.ActivityEditProfileUserBinding
-import com.tasty.recipes.databinding.ActivityMainBinding
 import java.io.File
 
 class EditProfileUser : AppCompatActivity() {
@@ -33,7 +32,7 @@ class EditProfileUser : AppCompatActivity() {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")
 
-        userCollection.whereEqualTo("email", session.getUserEmail(this))
+        userCollection.whereEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
             .get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {

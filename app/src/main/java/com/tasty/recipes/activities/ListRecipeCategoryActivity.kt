@@ -2,22 +2,22 @@ package com.tasty.recipes.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.ListRecipeCategoryAdapter
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityListRecipeCategoryBinding
 
 class ListRecipeCategoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListRecipeCategoryBinding
     private lateinit var listCategoryRecipeAdapter: ListRecipeCategoryAdapter
-    private lateinit var recipeDAO: RecipeDAO
-    private lateinit var recipes: List<Recipe>
+    private val recipeList: MutableList<Recipe> = mutableListOf()
 
     companion object {
         val EXTRA_RECIPE_TAG_ID = "EXTRA_RECIPE_TAG_ID"
@@ -45,11 +45,10 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         val id = intent.getStringExtra(EXTRA_RECIPE_TAG_ID).orEmpty()
         val name = intent.getStringExtra(EXTRA_RECIPE_TAG_NAME).orEmpty()
 
-        recipeDAO = RecipeDAO(this)
-        recipes = recipeDAO.findRecipeByCategory(name)
         binding.titleRecipe.text = name
 
         setupRecyclerView()
+        loadRecipes(id.toInt())
     }
 
     private fun initListener () {
@@ -60,7 +59,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
 
-        listCategoryRecipeAdapter = ListRecipeCategoryAdapter(recipes) { recipe ->
+        listCategoryRecipeAdapter = ListRecipeCategoryAdapter(recipeList) { recipe ->
             onItemSelect(recipe)
         }
 
@@ -75,5 +74,22 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         val intent = Intent(this, RecipeDetailActivity::class.java)
         intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
         startActivity(intent)
+    }
+
+    private fun loadRecipes(categoryId: Int) {
+        FirebaseFirestore.getInstance().collection("recipes")
+            .whereEqualTo("categoryId", categoryId).get()
+            .addOnSuccessListener { querySnapshot ->
+                recipeList.clear()
+
+                querySnapshot.forEach { document ->
+                    val recipe = document.toObject(Recipe::class.java)
+                    recipeList.add(recipe)
+                }
+                listCategoryRecipeAdapter.notifyItemInserted(recipeList.size - 1)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
     }
 }

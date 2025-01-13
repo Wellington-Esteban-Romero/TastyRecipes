@@ -137,10 +137,7 @@ class AddRecipeActivity : AppCompatActivity() {
         if (recipe.name.trim().isEmpty()) {
             binding.textFieldTitleName.error = "Write something"
             isValid = false
-        } else {
-            binding.textFieldTitleName.error = null
-        }
-        if (recipe.name.length > 50) {
+        } else if (recipe.name.length > 50) {
             binding.textFieldTitleName.error = "Is over 50 characters"
             isValid = false
         } else {
@@ -182,13 +179,6 @@ class AddRecipeActivity : AppCompatActivity() {
             binding.textFieldServings.error = null
         }
 
-       /* if (recipe.difficulty.trim().isEmpty()) {
-            binding.textFieldDifficulty.error = "Select a difficulty"
-            isValid = false
-        } else {
-            binding.textFieldDifficulty.error = null
-        }*/
-
         if (recipe.image.trim().isEmpty()) {
             binding.buttonSelectImage.error = "Provides a valid image"
             isValid = false
@@ -201,7 +191,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun saveRecipe() {
         recipe.name = binding.textFieldTitleName.editText?.text.toString()
-        recipe.ingredients = listOf(binding.textFieldIngredient.editText?.text.toString())
+        recipe.ingredients = ingredientsList
         recipe.instructions = binding.textFieldInstructions.editText?.text.toString()
         if (binding.textFieldPrepTime.editText?.text.toString().isEmpty()){
             recipe.prepTimeMinutes = 0
@@ -218,7 +208,7 @@ class AddRecipeActivity : AppCompatActivity() {
         } else {
             recipe.servings = binding.textFieldServings.editText?.text.toString().toInt()
         }
-       // recipe.difficulty = binding.textFieldDifficulty.editText?.text.toString()
+        recipe.difficulty = binding.spinnerDifficulty.selectedItem.toString()
 
        /* if (!isEditing) {
             recipe.category = intent.getStringExtra(EXTRA_RECIPE_CREATE_TAG_ID).orEmpty()

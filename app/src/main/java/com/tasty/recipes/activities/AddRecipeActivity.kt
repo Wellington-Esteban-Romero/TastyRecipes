@@ -99,7 +99,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val selectedCategories =  intent.getStringArrayExtra("selectedCategories")
+        val selectedCategories =  intent.extras?.getStringArrayList("selectedCategories")
         if (!selectedCategories.isNullOrEmpty()) {
             println(selectedCategories)
         }

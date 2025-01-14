@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
     private fun initListener() {
 
         binding.tvForgotPassword.setOnClickListener {
-            println("tvForgotPassword")
+            startActivity(Intent(this, ResetPasswordActivity::class.java))
         }
 
         binding.btnLogin.setOnClickListener {

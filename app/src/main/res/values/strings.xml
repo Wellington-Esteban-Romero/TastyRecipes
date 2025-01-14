@@ -63,5 +63,6 @@
     <string name="cooking_time_mins">Cooking Time (mins)</string>
     <string name="difficulty">Difficulty</string>
     <string name="preparation_time_mins">Preparation Time (mins)</string>
+    <string name="forgot_password_msg">Forgot your password? Reset it here.</string>
 
 </resources>

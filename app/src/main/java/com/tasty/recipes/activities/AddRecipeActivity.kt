@@ -12,7 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tasty.recipes.R
-import com.tasty.recipes.adapters.AddIngredientsAdapter
+import com.tasty.recipes.adapters.AddRecipeAdapter
+import com.tasty.recipes.adapters.SelectedCategoriesAdapter
+import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityAddRecipeBinding
@@ -20,15 +22,19 @@ import com.tasty.recipes.databinding.ActivityAddRecipeBinding
 class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddRecipeBinding
-    private lateinit var addIngredientsAdapter: AddIngredientsAdapter
+    private lateinit var addRecipeIngredientsAdapter: AddRecipeAdapter
+    private lateinit var addRecipeCategoriesAdapter: AddRecipeAdapter
     private val ingredientsList = mutableListOf<String>()
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipe: Recipe
     var isEditing: Boolean = false
+    private var hasCategoriesBeenUpdated = false
+
 
     companion object {
         const val EXTRA_RECIPE_CREATE_TAG_ID = "RECIPE_CREATE_TAG_ID"
         const val EXTRA_IS_DETAILS = "IS_DETAILS"
+        var SELECTED_CATEGORIES = mutableListOf<Category>()
     }
 
     // Registrar el launcher para seleccionar imágenes
@@ -70,6 +76,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private fun initListener () {
         binding.topAppBar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
+            finish()
         }
 
         binding.buttonSelectCategories.setOnClickListener{
@@ -85,7 +92,7 @@ class AddRecipeActivity : AppCompatActivity() {
             val ingredient =  binding.editTextIngredient.text.toString()
             if (ingredient.isNotEmpty()) {
                 ingredientsList.add(ingredient)
-                addIngredientsAdapter.notifyItemInserted(ingredientsList.size - 1)
+                addRecipeIngredientsAdapter.notifyItemInserted(ingredientsList.size - 1)
                 binding.editTextIngredient.text?.clear()
             }
         }
@@ -99,19 +106,39 @@ class AddRecipeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val selectedCategories =  intent.extras?.getStringArrayList("selectedCategories")
-        if (!selectedCategories.isNullOrEmpty()) {
-            println(selectedCategories)
+
+        if (!hasCategoriesBeenUpdated) {
+            var selectedCategories = intent.extras?.getStringArrayList("selectedCategories")
+            if (!selectedCategories.isNullOrEmpty()) {
+                SELECTED_CATEGORIES = selectedCategories.map { Category(0, it, "") }.toMutableList()
+            } else {
+                selectedCategories = arrayListOf()
+            }
+            addRecipeCategoriesAdapter.updateCategories(selectedCategories)
+            addRecipeCategoriesAdapter.notifyItemInserted(SELECTED_CATEGORIES.size - 1)
+            hasCategoriesBeenUpdated = true
+
+        } else {
+            finish()
         }
     }
 
     private fun setupRecyclerView() {
-        addIngredientsAdapter = AddIngredientsAdapter(ingredientsList) { pos ->
-            addIngredientsAdapter.removeIngredient(pos)
+        addRecipeIngredientsAdapter = AddRecipeAdapter(ingredientsList) { pos ->
+            addRecipeIngredientsAdapter.removeIngredient(pos)
         }
+
+        addRecipeCategoriesAdapter = AddRecipeAdapter(SELECTED_CATEGORIES.map { it.name }.toMutableList()) { _ -> }
+
+
         binding.rvAddIngredients.apply {
             layoutManager = LinearLayoutManager(this@AddRecipeActivity)
-            adapter = addIngredientsAdapter
+            adapter = addRecipeIngredientsAdapter
+        }
+
+        binding.rvSelectedCategories.apply {
+            layoutManager = LinearLayoutManager(this@AddRecipeActivity)
+            adapter = addRecipeCategoriesAdapter
         }
     }
 
@@ -218,5 +245,10 @@ class AddRecipeActivity : AppCompatActivity() {
             recipeDAO.insert(recipe)
             finish()
         }
+    }
+
+    override fun finish() {
+        super.finish()
+        SELECTED_CATEGORIES = mutableListOf()
     }
 }

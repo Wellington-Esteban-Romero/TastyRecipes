@@ -20,7 +20,7 @@ class CategorySelectionActivity : AppCompatActivity() {
     private var selectedCategories: MutableList<String> = mutableListOf()
     private lateinit var selectedCategoriesAdapter: SelectedCategoriesAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) { // cambiar a un popup
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityCategorySelectionBinding.inflate(layoutInflater)
@@ -54,6 +54,12 @@ class CategorySelectionActivity : AppCompatActivity() {
                     categoryList.add(category)
                 }
                 selectedCategoriesAdapter.notifyItemInserted(categoryList.size - 1)
+
+                if (AddRecipeActivity.SELECTED_CATEGORIES.isNotEmpty()) {
+                    selectedCategories = AddRecipeActivity.SELECTED_CATEGORIES.map { it.name }.toMutableList()
+                    selectedCategoriesAdapter.autoCheckCategories(AddRecipeActivity.SELECTED_CATEGORIES)
+                }
+
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar categorías: ${exception.message}")

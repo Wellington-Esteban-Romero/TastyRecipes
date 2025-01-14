@@ -64,5 +64,7 @@
     <string name="difficulty">Difficulty</string>
     <string name="preparation_time_mins">Preparation Time (mins)</string>
     <string name="forgot_password_msg">Forgot your password? Reset it here.</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="reset_password">Reset password</string>
 
 </resources>

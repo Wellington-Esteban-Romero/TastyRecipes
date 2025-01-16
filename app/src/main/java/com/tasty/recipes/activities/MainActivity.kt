@@ -20,9 +20,7 @@ import com.tasty.recipes.adapters.PopularRecipeAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ActivityMainBinding
-import com.tasty.recipes.utils.AuthHelper
 import com.tasty.recipes.utils.SessionManager
-import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var categoryRecipeAdapter: CategoryAdapter
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private val categoryList: MutableList<Category> = mutableListOf()
     private val recipeList: MutableList<Recipe> = mutableListOf()
@@ -58,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initUI() {
         session = SessionManager(applicationContext)
+        firebaseAuth = FirebaseAuth.getInstance()
         showInfoProfile(false)
         setupRecyclerView()
         resetSearchField()
@@ -106,7 +106,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_logout -> {
                     logout()
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
-                    AuthHelper().getFirebaseAuth().signOut()
+                    firebaseAuth.signOut()
+                }
+                R.id.nav_my_recipes -> {
+
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
@@ -148,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")
 
-        userCollection.whereEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
+        userCollection.whereEqualTo("email", firebaseAuth.currentUser?.email)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) return@addOnSuccessListener

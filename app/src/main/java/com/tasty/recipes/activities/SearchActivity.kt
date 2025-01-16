@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.RecipeAdapter
 import com.tasty.recipes.data.entities.Recipe
@@ -19,9 +21,9 @@ import com.tasty.recipes.databinding.ActivitySearchBinding
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var recipes:List<Recipe>
+    private var recipeList:MutableList<Recipe> = mutableListOf()
     private lateinit var recipeAdapter: RecipeAdapter
-    private lateinit var recipeDAO: RecipeDAO
+    //private lateinit var recipeDAO: RecipeDAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +43,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initUI () {
 
-        recipeDAO = RecipeDAO(this)
-        recipes = recipeDAO.findAll()
+        //recipeDAO = RecipeDAO(this)
+        //recipes = recipeDAO.findAll()
+        loadRecipes()
         binding.searchView.requestFocus()
         setupSearchView()
         setupRecyclerView()
@@ -55,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        recipeAdapter = RecipeAdapter(recipes) { recipe ->
+        recipeAdapter = RecipeAdapter(recipeList) { recipe ->
             onItemSelect(recipe)
         }
 
@@ -83,9 +86,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchByName (name: String) {
 
-        val filteredList = recipes.filter { it.name.contains(name, true) }
+        val filteredList = recipeList.filter { it.name.contains(name, true) }
 
-        if (recipes.isEmpty()) {
+        if (recipeList.isEmpty()) {
             binding.rvRecipes.visibility = View.GONE
             //msg_empty.visibility = View.VISIBLE
         } else {
@@ -99,5 +102,21 @@ class SearchActivity : AppCompatActivity() {
         val intent = Intent(this, RecipeDetailActivity::class.java)
         intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
         startActivity(intent)
+    }
+
+    private fun loadRecipes() {
+        FirebaseFirestore.getInstance().collection("recipes").get()
+            .addOnSuccessListener { querySnapshot ->
+                recipeList.clear()
+
+                querySnapshot.forEach { document ->
+                    val recipe = document.toObject(Recipe::class.java)
+                    recipeList.add(recipe)
+                }
+                recipeAdapter.notifyItemInserted(recipeList.size - 1)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
     }
 }

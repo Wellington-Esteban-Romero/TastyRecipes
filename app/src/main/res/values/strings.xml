@@ -66,5 +66,7 @@
     <string name="forgot_password_msg">Forgot your password? Reset it here.</string>
     <string name="forgot_password">Forgot password</string>
     <string name="reset_password">Reset password</string>
+    <string name="setting">Setting</string>
+    <string name="favorites">Favorites</string>
 
 </resources>

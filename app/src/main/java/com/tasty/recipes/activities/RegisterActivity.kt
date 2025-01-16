@@ -25,8 +25,8 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private val authHelper: AuthHelper = AuthHelper()
     private val storageRef = FirebaseStorage.getInstance().reference
-    private lateinit var register_user: User
-    private lateinit var photoUrl: String
+    private lateinit var registerUser: User
+    private var photoUrl: String = ""
 
     companion object {
         private const val TAG = "Register"
@@ -68,11 +68,11 @@ class RegisterActivity : AppCompatActivity() {
             val password = binding.etPasswordRegister.text.toString()
             val repeatPassword = binding.etRepeatPasswordRegister.text.toString()
 
-            register_user = User("", username, email, password, repeatPassword)
-            register_user.photoUrl = this.photoUrl
+            registerUser = User("", username, email, password, repeatPassword)
+            registerUser.photoUrl = this.photoUrl
 
-            if (validate(register_user))
-                createAccount(register_user.email, register_user.password)
+            if (validate(registerUser))
+                createAccount(registerUser.email, registerUser.password)
         }
 
         binding.btnSelectImage.setOnClickListener {
@@ -96,8 +96,8 @@ class RegisterActivity : AppCompatActivity() {
 
                         val userData = createUserDataMap(user)
                         saveUserToFirestore(user.uid, userData, user)
-                        if (register_user.photoUrl.isNotEmpty())
-                            saveImageUriToDatabase(register_user.photoUrl)
+                        if (registerUser.photoUrl.isNotEmpty())
+                            saveImageUriToDatabase(registerUser.photoUrl)
                     }
                 } else {
                     Toast.makeText(
@@ -123,9 +123,9 @@ class RegisterActivity : AppCompatActivity() {
     private fun createUserDataMap(user: FirebaseUser): MutableMap<String, Any> {
         return mutableMapOf(
             "id" to user.uid,
-            "username" to this.register_user.username,
+            "username" to this.registerUser.username,
             "email" to user.email!!,
-            "photoUrl" to this.register_user.photoUrl,
+            "photoUrl" to this.registerUser.photoUrl,
             "createdAt" to System.currentTimeMillis()
         )
     }
@@ -170,7 +170,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun uploadImage(imageUri: Uri) {
-        val fileRef = storageRef.child("profile_pictures/image_${System.currentTimeMillis()}.jpg")
+        val fileRef = storageRef.child("profile_pictures/image_${System.currentTimeMillis()}.web")
         val uploadTask = fileRef.putFile(imageUri)
         uploadTask.addOnSuccessListener {
             fileRef.downloadUrl.addOnSuccessListener { uri ->

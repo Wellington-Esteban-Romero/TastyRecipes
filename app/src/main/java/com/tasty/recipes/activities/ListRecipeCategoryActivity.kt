@@ -20,8 +20,8 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
     private val recipeList: MutableList<Recipe> = mutableListOf()
 
     companion object {
-        val EXTRA_RECIPE_TAG_ID = "EXTRA_RECIPE_TAG_ID"
-        val EXTRA_RECIPE_TAG_NAME = "EXTRA_RECIPE_TAG_NAME"
+        const val EXTRA_RECIPE_TAG_ID = "EXTRA_RECIPE_TAG_ID"
+        const val EXTRA_RECIPE_TAG_NAME = "EXTRA_RECIPE_TAG_NAME"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +78,8 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
 
     private fun loadRecipes(categoryId: Int) {
         FirebaseFirestore.getInstance().collection("recipes")
-            .whereArrayContains("categoryId", mutableListOf(categoryId)).get()
+            .whereArrayContains("categoryIds", categoryId)
+            .get()
             .addOnSuccessListener { querySnapshot ->
                 recipeList.clear()
 
@@ -86,7 +87,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
                     val recipe = document.toObject(Recipe::class.java)
                     recipeList.add(recipe)
                 }
-                listCategoryRecipeAdapter.notifyItemInserted(recipeList.size - 1)
+                listCategoryRecipeAdapter.notifyDataSetChanged() // solo me carga una recta
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")

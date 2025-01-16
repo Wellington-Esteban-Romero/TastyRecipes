@@ -10,7 +10,7 @@ data class Recipe(
         var servings: Int = 0,
         var difficulty: String = "",
         var image: String = "",
-        var categoryIds: List<String> = mutableListOf(),
+        var categoryIds: List<Int> = mutableListOf(),
         var userId: String = ""
     ){
 

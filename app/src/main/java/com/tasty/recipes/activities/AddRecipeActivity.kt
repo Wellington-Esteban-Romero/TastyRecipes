@@ -11,6 +11,8 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.AddRecipeAdapter
 import com.tasty.recipes.adapters.SelectedCategoriesAdapter
@@ -206,12 +208,19 @@ class AddRecipeActivity : AppCompatActivity() {
             binding.textFieldServings.error = null
         }
 
+        /*if (recipe.categoryIds.isEmpty()) {
+            binding.buttonSelectCategories.error = "Choose a category"
+            isValid = false
+        } else {
+            binding.buttonSelectCategories.error = null
+        }
+
         if (recipe.image.trim().isEmpty()) {
             binding.buttonSelectImage.error = "Provides a valid image"
             isValid = false
         } else {
             binding.buttonSelectImage.error = null
-        }
+        }*/
         return isValid
     }
 
@@ -237,12 +246,25 @@ class AddRecipeActivity : AppCompatActivity() {
         }
         recipe.difficulty = binding.spinnerDifficulty.selectedItem.toString()
 
+        recipe.categoryIds = mutableListOf(3,4)
+
+        recipe.userId = FirebaseAuth.getInstance().currentUser!!.uid
+
        /* if (!isEditing) {
             recipe.category = intent.getStringExtra(EXTRA_RECIPE_CREATE_TAG_ID).orEmpty()
         }*/
 
         if (validateRecipe()) {
-            recipeDAO.insert(recipe)
+            //recipeDAO.insert(recipe)
+            FirebaseFirestore.getInstance().collection("recipes")
+                .document("3")
+                .set(recipe)
+                .addOnSuccessListener{
+                Toast.makeText(this, "Recipe added with ID: 3" , Toast.LENGTH_SHORT).show();
+            }
+            .addOnFailureListener{ e ->
+                Toast.makeText(this, "Error adding recipe: " + e.message, Toast.LENGTH_SHORT).show();
+            }
             finish()
         }
     }

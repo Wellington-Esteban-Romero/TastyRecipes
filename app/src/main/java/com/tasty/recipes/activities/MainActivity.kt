@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         resetSearchField()
-        //popularRecipeAdapter.notifyDataSetChanged()
+        popularRecipeAdapter.notifyDataSetChanged()
         super.onResume()
     }
 

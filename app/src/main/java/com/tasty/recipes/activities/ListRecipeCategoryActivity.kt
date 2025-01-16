@@ -78,7 +78,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
 
     private fun loadRecipes(categoryId: Int) {
         FirebaseFirestore.getInstance().collection("recipes")
-            .whereEqualTo("categoryId", categoryId).get()
+            .whereArrayContains("categoryId", mutableListOf(categoryId)).get()
             .addOnSuccessListener { querySnapshot ->
                 recipeList.clear()
 

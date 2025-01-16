@@ -109,7 +109,9 @@ class MainActivity : AppCompatActivity() {
                     firebaseAuth.signOut()
                 }
                 R.id.nav_my_recipes -> {
-
+                    val intent = Intent(this, SearchActivity::class.java)
+                    intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_USER_ID, "loadRecipesbyUserId")
+                    startActivity(intent)
                 }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)

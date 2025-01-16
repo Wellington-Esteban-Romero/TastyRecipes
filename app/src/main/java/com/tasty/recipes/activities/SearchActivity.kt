@@ -11,11 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.RecipeAdapter
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivitySearchBinding
 
 class SearchActivity : AppCompatActivity() {
@@ -23,7 +23,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     private var recipeList:MutableList<Recipe> = mutableListOf()
     private lateinit var recipeAdapter: RecipeAdapter
-    //private lateinit var recipeDAO: RecipeDAO
+
+    companion object {
+        const val EXTRA_RECIPE_TAG_USER_ID = "EXTRA_RECIPE_TAG_USER_ID"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +45,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initUI () {
-
-        //recipeDAO = RecipeDAO(this)
-        //recipes = recipeDAO.findAll()
-        loadRecipes()
+        val tag = intent.getStringExtra(EXTRA_RECIPE_TAG_USER_ID)
+        if (!tag.isNullOrEmpty()) {
+            loadRecipesByUserId()
+        } else {
+            loadRecipes()
+        }
         binding.searchView.requestFocus()
         setupSearchView()
         setupRecyclerView()
@@ -106,6 +111,24 @@ class SearchActivity : AppCompatActivity() {
 
     private fun loadRecipes() {
         FirebaseFirestore.getInstance().collection("recipes").get()
+            .addOnSuccessListener { querySnapshot ->
+                recipeList.clear()
+
+                querySnapshot.forEach { document ->
+                    val recipe = document.toObject(Recipe::class.java)
+                    recipeList.add(recipe)
+                }
+                recipeAdapter.notifyItemInserted(recipeList.size - 1)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
+    }
+
+    private fun loadRecipesByUserId() {
+        FirebaseFirestore.getInstance().collection("recipes")
+            .whereEqualTo("userId", FirebaseAuth.getInstance().currentUser?.uid)
+            .get()
             .addOnSuccessListener { querySnapshot ->
                 recipeList.clear()
 

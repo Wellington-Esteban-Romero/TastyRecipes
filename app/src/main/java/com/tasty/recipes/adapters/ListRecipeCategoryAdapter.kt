@@ -33,6 +33,7 @@ class ListRecipeCategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bind(recipe: Recipe, onClickListener: (Recipe) -> Unit) {
 
         itemRecipeCategoryBinding.recipeName.text = recipe.name
+        itemRecipeCategoryBinding.recipeTime.text = "Preparation: ${recipe.prepTimeMinutes} min · Cooking: ${recipe.cookTimeMinutes} min"
 
         if (recipe.image.startsWith("https://"))
             Picasso.get().load(recipe.image).into(itemRecipeCategoryBinding.recipeImage)

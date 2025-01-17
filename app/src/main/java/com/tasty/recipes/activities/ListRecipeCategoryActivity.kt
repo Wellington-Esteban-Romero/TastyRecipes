@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
+import com.tasty.recipes.activities.MainActivity.Companion.session
 import com.tasty.recipes.adapters.ListRecipeCategoryAdapter
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ActivityListRecipeCategoryBinding
@@ -48,7 +49,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         binding.titleRecipe.text = name
 
         setupRecyclerView()
-        loadRecipes(id.toInt())
+        loadRecipesByCategory(id.toInt())
     }
 
     private fun initListener() {
@@ -61,6 +62,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
 
         listCategoryRecipeAdapter = ListRecipeCategoryAdapter(recipeList) { recipe ->
             onItemSelect(recipe)
+            saveSessionLastSeeRecipe(recipe)
         }
 
         binding.rvRecipesCategory.apply {
@@ -80,7 +82,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun loadRecipes(categoryId: Int) {
+    private fun loadRecipesByCategory(categoryId: Int) {
         FirebaseFirestore.getInstance().collection("recipes")
             .whereArrayContains("categoryIds", categoryId)
             .get()
@@ -91,10 +93,14 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
                     val recipe = document.toObject(Recipe::class.java)
                     recipeList.add(recipe)
                 }
-                listCategoryRecipeAdapter.notifyDataSetChanged() // solo me carga una recta
+                listCategoryRecipeAdapter.updateRecipes(recipeList)
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
             }
+    }
+
+    private fun saveSessionLastSeeRecipe (recipe: Recipe) {
+        session.saveLastSee(this, recipe.id.toString())
     }
 }

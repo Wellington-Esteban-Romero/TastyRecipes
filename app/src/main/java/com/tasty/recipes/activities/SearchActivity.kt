@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
+import com.tasty.recipes.activities.MainActivity.Companion.session
 import com.tasty.recipes.adapters.RecipeAdapter
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ActivitySearchBinding
@@ -77,6 +78,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         recipeAdapter = RecipeAdapter(recipeList) { recipe ->
             onItemSelect(recipe)
+            saveSessionLastSeeRecipe(recipe)
         }
 
         binding.rvRecipes.apply {
@@ -153,5 +155,9 @@ class SearchActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
             }
+    }
+
+    private fun saveSessionLastSeeRecipe (recipe: Recipe) {
+        session.saveLastSee(this, recipe.id.toString())
     }
 }

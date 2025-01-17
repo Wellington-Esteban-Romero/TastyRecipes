@@ -25,7 +25,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recipeAdapter: RecipeAdapter
 
     companion object {
-        const val EXTRA_RECIPE_TAG_USER_ID = "EXTRA_RECIPE_TAG_USER_ID"
+        const val EXTRA_RECIPE_TAG_SEARCH = "EXTRA_RECIPE_TAG_SEARCH"
+        const val LOAD_RECIPES_USER_ID = "1"
+        const val LOAD_RECIPES_FAVORITES = "2"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,13 +47,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initUI () {
-        val tag = intent.getStringExtra(EXTRA_RECIPE_TAG_USER_ID)
-        if (!tag.isNullOrEmpty()) {
-            loadRecipesByUserId()
-        } else {
-            loadRecipes()
-        }
         binding.searchView.requestFocus()
+        loadRecipesByTag()
         setupSearchView()
         setupRecyclerView()
     }
@@ -59,6 +56,21 @@ class SearchActivity : AppCompatActivity() {
     private fun initListener () {
         binding.imageViewBack.setOnClickListener {
             finish()
+        }
+    }
+
+    private fun loadRecipesByTag() {
+        val tag = intent.getStringExtra(EXTRA_RECIPE_TAG_SEARCH)
+        when (tag) {
+            LOAD_RECIPES_USER_ID -> {
+                loadRecipesByUserId()
+            }
+            LOAD_RECIPES_FAVORITES -> {
+                loadRecipesAll() // cambiar por todos los favorites
+            }
+            else -> {
+                loadRecipesAll()
+            }
         }
     }
 
@@ -109,7 +121,7 @@ class SearchActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun loadRecipes() {
+    private fun loadRecipesAll() {
         FirebaseFirestore.getInstance().collection("recipes").get()
             .addOnSuccessListener { querySnapshot ->
                 recipeList.clear()

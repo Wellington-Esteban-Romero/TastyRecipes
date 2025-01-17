@@ -112,7 +112,12 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_my_recipes -> {
                     val intent = Intent(this, SearchActivity::class.java)
-                    intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_USER_ID, "loadRecipesbyUserId")
+                    intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_SEARCH, SearchActivity.LOAD_RECIPES_USER_ID)
+                    startActivity(intent)
+                }
+                R.id.nav_favorites -> {
+                    val intent = Intent(this, SearchActivity::class.java)
+                    intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_SEARCH, SearchActivity.LOAD_RECIPES_FAVORITES)
                     startActivity(intent)
                 }
             }

@@ -24,6 +24,11 @@ class ListRecipeCategoryAdapter (private var recipes: List<Recipe> = emptyList()
     override fun onBindViewHolder(holder: ListRecipeCategoryViewHolder, position: Int) {
         holder.bind(recipes[position], onClickListener)
     }
+
+    fun updateRecipes(newRecipes: MutableList<Recipe>) {
+        recipes = newRecipes
+        notifyDataSetChanged() // solo carga uno
+    }
 }
 
 class ListRecipeCategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {

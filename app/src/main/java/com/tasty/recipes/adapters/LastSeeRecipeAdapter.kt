@@ -24,6 +24,11 @@ class LastSeeRecipeAdapter (private var recipes: List<Recipe> = emptyList(),
     override fun onBindViewHolder(holder: LastSeeRecipeViewHolder, position: Int) {
         holder.bind(recipes[position], onClickListener)
     }
+
+    fun updateData(newList: List<Recipe>) {
+        this.recipes = newList
+        notifyDataSetChanged()
+    }
 }
 
 class LastSeeRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {

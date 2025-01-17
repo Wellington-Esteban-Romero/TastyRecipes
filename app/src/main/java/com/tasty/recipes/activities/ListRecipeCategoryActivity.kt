@@ -40,7 +40,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         initListener()
     }
 
-    private fun initUI () {
+    private fun initUI() {
 
         val id = intent.getStringExtra(EXTRA_RECIPE_TAG_ID).orEmpty()
         val name = intent.getStringExtra(EXTRA_RECIPE_TAG_NAME).orEmpty()
@@ -51,7 +51,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         loadRecipes(id.toInt())
     }
 
-    private fun initListener () {
+    private fun initListener() {
         binding.goBackHome.setOnClickListener {
             finish()
         }
@@ -64,7 +64,11 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         }
 
         binding.rvRecipesCategory.apply {
-            layoutManager = LinearLayoutManager(this@ListRecipeCategoryActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                this@ListRecipeCategoryActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
             adapter = listCategoryRecipeAdapter
         }
 

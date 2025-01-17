@@ -7,8 +7,8 @@ class SessionManager(context: Context) {
     private  val PREF_NAME = "user_session"
     private  val EMAIL_KEY = "user_email"
 
-    private  val PREF_LAST_PROVIDER = "last_provider_session"
-    private  val LAST_PROVIDER_KEY = "last_provider"
+    private  val PREF_LAST_SEE = "last_see_session"
+    private  val LAST_SEE_KEY = "last_see"
 
     companion object {
         const val ACTIVE = "1"
@@ -66,22 +66,22 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    //session last_provider
+    //session last_see
 
-    fun saveLastProvider(context: Context, provider: String) {
-        val sharedPreferences = context.getSharedPreferences(PREF_LAST_PROVIDER, Context.MODE_PRIVATE)
+    fun saveLastSee(context: Context, isLastSee: String) {
+        val sharedPreferences = context.getSharedPreferences(PREF_LAST_SEE, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString(LAST_PROVIDER_KEY, provider)
+        editor.putString(LAST_SEE_KEY, isLastSee)
         editor.apply()
     }
 
-    fun getLastProvider(context: Context): String? {
-        val sharedPreferences = context.getSharedPreferences(PREF_LAST_PROVIDER, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(LAST_PROVIDER_KEY, null)
+    fun getLastSee(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences(PREF_LAST_SEE, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(LAST_SEE_KEY, null)
     }
 
-    fun clearSessionLastProvider(context: Context) {
-        val sharedPreferences = context.getSharedPreferences(PREF_LAST_PROVIDER, Context.MODE_PRIVATE)
+    fun clearSessionLastSee(context: Context) {
+        val sharedPreferences = context.getSharedPreferences(PREF_LAST_SEE, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()

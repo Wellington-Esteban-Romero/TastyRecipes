@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     private val categoryList: MutableList<Category> = mutableListOf()
     private val recipeList: MutableList<Recipe> = mutableListOf()
+    private var recipeListLastSee: MutableList<Recipe> = mutableListOf()
 
 
     companion object {
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         resetSearchField()
         popularRecipeAdapter.notifyDataSetChanged()
+        getLastSeeRecipe()
         super.onResume()
     }
 
@@ -199,7 +201,7 @@ class MainActivity : AppCompatActivity() {
             adapter = popularRecipeAdapter
         }
 
-        lastSeeRecipeAdapter = LastSeeRecipeAdapter(recipeList) { recipe ->
+        lastSeeRecipeAdapter = LastSeeRecipeAdapter(recipeListLastSee) { recipe ->
             onItemSelect(recipe)
         }
 
@@ -222,6 +224,7 @@ class MainActivity : AppCompatActivity() {
 
         if (!session.isFavorite(recipe.id.toString()))
             session.saveRecipe(recipe.id.toString(), SessionManager.DES_ACTIVE)
+        session.saveLastSee(this, recipe.id.toString())
 
         startActivity(intent)
     }
@@ -258,10 +261,20 @@ class MainActivity : AppCompatActivity() {
                     recipeList.add(recipe)
                 }
                 categoryRecipeAdapter.notifyItemInserted(recipeList.size - 1)
-                lastSeeRecipeAdapter.notifyItemRangeInserted(0,1)
+                getLastSeeRecipe()
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
             }
+    }
+
+    private fun getLastSeeRecipe () {
+        val lastSee =  session.getLastSee(this)
+        lastSee?.toLongOrNull()?.let { lastSeeId ->
+            recipeListLastSee = recipeList.filter { it.id == lastSeeId }.toMutableList()
+            lastSeeRecipeAdapter.updateData(recipeListLastSee)
+        } ?: run {
+            println("El valor de lastSee no es un número válido.")
+        }
     }
 }

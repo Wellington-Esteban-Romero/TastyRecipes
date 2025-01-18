@@ -66,11 +66,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         }
 
         binding.rvRecipesCategory.apply {
-            layoutManager = LinearLayoutManager(
-                this@ListRecipeCategoryActivity,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
+            layoutManager = LinearLayoutManager(this@ListRecipeCategoryActivity)
             adapter = listCategoryRecipeAdapter
         }
 
@@ -93,7 +89,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
                     val recipe = document.toObject(Recipe::class.java)
                     recipeList.add(recipe)
                 }
-                listCategoryRecipeAdapter.updateRecipes(recipeList)
+                listCategoryRecipeAdapter.notifyItemRangeChanged(0, recipeList.size)
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")

@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     private val recipeList: MutableList<Recipe> = mutableListOf()
     private var recipeListLastSee: MutableList<Recipe> = mutableListOf()
 
-
     companion object {
         lateinit var session: SessionManager
     }
@@ -51,8 +50,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        popularRecipeAdapter.notifyItemRangeChanged(0, recipeList.size)
         resetSearchField()
-        popularRecipeAdapter.notifyDataSetChanged()
         getLastSeeRecipe()
         super.onResume()
     }
@@ -277,7 +276,7 @@ class MainActivity : AppCompatActivity() {
         val lastSee =  session.getLastSee(this)
         lastSee?.toLongOrNull()?.let { lastSeeId ->
             recipeListLastSee = recipeList.filter { it.id == lastSeeId }.toMutableList()
-            lastSeeRecipeAdapter.updateData(recipeListLastSee)
+            lastSeeRecipeAdapter.updateRecipe(recipeListLastSee)
         } ?: run {
             println("El valor de lastSee no es un número válido.")
         }

@@ -37,6 +37,38 @@
                 android:contentDescription="@string/todo"
                 app:layout_collapseMode="parallax" />
 
+            <!-- Botón para eliminar la receta -->
+            <ImageButton
+                android:id="@+id/btn_delete_recipe"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/color_background_btn_o_icon_second"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_delete_account"
+                android:scaleType="centerInside"
+                android:layout_gravity="bottom|end"
+                app:layout_collapseMode="pin" />
+
+            <!-- Botón para editar la receta -->
+
+            <ImageButton
+                android:id="@+id/btn_update_recipe"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="80dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/circle_background"
+                android:backgroundTint="@color/color_background_btn_o_icon_second"
+                android:contentDescription="@string/todo"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_edit"
+                app:layout_collapseMode="pin"
+                app:tint="@color/white" />
+
             <!-- Toolbar -->
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
@@ -45,8 +77,7 @@
                 android:background="@android:color/transparent"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:title="Recipe Name"
-                app:menu="@menu/recipe_toolbar_menu"
-                app:layout_collapseMode="pin" />
+                app:menu="@menu/recipe_toolbar_menu" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

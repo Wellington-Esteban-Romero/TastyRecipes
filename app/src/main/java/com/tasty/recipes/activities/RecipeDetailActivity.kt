@@ -159,19 +159,20 @@ class RecipeDetailActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.recipe_toolbar_menu, menu)
-        if (session.isFavorite(idRecipe))
+        if (session.isFavorite(FirebaseAuth.getInstance().currentUser?.uid + "_" + idRecipe))
             menu?.findItem(R.id.action_favorite)?.setIcon(R.drawable.ic_favorite)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val currentUser = FirebaseAuth.getInstance().currentUser
         when (item.itemId) {
             R.id.action_favorite -> {
-                if (!session.isFavorite(idRecipe)) {
-                    session.saveRecipe(idRecipe, SessionManager.ACTIVE)
+                if (!session.isFavorite(currentUser?.uid + "_" + idRecipe)) {
+                    session.saveRecipe(currentUser?.uid + "_" + idRecipe, SessionManager.ACTIVE)
                     item.setIcon(R.drawable.ic_favorite)
                 } else {
-                    session.saveRecipe(idRecipe, SessionManager.DES_ACTIVE)
+                    session.saveRecipe(currentUser?.uid + "_" + idRecipe, SessionManager.DES_ACTIVE)
                     item.setIcon(R.drawable.ic_favorite_empty)
                 }
                 true
@@ -226,9 +227,12 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun createDetails() {
-        if (recipe.userId == FirebaseAuth.getInstance().currentUser?.uid) {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (recipe.userId == currentUser?.uid) {
             binding.btnDeleteRecipe.visibility = View.VISIBLE
             binding.btnUpdateRecipe.visibility = View.VISIBLE
+            binding.userName.text = currentUser.displayName
+            Picasso.get().load(currentUser.photoUrl).into(binding.userPhoto)
         }
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name

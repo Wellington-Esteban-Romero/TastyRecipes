@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.widget.RelativeLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.tasty.recipes.R
-import com.tasty.recipes.utils.AuthHelper
 
 class GetStartedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (AuthHelper().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().currentUser != null) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
             return

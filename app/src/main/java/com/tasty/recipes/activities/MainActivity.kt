@@ -226,8 +226,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, RecipeDetailActivity::class.java)
         intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
 
-        if (!session.isFavorite(recipe.id.toString()))
-            session.saveRecipe(recipe.id.toString(), SessionManager.DES_ACTIVE)
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        if (!session.isFavorite(currentUser?.uid + "_" + recipe.id.toString()))
+            session.saveRecipe(currentUser?.uid + recipe.id.toString(), SessionManager.DES_ACTIVE)
         session.saveLastSee(this, recipe.id.toString())
 
         startActivity(intent)
@@ -264,7 +266,7 @@ class MainActivity : AppCompatActivity() {
                     val recipe = document.toObject(Recipe::class.java)
                     recipeList.add(recipe)
                 }
-                categoryRecipeAdapter.notifyItemInserted(recipeList.size - 1)
+                popularRecipeAdapter.notifyItemInserted(recipeList.size - 1)
                 getLastSeeRecipe()
             }
             .addOnFailureListener { exception ->

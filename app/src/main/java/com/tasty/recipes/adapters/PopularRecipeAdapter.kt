@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
@@ -68,7 +69,7 @@ class PopularRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         //session
 
-        if (SessionManager(context).isFavorite(recipe.id.toString()))
+        if (SessionManager(context).isFavorite(FirebaseAuth.getInstance().currentUser?.uid + "_" + recipe.id.toString()))
             itemRecipeBinding.favoriteIcon.visibility = View.VISIBLE
         else
             itemRecipeBinding.favoriteIcon.visibility = View.GONE

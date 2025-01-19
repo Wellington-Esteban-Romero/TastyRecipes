@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
@@ -60,6 +62,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun initListener() {
         setupToolBarListeners()
         setupBottomNavigationView()
+        setupBottomAppBarListeners()
         setupDeleteRecipe()
     }
 
@@ -99,6 +102,33 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupBottomAppBarListeners() {
+        binding.bottomAppBar.setNavigationOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.bottomAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_search_details -> {
+                    startActivity(Intent(this, SearchActivity::class.java))
+                    true
+                }
+                R.id.action_favorite_details -> {
+                    true
+                }
+
+                /*R.id.user -> {
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    true
+                }*/
+                else -> false
+            }
+
+        }
+    }
+
     private fun setupDeleteRecipe () {
         binding.btnDeleteRecipe.setOnClickListener {
             MaterialAlertDialogBuilder(this)
@@ -106,7 +136,16 @@ class RecipeDetailActivity : AppCompatActivity() {
                 .setMessage(R.string.alert_dialog_delete_message)
                 .setPositiveButton(android.R.string.ok) { dialog, _ ->
                     // Borramos la tarea en caso de pulsar el boton OK
-                    println("Se ha borrado la siguiente receta: " )
+                    FirebaseFirestore.getInstance().collection("recipes")
+                        .document(idRecipe)
+                        .delete()
+                        .addOnSuccessListener {
+                            Log.d("Firestore", "Document successfully deleted!")
+                            finish()
+                        }
+                        .addOnFailureListener { e ->
+                            Log.d("Firestore", "Error deleting document", e)
+                        }
                     dialog.dismiss()
                 }
                 .setNegativeButton(android.R.string.cancel) { dialog, _ ->
@@ -187,6 +226,10 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun createDetails() {
+        if (recipe.userId == FirebaseAuth.getInstance().currentUser?.uid) {
+            binding.btnDeleteRecipe.visibility = View.VISIBLE
+            binding.btnUpdateRecipe.visibility = View.VISIBLE
+        }
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name
         binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))

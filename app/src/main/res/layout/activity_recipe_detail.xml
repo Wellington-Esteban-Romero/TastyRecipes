@@ -50,7 +50,8 @@
                 android:src="@drawable/ic_delete_account"
                 android:scaleType="centerInside"
                 android:layout_gravity="bottom|end"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                android:visibility="gone"/>
 
             <!-- Botón para editar la receta -->
 
@@ -67,7 +68,8 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_edit"
                 app:layout_collapseMode="pin"
-                app:tint="@color/white" />
+                app:tint="@color/white"
+                android:visibility="gone"/>
 
             <!-- Toolbar -->
             <com.google.android.material.appbar.MaterialToolbar
@@ -152,6 +154,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_bottom_navigation"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" >
+    </FrameLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/color_background_btn_main"
+        app:menu="@menu/bottom_app_bar_details"
+        app:navigationIcon="@drawable/ic_home"
+        app:navigationIconTint="@color/white"
+        tools:ignore="BottomAppBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

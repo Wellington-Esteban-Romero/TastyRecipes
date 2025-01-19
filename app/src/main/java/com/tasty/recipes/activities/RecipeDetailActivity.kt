@@ -9,8 +9,10 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
@@ -32,7 +34,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private lateinit var recipe: Recipe
 
     companion object {
-        val EXTRA_RECIPE_ID = "EXTRA_RECIPE_ID"
+        const val EXTRA_RECIPE_ID = "EXTRA_RECIPE_ID"
         lateinit var session: SessionManager
     }
 
@@ -58,6 +60,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun initListener() {
         setupToolBarListeners()
         setupBottomNavigationView()
+        setupDeleteRecipe()
     }
 
     private fun loadRecipeById() {
@@ -96,6 +99,24 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupDeleteRecipe () {
+        binding.btnDeleteRecipe.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.alert_dialog_delete_title)
+                .setMessage(R.string.alert_dialog_delete_message)
+                .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                    // Borramos la tarea en caso de pulsar el boton OK
+                    println("Se ha borrado la siguiente receta: " )
+                    dialog.dismiss()
+                }
+                .setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setIcon(android.R.drawable.ic_delete)
+                .show()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.recipe_toolbar_menu, menu)
@@ -105,7 +126,6 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        println(item.icon)
         when (item.itemId) {
             R.id.action_favorite -> {
                 if (!session.isFavorite(idRecipe)) {
@@ -169,7 +189,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun createDetails() {
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name
-        binding.toolbar.setTitleTextColor(resources.getColor(R.color.colorAccent))
+        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, IngredientsFragment(recipe.ingredients))
             .commit()

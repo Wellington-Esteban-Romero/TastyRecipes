@@ -69,4 +69,7 @@
     <string name="setting">Setting</string>
     <string name="favorites">Favorites</string>
 
+    <string name="alert_dialog_delete_title">Delete Recipe</string>
+    <string name="alert_dialog_delete_message">Are you sure delete the recipe?</string>
+
 </resources>

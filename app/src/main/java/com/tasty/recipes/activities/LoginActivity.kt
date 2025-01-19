@@ -6,10 +6,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.databinding.ActivityLoginBinding
-import com.tasty.recipes.utils.AuthHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private val authHelper: AuthHelper = AuthHelper()
     private lateinit var googleSingIn: GoogleSingIn
 
     companion object {
@@ -50,11 +49,11 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString().trim()
 
             if (validate(email, password)) {
-                authHelper.getFirebaseAuth().signInWithEmailAndPassword(email, password)
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             Log.d(TAG, "signInWithEmail:success")
-                            val user = authHelper.getCurrentUser()
+                            val user = FirebaseAuth.getInstance().currentUser
                             user?.let {
                                 checkEmailVerification()
                             }
@@ -79,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLoginGoogle.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 if (googleSingIn.signIn()) {
-                    val currentUser = authHelper.getCurrentUser()!!
+                    val currentUser = FirebaseAuth.getInstance().currentUser!!
                     val db = FirebaseFirestore.getInstance()
                     val userCollection = db.collection("users")
                     userCollection.whereEqualTo("email", currentUser.email).get()
@@ -98,14 +97,14 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser = authHelper.getCurrentUser()
+        val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             reload()
         }
     }
 
     private fun reload() {
-        val currentUser = authHelper.getCurrentUser()
+        val currentUser = FirebaseAuth.getInstance().currentUser
         currentUser?.reload()?.addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Toast.makeText(this, "Usuario recargado exitosamente.", Toast.LENGTH_SHORT).show()
@@ -138,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun checkEmailVerification() {
-        val user = authHelper.getCurrentUser()
+        val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             user.reload().addOnCompleteListener { reloadTask ->
                 if (reloadTask.isSuccessful) {

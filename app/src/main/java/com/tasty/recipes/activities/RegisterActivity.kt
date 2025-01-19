@@ -17,15 +17,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityRegisterBinding
-import com.tasty.recipes.utils.AuthHelper
-import java.io.File
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private val authHelper: AuthHelper = AuthHelper()
     private val storageRef = FirebaseStorage.getInstance().reference
-    private lateinit var registerUser: User
     private var photoUrl: String = ""
 
     companion object {
@@ -63,16 +59,12 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.btnCreateUser.setOnClickListener {
-            val username = binding.etUserNameRegister.text.toString()
-            val email = binding.etEmailRegister.text.toString()
-            val password = binding.etPasswordRegister.text.toString()
-            val repeatPassword = binding.etRepeatPasswordRegister.text.toString()
+            val username = binding.etEmailRegister.text.toString()
+            val email = binding.etPasswordRegister.text.toString()
 
-            registerUser = User("", username, email, password, repeatPassword)
-            registerUser.photoUrl = this.photoUrl
-
-            if (validate(registerUser))
-                createAccount(registerUser.email, registerUser.password)
+            if (validateData()) {
+                createAccount(username, email)
+            }
         }
 
         binding.btnSelectImage.setOnClickListener {
@@ -82,22 +74,21 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun createAccount(email: String, password: String) {
-        authHelper.getFirebaseAuth().createUserWithEmailAndPassword(email, password)
+
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = task.result?.user
                     user?.let {
+                        val userData = createUserDataMap(user)
+                        saveUserToFirestore(user.uid, userData, user)
+
                         sendVerificationEmail(it)
                         Toast.makeText(
                             this,
                             "Verifica tu email antes de continuar.",
                             Toast.LENGTH_LONG
                         ).show()
-
-                        val userData = createUserDataMap(user)
-                        saveUserToFirestore(user.uid, userData, user)
-                        if (registerUser.photoUrl.isNotEmpty())
-                            saveImageUriToDatabase(registerUser.photoUrl)
                     }
                 } else {
                     Toast.makeText(
@@ -110,7 +101,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun sendVerificationEmail(user: FirebaseUser) {
-        authHelper.getCurrentUser()?.sendEmailVerification()
+        FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
             ?.addOnCompleteListener {
                 if (it.isSuccessful) {
                     Log.i(TAG, "VerificationSent")
@@ -123,9 +114,9 @@ class RegisterActivity : AppCompatActivity() {
     private fun createUserDataMap(user: FirebaseUser): MutableMap<String, Any> {
         return mutableMapOf(
             "id" to user.uid,
-            "username" to this.registerUser.username,
-            "email" to user.email!!,
-            "photoUrl" to this.registerUser.photoUrl,
+            "username" to binding.etUserNameRegister.text.toString(),
+            "email" to binding.etEmailRegister.text.toString(),
+            "photoUrl" to this.photoUrl,
             "createdAt" to System.currentTimeMillis()
         )
     }
@@ -140,6 +131,8 @@ class RegisterActivity : AppCompatActivity() {
             .set(userData)
             .addOnSuccessListener {
                 Log.d("Firestore", "Usuario añadido correctamente")
+                if (userData["photoUrl"].toString().isNotEmpty())
+                    saveImageUriToDatabase(userData["photoUrl"].toString())
                 signOutAndRedirectToLogin()
             }
             .addOnFailureListener { exception ->
@@ -162,9 +155,9 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun signOutAndRedirectToLogin() {
-        val currentUser = authHelper.getCurrentUser()
-        if (currentUser != null) {
-            authHelper.getFirebaseAuth().signOut()
+        val currentUser = FirebaseAuth.getInstance()
+        if (currentUser.currentUser != null) {
+            currentUser.signOut()
             startActivity(Intent(this, LoginActivity::class.java))
         }
     }
@@ -201,30 +194,30 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
-    private fun validate(user: User): Boolean {
+    private fun validateData(): Boolean {
         var isValid = true
 
-        if (user.username.isEmpty()) {
+        if (binding.etUserNameRegister.text.toString().isEmpty()) {
             binding.etFieldUserNameRegister.error = "ingresa un nombre de usuario"
             isValid = false
         } else {
             binding.etFieldUserNameRegister.error = null
         }
 
-        if (user.email.isEmpty()) {
+        if (binding.etEmailRegister.text.toString().isEmpty()) {
             binding.etFieldEmailRegister.error = "Ingresa un correo electrónico"
             isValid = false
-        } else if (!user.email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
+        } else if (!binding.etEmailRegister.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
             binding.etFieldEmailRegister.error = "Ingresa un correo electrónico válido"
             isValid = false
         } else {
             binding.etFieldEmailRegister.error = null
         }
 
-        if (user.password.isEmpty()) {
+        if (binding.etPasswordRegister.text.toString().isEmpty()) {
             binding.etFieldPasswordRegister.error = "Ingresa una contraseña"
             isValid = false
-        } else if (!user.password.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
+        } else if (!binding.etPasswordRegister.text.toString().matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
             binding.etFieldPasswordRegister.error = "Mínimo debe haber 1 letra mayúscula.\n" +
                     "Mínimo debe haber 1 letra minúscula.\n" +
                     "Mínimo debe haber 1 número.\n" +
@@ -235,19 +228,19 @@ class RegisterActivity : AppCompatActivity() {
             binding.etFieldPasswordRegister.error = null
         }
 
-        if (user.password.length < 6) {
+        if (binding.etRepeatPasswordRegister.text.toString().length < 6) {
             binding.etFieldPasswordRegister.error = "La contraseña debe tener al menos 6 caracteres"
             isValid = false
         }
 
-        if (user.repeatPassword.isEmpty()) {
+        if (binding.etRepeatPasswordRegister.text.toString().isEmpty()) {
             binding.etFieldRepeatPasswordRegister.error = "Repite la contraseña"
             isValid = false
         } else {
             binding.etFieldRepeatPasswordRegister.error = null
         }
 
-        if (user.password != user.repeatPassword) {
+        if (binding.etPasswordRegister.text.toString() != binding.etRepeatPasswordRegister.text.toString()) {
             binding.etFieldRepeatPasswordRegister.error = "Las contraseñas no coinciden"
             isValid = false
         }

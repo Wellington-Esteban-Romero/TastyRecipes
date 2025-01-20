@@ -125,6 +125,16 @@ class MainActivity : AppCompatActivity() {
                     )
                     startActivity(intent)
                 }
+                R.id.nav_shared_with_me -> {
+                    val appPackageName = applicationContext.packageName
+                    val intent = Intent(Intent.ACTION_SEND)
+                    intent.putExtra(
+                            Intent.EXTRA_TEXT,
+                    "Check out the App at: https://play.google.com/store/apps/details?id=$appPackageName"
+                    )
+                    intent.type = "text/plain"
+                    startActivity(intent)
+                }
             }
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             true

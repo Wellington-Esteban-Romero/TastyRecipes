@@ -2,6 +2,7 @@ package com.tasty.recipes.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
@@ -13,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.AddRecipeAdapter
 import com.tasty.recipes.adapters.SelectedCategoriesAdapter
@@ -78,7 +80,6 @@ class AddRecipeActivity : AppCompatActivity() {
     private fun initListener () {
         binding.topAppBar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-            finish()
         }
 
         binding.buttonSelectCategories.setOnClickListener{
@@ -267,6 +268,22 @@ class AddRecipeActivity : AppCompatActivity() {
             }
             finish()
         }
+    }
+
+    private fun getTokenFromFirebase () {
+        /*FirebaseMessaging.getInstance().token
+        .addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("TAG", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+        }*/
     }
 
     override fun finish() {

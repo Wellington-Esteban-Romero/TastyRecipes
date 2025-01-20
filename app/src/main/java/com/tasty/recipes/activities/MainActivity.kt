@@ -21,6 +21,7 @@ import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.SessionManager
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
@@ -117,6 +118,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_favorites -> {
                     val intent = Intent(this, SearchActivity::class.java)
                     intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_SEARCH, SearchActivity.LOAD_RECIPES_FAVORITES)
+                    intent.putStringArrayListExtra(SearchActivity.EXTRA_RECIPE_TAG_FAVORITE,
+                        session.getAllFavoriteRecipe()?.entries?.filter {
+                            it.value == "1"
+                        }?.map { it.key } as ArrayList<String>?
+                    )
                     startActivity(intent)
                 }
             }
@@ -229,7 +235,7 @@ class MainActivity : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         if (!session.isFavorite(currentUser?.uid + "_" + recipe.id.toString()))
-            session.saveRecipe(currentUser?.uid + recipe.id.toString(), SessionManager.DES_ACTIVE)
+            session.saveRecipe(currentUser?.uid + "_" +  recipe.id.toString(), SessionManager.DES_ACTIVE)
         session.saveLastSee(this, recipe.id.toString())
 
         startActivity(intent)

@@ -21,6 +21,10 @@ class SessionManager(context: Context) {
 
     private val storage = context.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
 
+    fun getAllFavoriteRecipe (): MutableMap<String, *>? {
+        return storage.all
+    }
+
     fun saveRecipe (key:String ,value:String) {
         storage.edit().putString(SHARED_NAME_RECIPE + key, value).apply()
     }

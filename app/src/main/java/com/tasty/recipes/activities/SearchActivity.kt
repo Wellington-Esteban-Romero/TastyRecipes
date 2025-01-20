@@ -27,6 +27,7 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_RECIPE_TAG_SEARCH = "EXTRA_RECIPE_TAG_SEARCH"
+        const val EXTRA_RECIPE_TAG_FAVORITE = "EXTRA_RECIPE_TAG_FAVORITE"
         const val LOAD_RECIPES_USER_ID = "1"
         const val LOAD_RECIPES_FAVORITES = "2"
     }
@@ -67,7 +68,12 @@ class SearchActivity : AppCompatActivity() {
                 loadRecipesByUserId()
             }
             LOAD_RECIPES_FAVORITES -> {
-                loadRecipesAll() // cambiar por todos los favorites
+                val favoriteList = intent.extras?.getStringArrayList(EXTRA_RECIPE_TAG_FAVORITE)
+                if (!favoriteList.isNullOrEmpty()) {
+                    favoriteList.forEach {
+                        loadRecipeFavorite(it.split("_")[1].toInt())
+                    }
+                }
             }
             else -> {
                 loadRecipesAll()
@@ -145,6 +151,24 @@ class SearchActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { querySnapshot ->
                 recipeList.clear()
+
+                querySnapshot.forEach { document ->
+                    val recipe = document.toObject(Recipe::class.java)
+                    recipeList.add(recipe)
+                }
+                recipeAdapter.notifyItemInserted(recipeList.size - 1)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
+    }
+
+    private fun loadRecipeFavorite(id:Int) {
+        FirebaseFirestore.getInstance().collection("recipes")
+            .whereEqualTo("id", id)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                //recipeList.clear()
 
                 querySnapshot.forEach { document ->
                     val recipe = document.toObject(Recipe::class.java)

@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.data.entities.Recipe
+import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
 import com.tasty.recipes.fragments.IngredientsFragment
 import com.tasty.recipes.fragments.StepsFragment
@@ -114,6 +115,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                     startActivity(Intent(this, SearchActivity::class.java))
                     true
                 }
+
                 R.id.action_favorite_details -> {
                     true
                 }
@@ -129,7 +131,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupDeleteRecipe () {
+    private fun setupDeleteRecipe() {
         binding.btnDeleteRecipe.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.alert_dialog_delete_title)
@@ -227,12 +229,26 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun createDetails() {
+
         val currentUser = FirebaseAuth.getInstance().currentUser
+
+        FirebaseFirestore.getInstance().collection("users")
+            .whereEqualTo("id", recipe.userId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (querySnapshot.documents.isNotEmpty()) {
+                    val user = querySnapshot.documents[0].toObject(User::class.java)!!
+                    binding.userName.text = user.username
+                    Picasso.get().load(user.photoUrl).into(binding.userPhoto)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar los datos asociados a la receta: ${exception.message}")
+            }
+
         if (recipe.userId == currentUser?.uid) {
             binding.btnDeleteRecipe.visibility = View.VISIBLE
             binding.btnUpdateRecipe.visibility = View.VISIBLE
-            binding.userName.text = currentUser.displayName
-            Picasso.get().load(currentUser.photoUrl).into(binding.userPhoto)
         }
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name

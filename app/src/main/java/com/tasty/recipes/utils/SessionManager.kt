@@ -4,49 +4,35 @@ import android.content.Context
 
 class SessionManager(context: Context) {
 
-    private  val PREF_NAME = "user_session"
-    private  val EMAIL_KEY = "user_email"
+    private val PREF_NAME = "user_session"
+    private val EMAIL_KEY = "user_email"
 
-    private  val PREF_LAST_SEE = "last_see_session"
-    private  val LAST_SEE_KEY = "last_see"
+    private val PREF_LAST_SEE = "last_see_session"
+    private val LAST_SEE_KEY = "last_see"
+
+    private val SHARED_NAME = "Mydtb"
 
     companion object {
         const val ACTIVE = "1"
         const val DES_ACTIVE = "0"
     }
 
-    private val SHARED_NAME = "Mydtb"
-    private val SHARED_NAME_RECIPE = "recipe"
-    private val SHARED_NAME_RECIPES = "recipes"
-
     private val storage = context.getSharedPreferences(SHARED_NAME, Context.MODE_PRIVATE);
 
-    fun getAllFavoriteRecipe (): MutableMap<String, *>? {
+    fun getAllFavoriteRecipe(): MutableMap<String, *>? {
         return storage.all
     }
 
-    fun saveRecipe (key:String ,value:String) {
-        storage.edit().putString(SHARED_NAME_RECIPE + key, value).apply()
+    fun saveRecipe(key: String, value: String) {
+        storage.edit().putString(key, value).apply()
     }
 
-    private fun getRecipe (key:String):String {
-        return storage.getString(SHARED_NAME_RECIPE + key, "")!!
+    private fun getRecipe(key: String): String {
+        return storage.getString(key, "")!!
     }
 
-    fun isFavorite (id:String):Boolean {
-        return (getRecipe (id) == ACTIVE)
-    }
-
-    fun isLoadRecipes (id:String):Boolean {
-        return (getRecipes (id) == ACTIVE)
-    }
-
-    fun saveRecipes (key:String ,value:String) {
-        storage.edit().putString(SHARED_NAME_RECIPES + key, value).apply()
-    }
-
-    private fun getRecipes (key:String):String {
-        return storage.getString(SHARED_NAME_RECIPES + key, "")!!
+    fun isFavorite(id: String): Boolean {
+        return (getRecipe(id) == ACTIVE)
     }
 
     //session email

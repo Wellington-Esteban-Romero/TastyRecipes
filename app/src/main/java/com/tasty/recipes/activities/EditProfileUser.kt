@@ -10,7 +10,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.databinding.ActivityEditProfileUserBinding
-import java.io.File
 
 class EditProfileUser : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileUserBinding
@@ -38,7 +37,7 @@ class EditProfileUser : AppCompatActivity() {
                 for (document in documents) {
                     println(document.data["photoUrl"] as String)
                     Picasso.get()
-                        .load(File(document.data["photoUrl"].toString()))
+                        .load(document.data["photoUrl"].toString())
                         .into(binding.profilePicture)
                 }
             }

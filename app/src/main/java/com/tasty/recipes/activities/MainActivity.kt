@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_SEARCH, SearchActivity.LOAD_RECIPES_FAVORITES)
                     intent.putStringArrayListExtra(SearchActivity.EXTRA_RECIPE_TAG_FAVORITE,
                         session.getAllFavoriteRecipe()?.entries?.filter {
-                            it.value == "1"
+                           FirebaseAuth.getInstance().currentUser?.uid == it.key.split("_")[0] && it.value == "1"
                         }?.map { it.key } as ArrayList<String>?
                     )
                     startActivity(intent)

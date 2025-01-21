@@ -1,5 +1,6 @@
 package com.tasty.recipes.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -14,10 +16,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.messaging.FirebaseMessaging
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.AddRecipeAdapter
-import com.tasty.recipes.adapters.SelectedCategoriesAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
@@ -29,6 +29,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var addRecipeIngredientsAdapter: AddRecipeAdapter
     private lateinit var addRecipeCategoriesAdapter: AddRecipeAdapter
     private val ingredientsList = mutableListOf<String>()
+    private val categoryList = mutableListOf<String>()
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipe: Recipe
     var isEditing: Boolean = false
@@ -83,7 +84,28 @@ class AddRecipeActivity : AppCompatActivity() {
         }
 
         binding.buttonSelectCategories.setOnClickListener{
-            startActivity(Intent(this, CategorySelectionActivity::class.java))
+            val checkedItems = BooleanArray(categoryList.size)
+
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Select Categories")
+                .setMultiChoiceItems(
+                    categoryList.toTypedArray(),
+                    checkedItems
+                ) { _, which, isChecked ->
+                    if (isChecked) {
+                        categoryList.add(categoryList[which])
+                    } else {
+                        categoryList.remove(categoryList[which])
+                    }
+                }
+                .setPositiveButton(
+                    "OK",
+                    DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int ->
+                        addRecipeCategoriesAdapter.notifyDataSetChanged()
+                    })
+                .setNegativeButton("Cancel", null)
+                .show()
+            //startActivity(Intent(this, CategorySelectionActivity::class.java))
         }
 
         binding.buttonSelectImage.setOnClickListener {
@@ -105,6 +127,7 @@ class AddRecipeActivity : AppCompatActivity() {
         }
 
         setupRecyclerView()
+        loadCategories()
     }
 
     override fun onResume() {
@@ -121,8 +144,6 @@ class AddRecipeActivity : AppCompatActivity() {
             addRecipeCategoriesAdapter.notifyItemInserted(SELECTED_CATEGORIES.size - 1)
             hasCategoriesBeenUpdated = true
 
-        } else {
-            finish()
         }
     }
 
@@ -158,8 +179,24 @@ class AddRecipeActivity : AppCompatActivity() {
             binding.btnSaveRecipe.text = "Save Recipe"
         } else {
             binding.btnSaveRecipe.text = "Edit Recipe"
-        }*/ }
+        }*/
+   }
 
+    private fun loadCategories() {
+        FirebaseFirestore.getInstance().collection("categories").get()
+            .addOnSuccessListener { querySnapshot ->
+                categoryList.clear()
+
+                querySnapshot.forEach { document ->
+                    val category = document.toObject(Category::class.java)
+                    categoryList.add(category.name)
+                }
+                addRecipeCategoriesAdapter.notifyItemInserted(categoryList.size - 1)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar categorías: ${exception.message}")
+            }
+    }
 
     private fun validateRecipe(): Boolean {
         var isValid = true
@@ -258,8 +295,7 @@ class AddRecipeActivity : AppCompatActivity() {
         if (validateRecipe()) {
             //recipeDAO.insert(recipe)
             FirebaseFirestore.getInstance().collection("recipes")
-                .document("3")
-                .set(recipe)
+                .add(recipe)
                 .addOnSuccessListener{
                 Toast.makeText(this, "Recipe added with ID: 3" , Toast.LENGTH_SHORT).show();
             }

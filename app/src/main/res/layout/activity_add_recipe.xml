@@ -200,7 +200,8 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_gravity="center"
             android:backgroundTint="#A5D6A7"
-            android:textColor="#424242" />
+            app:iconTint="@color/color_background_text_main"
+            android:textColor="@android:color/white" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSelectedCategories"
@@ -219,7 +220,8 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_gravity="center"
             android:backgroundTint="#A5D6A7"
-            android:textColor="#424242"/>
+            app:iconTint="@color/color_background_text_main"
+            android:textColor="@android:color/white"/>
 
         <!-- Save Recipe Button -->
         <com.google.android.material.button.MaterialButton

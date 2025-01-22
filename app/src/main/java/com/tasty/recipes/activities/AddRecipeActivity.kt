@@ -110,7 +110,6 @@ class AddRecipeActivity : AppCompatActivity() {
                     dialog.dismiss()
                 }
                 .show()
-            //startActivity(Intent(this, CategorySelectionActivity::class.java))
         }
 
         binding.buttonSelectImage.setOnClickListener {
@@ -238,14 +237,14 @@ class AddRecipeActivity : AppCompatActivity() {
             binding.textFieldServings.error = null
         }
 
-        /*if (recipe.categoryIds.isEmpty()) {
+        if (recipe.categoryIds.isEmpty()) {
             binding.buttonSelectCategories.error = "Choose a category"
             isValid = false
         } else {
             binding.buttonSelectCategories.error = null
         }
 
-        if (recipe.image.trim().isEmpty()) {
+        /*if (recipe.image.trim().isEmpty()) {
             binding.buttonSelectImage.error = "Provides a valid image"
             isValid = false
         } else {

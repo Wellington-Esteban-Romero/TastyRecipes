@@ -43,5 +43,18 @@ class AddCategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         itemAddCategoryBinding.chipCategory.setOnCloseIconClickListener {
             onClickListener(position)
         }
+        changeChipBackgroundColor(position)
+    }
+
+    private fun changeChipBackgroundColor (position: Int) {
+        if (isPar(position)) {
+            itemAddCategoryBinding.chipCategory.setChipBackgroundColorResource(R.color.colorAccent)
+        } else {
+            itemAddCategoryBinding.chipCategory.setChipBackgroundColorResource(R.color.color_background_medium)
+        }
+    }
+
+    private fun isPar (position: Int):Boolean {
+        return position %2 == 0;
     }
 }

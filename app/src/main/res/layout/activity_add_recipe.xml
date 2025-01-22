@@ -105,9 +105,7 @@
             android:id="@+id/rvAddIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
+            android:layout_marginTop="8dp"/>
 
         <!-- Instructions Section -->
         <com.google.android.material.textfield.TextInputLayout
@@ -202,14 +200,14 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_gravity="center"
             android:backgroundTint="#A5D6A7"
-            android:textColor="#424242"/>
+            android:textColor="#424242" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSelectedCategories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:overScrollMode="never" />
+            android:orientation="horizontal" />
 
         <!-- Image Selector -->
         <com.google.android.material.button.MaterialButton

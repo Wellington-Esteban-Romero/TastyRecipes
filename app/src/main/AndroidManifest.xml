@@ -23,9 +23,6 @@
             android:name=".activities.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.CategorySelectionActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.EditProfileUser"
             android:exported="false" />
         <activity

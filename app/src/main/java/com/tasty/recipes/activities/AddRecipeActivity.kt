@@ -17,7 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tasty.recipes.R
-import com.tasty.recipes.adapters.AddRecipeAdapter
+import com.tasty.recipes.adapters.AddCategoryAdapter
+import com.tasty.recipes.adapters.AddIngredientAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.providers.RecipeDAO
@@ -26,15 +27,14 @@ import com.tasty.recipes.databinding.ActivityAddRecipeBinding
 class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddRecipeBinding
-    private lateinit var addRecipeIngredientsAdapter: AddRecipeAdapter
-    private lateinit var addRecipeCategoriesAdapter: AddRecipeAdapter
+    private lateinit var addRecipeIngredientsAdapter: AddIngredientAdapter
+    private lateinit var addRecipeCategoriesAdapter: AddCategoryAdapter
     private val ingredientsList = mutableListOf<String>()
-    private val categoryList = mutableListOf<String>()
+    private val categoryList = mutableListOf<Category>()
+    private var selectedCategories = mutableListOf<String>()
     private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipe: Recipe
     var isEditing: Boolean = false
-    private var hasCategoriesBeenUpdated = false
-
 
     companion object {
         const val EXTRA_RECIPE_CREATE_TAG_ID = "RECIPE_CREATE_TAG_ID"
@@ -43,16 +43,18 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     // Registrar el launcher para seleccionar imágenes
-    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        uri?.let {
-            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-            this.contentResolver.takePersistableUriPermission(uri, flag)
-            recipe.image = uri.toString()
-            Toast.makeText(this, "Se ha cargado la imagen correctamente", Toast.LENGTH_SHORT).show()
-            // Mostrar la imagen en un ImageView (opcional)
-            //binding.imageViewSelected.setImageURI(uri)
+    private val pickImageLauncher =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            uri?.let {
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                this.contentResolver.takePersistableUriPermission(uri, flag)
+                recipe.image = uri.toString()
+                Toast.makeText(this, "Se ha cargado la imagen correctamente", Toast.LENGTH_SHORT)
+                    .show()
+                // Mostrar la imagen en un ImageView (opcional)
+                //binding.imageViewSelected.setImageURI(uri)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,52 +71,55 @@ class AddRecipeActivity : AppCompatActivity() {
         initListener()
     }
 
-    private fun initUI () {
+    private fun initUI() {
 
         recipeDAO = RecipeDAO(this)
 
-        recipe =  Recipe(-1,"")
+        recipe = Recipe(-1, "")
 
         loadData()
     }
 
-    private fun initListener () {
+    private fun initListener() {
         binding.topAppBar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        binding.buttonSelectCategories.setOnClickListener{
+        binding.buttonSelectCategories.setOnClickListener {
+            val categoryNames = categoryList.map { it.name }.toTypedArray()
             val checkedItems = BooleanArray(categoryList.size)
 
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Select Categories")
                 .setMultiChoiceItems(
-                    categoryList.toTypedArray(),
+                    categoryNames,
                     checkedItems
                 ) { _, which, isChecked ->
                     if (isChecked) {
-                        categoryList.add(categoryList[which])
+                        if (!selectedCategories.contains(categoryList[which].name)) {
+                            selectedCategories.add(categoryList[which].name)
+                        }
                     } else {
-                        categoryList.remove(categoryList[which])
+                        selectedCategories.remove(selectedCategories[which])
                     }
                 }
-                .setPositiveButton(
-                    "OK",
-                    DialogInterface.OnClickListener { dialog: DialogInterface?, which: Int ->
-                        addRecipeCategoriesAdapter.notifyDataSetChanged()
-                    })
-                .setNegativeButton("Cancel", null)
+                .setPositiveButton("OK") { _, _ ->
+                    addRecipeCategoriesAdapter.notifyItemInserted(selectedCategories.size - 1)
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
                 .show()
             //startActivity(Intent(this, CategorySelectionActivity::class.java))
         }
 
         binding.buttonSelectImage.setOnClickListener {
-            if(ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
+            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(this))
                 pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.buttonAddIngredient.setOnClickListener {
-            val ingredient =  binding.editTextIngredient.text.toString()
+            val ingredient = binding.editTextIngredient.text.toString()
             if (ingredient.isNotEmpty()) {
                 ingredientsList.add(ingredient)
                 addRecipeIngredientsAdapter.notifyItemInserted(ingredientsList.size - 1)
@@ -130,29 +135,15 @@ class AddRecipeActivity : AppCompatActivity() {
         loadCategories()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (!hasCategoriesBeenUpdated) {
-            var selectedCategories = intent.extras?.getStringArrayList("selectedCategories")
-            if (!selectedCategories.isNullOrEmpty()) {
-                SELECTED_CATEGORIES = selectedCategories.map { Category(0, it, "") }.toMutableList()
-            } else {
-                selectedCategories = arrayListOf()
-            }
-            addRecipeCategoriesAdapter.updateCategories(selectedCategories)
-            addRecipeCategoriesAdapter.notifyItemInserted(SELECTED_CATEGORIES.size - 1)
-            hasCategoriesBeenUpdated = true
-
-        }
-    }
 
     private fun setupRecyclerView() {
-        addRecipeIngredientsAdapter = AddRecipeAdapter(ingredientsList) { pos ->
+        addRecipeIngredientsAdapter = AddIngredientAdapter(ingredientsList) { pos ->
             addRecipeIngredientsAdapter.removeIngredient(pos)
         }
 
-        addRecipeCategoriesAdapter = AddRecipeAdapter(SELECTED_CATEGORIES.map { it.name }.toMutableList()) { _ -> }
+        addRecipeCategoriesAdapter = AddCategoryAdapter(selectedCategories) { pos ->
+            addRecipeCategoriesAdapter.removeCategory(pos)
+        }
 
 
         binding.rvAddIngredients.apply {
@@ -161,12 +152,13 @@ class AddRecipeActivity : AppCompatActivity() {
         }
 
         binding.rvSelectedCategories.apply {
-            layoutManager = LinearLayoutManager(this@AddRecipeActivity)
+            layoutManager =
+                LinearLayoutManager(this@AddRecipeActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = addRecipeCategoriesAdapter
         }
     }
 
-   private fun loadData() {
+    private fun loadData() {
         binding.editTextTitle.setText(recipe.name)
         binding.editTextIngredient.setText(recipe.ingredients.joinToString { "," })
         binding.editTextInstructions.setText(recipe.instructions)
@@ -180,7 +172,7 @@ class AddRecipeActivity : AppCompatActivity() {
         } else {
             binding.btnSaveRecipe.text = "Edit Recipe"
         }*/
-   }
+    }
 
     private fun loadCategories() {
         FirebaseFirestore.getInstance().collection("categories").get()
@@ -189,7 +181,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
                 querySnapshot.forEach { document ->
                     val category = document.toObject(Category::class.java)
-                    categoryList.add(category.name)
+                    categoryList.add(category)
                 }
                 addRecipeCategoriesAdapter.notifyItemInserted(categoryList.size - 1)
             }
@@ -267,46 +259,50 @@ class AddRecipeActivity : AppCompatActivity() {
         recipe.name = binding.textFieldTitleName.editText?.text.toString()
         recipe.ingredients = ingredientsList
         recipe.instructions = binding.textFieldInstructions.editText?.text.toString()
-        if (binding.textFieldPrepTime.editText?.text.toString().isEmpty()){
+        if (binding.textFieldPrepTime.editText?.text.toString().isEmpty()) {
             recipe.prepTimeMinutes = 0
         } else {
             recipe.prepTimeMinutes = binding.textFieldPrepTime.editText?.text.toString().toInt()
         }
-        if (binding.textFieldCookTime.editText?.text.toString().isEmpty()){
+        if (binding.textFieldCookTime.editText?.text.toString().isEmpty()) {
             recipe.cookTimeMinutes = 0
         } else {
             recipe.cookTimeMinutes = binding.textFieldCookTime.editText?.text.toString().toInt()
         }
-        if (binding.textFieldServings.editText?.text.toString().isEmpty()){
+        if (binding.textFieldServings.editText?.text.toString().isEmpty()) {
             recipe.servings = 0
         } else {
             recipe.servings = binding.textFieldServings.editText?.text.toString().toInt()
         }
         recipe.difficulty = binding.spinnerDifficulty.selectedItem.toString()
 
-        recipe.categoryIds = mutableListOf(3,4)
+        recipe.categoryIds = categoryList.filter {
+            selectedCategories.contains(it.name)
+        }.map { it.id }
+            .toList()
 
         recipe.userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-       /* if (!isEditing) {
-            recipe.category = intent.getStringExtra(EXTRA_RECIPE_CREATE_TAG_ID).orEmpty()
-        }*/
+        /* if (!isEditing) {
+             recipe.category = intent.getStringExtra(EXTRA_RECIPE_CREATE_TAG_ID).orEmpty()
+         }*/
 
         if (validateRecipe()) {
             //recipeDAO.insert(recipe)
             FirebaseFirestore.getInstance().collection("recipes")
                 .add(recipe)
-                .addOnSuccessListener{
-                Toast.makeText(this, "Recipe added with ID: 3" , Toast.LENGTH_SHORT).show();
-            }
-            .addOnFailureListener{ e ->
-                Toast.makeText(this, "Error adding recipe: " + e.message, Toast.LENGTH_SHORT).show();
-            }
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Recipe added with ID: 3", Toast.LENGTH_SHORT).show();
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error adding recipe: " + e.message, Toast.LENGTH_SHORT)
+                        .show();
+                }
             finish()
         }
     }
 
-    private fun getTokenFromFirebase () {
+    private fun getTokenFromFirebase() {
         /*FirebaseMessaging.getInstance().token
         .addOnCompleteListener { task ->
             if (!task.isSuccessful) {

@@ -7,29 +7,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tasty.recipes.R
 import com.tasty.recipes.databinding.ItemAddIngredientBinding
 
-class AddRecipeAdapter(
+class AddIngredientAdapter(
     private val ingredients: MutableList<String> = mutableListOf(),
     private val onClickListener: (Int) -> Unit
 ) :
-    RecyclerView.Adapter<AddRecipeViewHolder>() {
+    RecyclerView.Adapter<AddIngredientViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddRecipeViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddIngredientViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_add_ingredient, parent, false)
-        return AddRecipeViewHolder(view)
+        return AddIngredientViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: AddRecipeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AddIngredientViewHolder, position: Int) {
         holder.bind(ingredients[position], onClickListener, position)
     }
 
     override fun getItemCount(): Int = ingredients.size
-
-    fun updateCategories(newCategories: MutableList<String>) {
-        ingredients.clear()
-        ingredients.addAll(newCategories)
-        notifyDataSetChanged()
-    }
 
     fun removeIngredient(position: Int) {
         if (position in ingredients.indices) {
@@ -40,7 +34,7 @@ class AddRecipeAdapter(
     }
 }
 
-class AddRecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class AddIngredientViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var itemAddIngredientBinding = ItemAddIngredientBinding.bind(view)
 
     fun bind(ingredient: String, onClickListener: (Int) -> Unit, position: Int) {

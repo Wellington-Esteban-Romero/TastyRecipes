@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:chipSpacing="8dp"
+        app:singleLine="true"
+        app:singleSelection="false">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="Category Name"
+            android:checkable="true"
+            android:textColor="@color/white"
+            app:chipBackgroundColor="@color/color_background_text_main"
+            app:chipCornerRadius="8dp"
+            app:closeIconVisible="true"
+            app:chipStrokeColor="@color/black"
+            app:chipStrokeWidth="1dp" />
+    </com.google.android.material.chip.ChipGroup>
+</LinearLayout>

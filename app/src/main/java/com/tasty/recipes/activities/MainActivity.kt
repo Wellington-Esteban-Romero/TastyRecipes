@@ -292,7 +292,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun getLastSeeRecipe () {
         val lastSee =  session.getLastSee(this)
-        lastSee?.toLongOrNull()?.let { lastSeeId ->
+        lastSee?.let { lastSeeId ->
             recipeListLastSee = recipeList.filter { it.id == lastSeeId }.toMutableList()
             lastSeeRecipeAdapter.updateRecipe(recipeListLastSee)
         } ?: run {

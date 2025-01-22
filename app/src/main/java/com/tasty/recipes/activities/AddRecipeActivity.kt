@@ -21,7 +21,6 @@ import com.tasty.recipes.adapters.AddCategoryAdapter
 import com.tasty.recipes.adapters.AddIngredientAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
-import com.tasty.recipes.data.providers.RecipeDAO
 import com.tasty.recipes.databinding.ActivityAddRecipeBinding
 
 class AddRecipeActivity : AppCompatActivity() {
@@ -32,14 +31,12 @@ class AddRecipeActivity : AppCompatActivity() {
     private val ingredientsList = mutableListOf<String>()
     private val categoryList = mutableListOf<Category>()
     private var selectedCategories = mutableListOf<String>()
-    private lateinit var recipeDAO: RecipeDAO
     private lateinit var recipe: Recipe
     var isEditing: Boolean = false
 
     companion object {
         const val EXTRA_RECIPE_CREATE_TAG_ID = "RECIPE_CREATE_TAG_ID"
         const val EXTRA_IS_DETAILS = "IS_DETAILS"
-        var SELECTED_CATEGORIES = mutableListOf<Category>()
     }
 
     // Registrar el launcher para seleccionar imágenes
@@ -73,9 +70,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun initUI() {
 
-        recipeDAO = RecipeDAO(this)
-
-        recipe = Recipe(-1, "")
+        recipe = Recipe("", "")
 
         loadData()
     }
@@ -255,6 +250,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
 
     private fun saveRecipe() {
+        recipe.id
         recipe.name = binding.textFieldTitleName.editText?.text.toString()
         recipe.ingredients = ingredientsList
         recipe.instructions = binding.textFieldInstructions.editText?.text.toString()
@@ -315,10 +311,5 @@ class AddRecipeActivity : AppCompatActivity() {
             // Log and toast
             Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
         }*/
-    }
-
-    override fun finish() {
-        super.finish()
-        SELECTED_CATEGORIES = mutableListOf()
     }
 }

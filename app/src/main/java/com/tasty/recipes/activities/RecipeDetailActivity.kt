@@ -69,7 +69,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun loadRecipeById() {
         FirebaseFirestore.getInstance().collection("recipes")
-            .whereEqualTo("id", idRecipe.toLong())
+            .whereEqualTo("id", idRecipe)
             .get()
             .addOnSuccessListener { querySnapshot ->
                 recipe = querySnapshot.documents[0].toObject(Recipe::class.java)!!

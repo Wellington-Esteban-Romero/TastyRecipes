@@ -15,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {

@@ -1,9 +1,11 @@
 package com.tasty.recipes.activities
 
-import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
@@ -16,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.AddCategoryAdapter
 import com.tasty.recipes.adapters.AddIngredientAdapter
@@ -69,9 +72,7 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-
         recipe = Recipe("", "")
-
         loadData()
     }
 
@@ -128,7 +129,6 @@ class AddRecipeActivity : AppCompatActivity() {
         setupRecyclerView()
         loadCategories()
     }
-
 
     private fun setupRecyclerView() {
         addRecipeIngredientsAdapter = AddIngredientAdapter(ingredientsList) { pos ->
@@ -239,18 +239,10 @@ class AddRecipeActivity : AppCompatActivity() {
             binding.buttonSelectCategories.error = null
         }
 
-        /*if (recipe.image.trim().isEmpty()) {
-            binding.buttonSelectImage.error = "Provides a valid image"
-            isValid = false
-        } else {
-            binding.buttonSelectImage.error = null
-        }*/
         return isValid
     }
 
-
     private fun saveRecipe() {
-        recipe.id
         recipe.name = binding.textFieldTitleName.editText?.text.toString()
         recipe.ingredients = ingredientsList
         recipe.instructions = binding.textFieldInstructions.editText?.text.toString()
@@ -276,6 +268,10 @@ class AddRecipeActivity : AppCompatActivity() {
         }.map { it.id }
             .toList()
 
+        if (recipe.image.isEmpty()) {
+            recipe.image = getResources().getResourceName(R.drawable.photo_recipe_default)
+        }
+
         recipe.userId = FirebaseAuth.getInstance().currentUser!!.uid
 
         /* if (!isEditing) {
@@ -283,18 +279,97 @@ class AddRecipeActivity : AppCompatActivity() {
          }*/
 
         if (validateRecipe()) {
-            //recipeDAO.insert(recipe)
-            FirebaseFirestore.getInstance().collection("recipes")
+            val firestore = FirebaseFirestore.getInstance()
+            firestore.collection("recipes")
                 .add(recipe)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Recipe added with ID: 3", Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener { documentReference ->
+                    val refID = documentReference.id
+                    recipe.id = refID
+
+                    firestore.collection("recipes")
+                        .document(refID)
+                        .update("id", refID)
+                        .addOnSuccessListener {
+                            val imageUri = recipe.image.toUri()
+                            uploadImageToStorage(imageUri, refID) { imageUrl ->
+                                if (imageUrl != null) {
+                                    saveImageFromStorage(imageUrl, refID)
+                                } else {
+                                    Toast.makeText(
+                                        this,
+                                        "Error uploading image.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(
+                                this,
+                                "Error update ID in recipe: " + e.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(this, "Error adding recipe: " + e.message, Toast.LENGTH_SHORT)
                         .show();
                 }
-            finish()
         }
+    }
+
+    private fun uploadImageToStorage(imageUri: Uri, refID: String, callback: (String?) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child("recipes/$refID.jpg")
+
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl
+                    .addOnSuccessListener { downloadUrl ->
+                        callback(downloadUrl.toString())
+                    }
+                    .addOnFailureListener { e ->
+                        callback(null)
+                    }
+            }
+            .addOnFailureListener { e ->
+                callback(null)
+            }
+    }
+
+    private fun saveImageFromStorage(imageUrl: String, refID: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("recipes")
+            .document(refID)
+            .update("image", imageUrl)
+            .addOnSuccessListener {
+                Toast.makeText(
+                    this,
+                    "Recipe added successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearFieldsFormRecipe()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    this,
+                    "Error updating recipe image URL: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun clearFieldsFormRecipe () {
+        recipe.name = ""
+        recipe.ingredients = mutableListOf()
+        recipe.instructions = ""
+        recipe.prepTimeMinutes = 0
+        recipe.cookTimeMinutes = 0
+        recipe.servings = 0
+        recipe.difficulty = binding.spinnerDifficulty.selectedItem.toString()
+        recipe.categoryIds = mutableListOf()
+        recipe.image = ""
+        recipe.userId = ""
     }
 
     private fun getTokenFromFirebase() {

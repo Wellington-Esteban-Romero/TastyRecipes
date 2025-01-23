@@ -240,13 +240,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun onItemSelect(recipe: Recipe) {
         val intent = Intent(this, RecipeDetailActivity::class.java)
-        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id.toString())
+        intent.putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
 
-        if (!session.isFavorite(currentUser?.uid + "_" + recipe.id.toString()))
-            session.saveRecipe(currentUser?.uid + "_" +  recipe.id.toString(), SessionManager.DES_ACTIVE)
-        session.saveLastSee(this, recipe.id.toString())
+        if (!session.isFavorite(currentUser?.uid + "_" + recipe.id))
+            session.saveRecipe(currentUser?.uid + "_" +  recipe.id, SessionManager.DES_ACTIVE)
+        session.saveLastSee(this, recipe.id)
 
         startActivity(intent)
     }

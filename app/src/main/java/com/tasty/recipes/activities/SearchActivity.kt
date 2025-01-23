@@ -182,6 +182,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun saveSessionLastSeeRecipe (recipe: Recipe) {
-        session.saveLastSee(this, recipe.id.toString())
+        session.saveLastSee(this, recipe.id)
     }
 }

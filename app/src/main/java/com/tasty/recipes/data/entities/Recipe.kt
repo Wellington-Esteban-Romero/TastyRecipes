@@ -1,7 +1,7 @@
 package com.tasty.recipes.data.entities
 
 data class Recipe(
-    val id: String = "",
+    var id: String = "",
     var name: String = "",
     var ingredients: List<String> = mutableListOf(),
     var instructions: String = "",

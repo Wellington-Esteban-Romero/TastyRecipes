@@ -58,6 +58,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun initUI() {
         idRecipe = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
         loadRecipeById()
+        updateRecipe()
     }
 
     private fun initListener() {
@@ -78,6 +79,14 @@ class RecipeDetailActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
             }
+    }
+
+    private fun updateRecipe() {
+        binding.btnUpdateRecipe.setOnClickListener {
+            val intent = Intent(this, AddRecipeActivity::class.java)
+            intent.putExtra(AddRecipeActivity.EXTRA_UPDATE_TAG_ID, idRecipe)
+            startActivity(intent)
+        }
     }
 
     private fun setupToolBarListeners() {
@@ -232,6 +241,21 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         val currentUser = FirebaseAuth.getInstance().currentUser
 
+        createDetailsUser()
+
+        if (recipe.userId == currentUser?.uid) {
+            binding.btnDeleteRecipe.visibility = View.VISIBLE
+            binding.btnUpdateRecipe.visibility = View.VISIBLE
+        }
+        Picasso.get().load(recipe.image).into(binding.imageRecipe)
+        binding.toolbar.title = recipe.name
+        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, IngredientsFragment(recipe.ingredients))
+            .commit()
+    }
+
+    private fun createDetailsUser () {
         FirebaseFirestore.getInstance().collection("users")
             .whereEqualTo("id", recipe.userId)
             .get()
@@ -245,16 +269,5 @@ class RecipeDetailActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar los datos asociados a la receta: ${exception.message}")
             }
-
-        if (recipe.userId == currentUser?.uid) {
-            binding.btnDeleteRecipe.visibility = View.VISIBLE
-            binding.btnUpdateRecipe.visibility = View.VISIBLE
-        }
-        Picasso.get().load(recipe.image).into(binding.imageRecipe)
-        binding.toolbar.title = recipe.name
-        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, IngredientsFragment(recipe.ingredients))
-            .commit()
     }
 }

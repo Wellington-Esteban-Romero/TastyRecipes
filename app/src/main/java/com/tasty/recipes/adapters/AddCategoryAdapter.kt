@@ -25,6 +25,12 @@ class AddCategoryAdapter(
 
     override fun getItemCount(): Int = categories.size
 
+    fun updateCategories (newCategories: MutableList<String>) {
+        categories.clear()
+        categories.addAll(newCategories)
+        notifyDataSetChanged()
+    }
+
     fun removeCategory(position: Int) {
         if (position in categories.indices) {
             categories.removeAt(position)

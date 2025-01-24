@@ -25,6 +25,12 @@ class AddIngredientAdapter(
 
     override fun getItemCount(): Int = ingredients.size
 
+    fun updateIngredients (newIngredients: MutableList<String>) {
+        ingredients.clear()
+        ingredients.addAll(newIngredients)
+        notifyDataSetChanged()
+    }
+
     fun removeIngredient(position: Int) {
         if (position in ingredients.indices) {
             ingredients.removeAt(position)

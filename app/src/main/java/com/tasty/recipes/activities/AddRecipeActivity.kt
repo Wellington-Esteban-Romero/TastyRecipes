@@ -18,20 +18,27 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.AddCategoryAdapter
 import com.tasty.recipes.adapters.AddIngredientAdapter
 import com.tasty.recipes.data.entities.Category
+import com.tasty.recipes.data.entities.Message
 import com.tasty.recipes.data.entities.Recipe
+import com.tasty.recipes.data.providers.RetrofitProvider
 import com.tasty.recipes.databinding.ActivityAddRecipeBinding
+import com.tasty.recipes.utils.Difficulty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddRecipeBinding
     private lateinit var addRecipeIngredientsAdapter: AddIngredientAdapter
     private lateinit var addRecipeCategoriesAdapter: AddCategoryAdapter
-    private val ingredientsList = mutableListOf<String>()
+    private var ingredientsList = mutableListOf<String>()
     private val categoryList = mutableListOf<Category>()
     private var selectedCategories = mutableListOf<String>()
     private lateinit var recipe: Recipe
@@ -39,7 +46,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_RECIPE_CREATE_TAG_ID = "RECIPE_CREATE_TAG_ID"
-        const val EXTRA_IS_DETAILS = "IS_DETAILS"
+        const val EXTRA_UPDATE_TAG_ID = "EXTRA_UPDATE_TAG_ID"
     }
 
     // Registrar el launcher para seleccionar imágenes
@@ -72,8 +79,19 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-        recipe = Recipe("", "")
-        loadData()
+        loadCategories()
+        setupRecyclerView()
+
+        val id = intent.getStringExtra(EXTRA_UPDATE_TAG_ID)
+
+        if (!id.isNullOrEmpty()) {
+            isEditing = true
+            loadRecipeById(id)
+        } else {
+            isEditing = false
+            recipe = Recipe("", "")
+            loadData()
+        }
     }
 
     private fun initListener() {
@@ -125,9 +143,6 @@ class AddRecipeActivity : AppCompatActivity() {
         binding.buttonSaveRecipe.setOnClickListener {
             saveRecipe()
         }
-
-        setupRecyclerView()
-        loadCategories()
     }
 
     private fun setupRecyclerView() {
@@ -154,18 +169,30 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private fun loadData() {
         binding.editTextTitle.setText(recipe.name)
-        binding.editTextIngredient.setText(recipe.ingredients.joinToString { "," })
         binding.editTextInstructions.setText(recipe.instructions)
         binding.editTextPrepTime.setText(recipe.prepTimeMinutes.toString())
         binding.editTextCookTime.setText(recipe.cookTimeMinutes.toString())
         binding.editTextServings.setText(recipe.servings.toString())
-        //binding.editTextDifficulty.setText(recipe.difficulty)
         binding.imageViewSelected.setImageURI(recipe.image.toUri())
-        /* if (!isEditing) {
-            binding.btnSaveRecipe.text = "Save Recipe"
+        if (!isEditing) {
+            binding.editTextIngredient.setText(recipe.ingredients.joinToString { "," })
+            binding.buttonSaveRecipe.text = "Save Recipe"
         } else {
-            binding.btnSaveRecipe.text = "Edit Recipe"
-        }*/
+            addRecipeIngredientsAdapter.updateIngredients(recipe.ingredients.toMutableList())
+
+            val difficulty = Difficulty.entries.
+            filter { it.name == recipe.difficulty.uppercase() }
+                .map { it }
+                .toTypedArray()
+            binding.spinnerDifficulty.setSelection(difficulty[0].ordinal)
+
+            addRecipeCategoriesAdapter.updateCategories(categoryList.filter { // ver categoryList
+                recipe.categoryIds.contains(it.id)
+            }.map { it.name }
+                .toMutableList()
+            )
+            binding.buttonSaveRecipe.text = "Edit Recipe"
+        }
     }
 
     private fun loadCategories() {
@@ -359,7 +386,7 @@ class AddRecipeActivity : AppCompatActivity() {
             }
     }
 
-    private fun clearFieldsFormRecipe () {
+    private fun clearFieldsFormRecipe() {
         recipe.name = ""
         recipe.ingredients = mutableListOf()
         recipe.instructions = ""
@@ -372,8 +399,21 @@ class AddRecipeActivity : AppCompatActivity() {
         recipe.userId = ""
     }
 
-    private fun getTokenFromFirebase() {
-        /*FirebaseMessaging.getInstance().token
+    private fun loadRecipeById(idRecipe: String) {
+        FirebaseFirestore.getInstance().collection("recipes")
+            .whereEqualTo("id", idRecipe)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                recipe = querySnapshot.documents[0].toObject(Recipe::class.java)!!
+                loadData()
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
+    }
+
+    /*private fun getTokenFromFirebaseAndSendNotification() {
+        FirebaseMessaging.getInstance().token
         .addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w("TAG", "Fetching FCM registration token failed", task.exception)
@@ -383,8 +423,15 @@ class AddRecipeActivity : AppCompatActivity() {
             // Get new FCM registration token
             val token = task.result
 
+            CoroutineScope(Dispatchers.IO).launch {
+                val xx = RetrofitProvider.getRetrofit().sendNotificationService(
+                    Message("Receta 1","Receta nueva", token)
+                )
+                println(xx)
+            }
+
             // Log and toast
             Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
-        }*/
-    }
+        }
+    }*/
 }

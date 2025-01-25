@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
 import com.tasty.recipes.adapters.AddCategoryAdapter
 import com.tasty.recipes.adapters.AddIngredientAdapter
@@ -56,10 +58,10 @@ class AddRecipeActivity : AppCompatActivity() {
                 val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 this.contentResolver.takePersistableUriPermission(uri, flag)
                 recipe.image = uri.toString()
+                binding.imageViewSelected.setImageURI(uri)
+                binding.imageViewSelected.visibility = View.VISIBLE
                 Toast.makeText(this, "Se ha cargado la imagen correctamente", Toast.LENGTH_SHORT)
                     .show()
-                // Mostrar la imagen en un ImageView (opcional)
-                //binding.imageViewSelected.setImageURI(uri)
             }
         }
 
@@ -173,15 +175,17 @@ class AddRecipeActivity : AppCompatActivity() {
         binding.editTextPrepTime.setText(recipe.prepTimeMinutes.toString())
         binding.editTextCookTime.setText(recipe.cookTimeMinutes.toString())
         binding.editTextServings.setText(recipe.servings.toString())
-        binding.imageViewSelected.setImageURI(recipe.image.toUri())
+        Picasso.get()
+            .load(recipe.image.toUri())
+            .into(binding.imageViewSelected)
+        binding.imageViewSelected.visibility = View.VISIBLE
         if (!isEditing) {
             binding.editTextIngredient.setText(recipe.ingredients.joinToString { "," })
             binding.buttonSaveRecipe.text = "Save Recipe"
         } else {
             addRecipeIngredientsAdapter.updateIngredients(recipe.ingredients.toMutableList())
 
-            val difficulty = Difficulty.entries.
-            filter { it.name == recipe.difficulty.uppercase() }
+            val difficulty = Difficulty.entries.filter { it.name == recipe.difficulty.uppercase() }
                 .map { it }
                 .toTypedArray()
             binding.spinnerDifficulty.setSelection(difficulty[0].ordinal)

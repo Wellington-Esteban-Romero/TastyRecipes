@@ -16,8 +16,8 @@
 
     <ImageButton
         android:id="@+id/btnDeleteIngredient"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@android:drawable/ic_delete"
         android:scaleType="center"

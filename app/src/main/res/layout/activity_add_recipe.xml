@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:padding="16dp"
         android:spacing="16dp">
 
@@ -32,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/ic_camera"
+            android:background="@drawable/photo_recipe_default"
             android:contentDescription="@string/todo"
             android:scaleType="centerCrop"
             android:visibility="gone" />
@@ -101,13 +102,14 @@
         </LinearLayout>
 
         <!-- Ingredients List -->
+
+        <!-- Instructions Section -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvAddIngredients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp" />
 
-        <!-- Instructions Section -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldInstructions"
             android:layout_width="match_parent"

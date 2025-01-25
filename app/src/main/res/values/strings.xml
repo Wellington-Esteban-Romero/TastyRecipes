@@ -71,5 +71,8 @@
 
     <string name="alert_dialog_delete_title">Delete Recipe</string>
     <string name="alert_dialog_delete_message">Are you sure delete the recipe?</string>
+    <string name="user_name_placeholder">User Name</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="users">Users</string>
 
 </resources>

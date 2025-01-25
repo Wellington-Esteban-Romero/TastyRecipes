@@ -17,8 +17,10 @@ import com.tasty.recipes.R
 import com.tasty.recipes.adapters.CategoryAdapter
 import com.tasty.recipes.adapters.LastSeeRecipeAdapter
 import com.tasty.recipes.adapters.PopularRecipeAdapter
+import com.tasty.recipes.adapters.UsersAdapter
 import com.tasty.recipes.data.entities.Category
 import com.tasty.recipes.data.entities.Recipe
+import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.SessionManager
 import java.util.ArrayList
@@ -29,10 +31,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var categoryRecipeAdapter: CategoryAdapter
     private lateinit var popularRecipeAdapter: PopularRecipeAdapter
     private lateinit var lastSeeRecipeAdapter: LastSeeRecipeAdapter
+    private lateinit var usersAdapter: UsersAdapter
     private lateinit var firebaseAuth: FirebaseAuth
 
     private val categoryList: MutableList<Category> = mutableListOf()
     private val recipeList: MutableList<Recipe> = mutableListOf()
+    private val userList: MutableList<User> = mutableListOf()
     private var recipeListLastSee: MutableList<Recipe> = mutableListOf()
 
     companion object {
@@ -51,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        popularRecipeAdapter.notifyItemRangeChanged(0, recipeList.size)
+        loadRecipes()
         resetSearchField()
         getLastSeeRecipe()
         super.onResume()
@@ -61,10 +65,10 @@ class MainActivity : AppCompatActivity() {
         session = SessionManager(applicationContext)
         firebaseAuth = FirebaseAuth.getInstance()
         showInfoProfile(false)
+        loadCategories()
+        loadUsers()
         setupRecyclerView()
         resetSearchField()
-        loadCategories()
-        loadRecipes()
     }
 
     private fun initListener() {
@@ -110,27 +114,36 @@ class MainActivity : AppCompatActivity() {
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     firebaseAuth.signOut()
                 }
+
                 R.id.nav_my_recipes -> {
                     val intent = Intent(this, SearchActivity::class.java)
-                    intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_SEARCH, SearchActivity.LOAD_RECIPES_USER_ID)
+                    intent.putExtra(
+                        SearchActivity.EXTRA_RECIPE_TAG_SEARCH,
+                        SearchActivity.LOAD_RECIPES_USER_ID
+                    )
                     startActivity(intent)
                 }
+
                 R.id.nav_favorites -> {
                     val intent = Intent(this, SearchActivity::class.java)
-                    intent.putExtra(SearchActivity.EXTRA_RECIPE_TAG_SEARCH, SearchActivity.LOAD_RECIPES_FAVORITES)
+                    intent.putExtra(
+                        SearchActivity.EXTRA_RECIPE_TAG_SEARCH,
+                        SearchActivity.LOAD_RECIPES_FAVORITES
+                    )
                     intent.putStringArrayListExtra(SearchActivity.EXTRA_RECIPE_TAG_FAVORITE,
                         session.getAllFavoriteRecipe()?.entries?.filter {
-                           FirebaseAuth.getInstance().currentUser?.uid == it.key.split("_")[0] && it.value == "1"
+                            FirebaseAuth.getInstance().currentUser?.uid == it.key.split("_")[0] && it.value == "1"
                         }?.map { it.key } as ArrayList<String>?
                     )
                     startActivity(intent)
                 }
+
                 R.id.nav_shared_with_me -> {
                     val appPackageName = applicationContext.packageName
                     val intent = Intent(Intent.ACTION_SEND)
                     intent.putExtra(
-                            Intent.EXTRA_TEXT,
-                    "Check out the App at: https://play.google.com/store/apps/details?id=$appPackageName"
+                        Intent.EXTRA_TEXT,
+                        "Check out the App at: https://play.google.com/store/apps/details?id=$appPackageName"
                     )
                     intent.type = "text/plain"
                     startActivity(intent)
@@ -171,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showInfoProfile(openMenu:Boolean) {
+    private fun showInfoProfile(openMenu: Boolean) {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")
 
@@ -190,8 +203,14 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private fun updateProfile(openMenu: Boolean, photoUrl: String, username: String, email: String) {
-        val profileImage = if (openMenu) binding.navigationView.findViewById(R.id.profile_image) else binding.iconProfile
+    private fun updateProfile(
+        openMenu: Boolean,
+        photoUrl: String,
+        username: String,
+        email: String
+    ) {
+        val profileImage =
+            if (openMenu) binding.navigationView.findViewById(R.id.profile_image) else binding.iconProfile
         Picasso.get().load(photoUrl).into(profileImage)
         if (openMenu) {
             binding.navigationView.findViewById<TextView>(R.id.user_name).text = username
@@ -207,7 +226,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvCategories.apply {
             layoutManager =
-                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL,
+                    false)
             adapter = categoryRecipeAdapter
         }
 
@@ -217,8 +237,20 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvRecipesPopular.apply {
             layoutManager =
-                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL,
+                    false)
             adapter = popularRecipeAdapter
+        }
+
+        usersAdapter = UsersAdapter(userList) {
+
+        }
+
+        binding.rvRegisteredUsers.apply {
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL,
+                    false)
+            adapter = usersAdapter
         }
 
         lastSeeRecipeAdapter = LastSeeRecipeAdapter(recipeListLastSee) { recipe ->
@@ -245,7 +277,7 @@ class MainActivity : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         if (!session.isFavorite(currentUser?.uid + "_" + recipe.id))
-            session.saveRecipe(currentUser?.uid + "_" +  recipe.id, SessionManager.DES_ACTIVE)
+            session.saveRecipe(currentUser?.uid + "_" + recipe.id, SessionManager.DES_ACTIVE)
         session.saveLastSee(this, recipe.id)
 
         startActivity(intent)
@@ -282,7 +314,7 @@ class MainActivity : AppCompatActivity() {
                     val recipe = document.toObject(Recipe::class.java)
                     recipeList.add(recipe)
                 }
-                popularRecipeAdapter.notifyItemInserted(recipeList.size - 1)
+                popularRecipeAdapter.updateRecipes(recipeList)
                 getLastSeeRecipe()
             }
             .addOnFailureListener { exception ->
@@ -290,8 +322,27 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-    private fun getLastSeeRecipe () {
-        val lastSee =  session.getLastSee(this)
+    private fun loadUsers() {
+        FirebaseFirestore.getInstance().collection("users")
+            .whereNotEqualTo("id", firebaseAuth.currentUser?.uid)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                userList.clear()
+
+                querySnapshot.forEach { document ->
+                    val user = document.toObject(User::class.java)
+                    userList.add(user)
+                }
+                usersAdapter.updateUsers(userList)
+                getLastSeeRecipe()
+            }
+            .addOnFailureListener { exception ->
+                Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
+            }
+    }
+
+    private fun getLastSeeRecipe() {
+        val lastSee = session.getLastSee(this)
         lastSee?.let { lastSeeId ->
             recipeListLastSee = recipeList.filter { it.id == lastSeeId }.toMutableList()
             lastSeeRecipeAdapter.updateRecipe(recipeListLastSee)

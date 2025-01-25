@@ -146,7 +146,6 @@ class RecipeDetailActivity : AppCompatActivity() {
                 .setTitle(R.string.alert_dialog_delete_title)
                 .setMessage(R.string.alert_dialog_delete_message)
                 .setPositiveButton(android.R.string.ok) { dialog, _ ->
-                    // Borramos la tarea en caso de pulsar el boton OK
                     FirebaseFirestore.getInstance().collection("recipes")
                         .document(idRecipe)
                         .delete()

@@ -71,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
                 val favoriteList = intent.extras?.getStringArrayList(EXTRA_RECIPE_TAG_FAVORITE)
                 if (!favoriteList.isNullOrEmpty()) {
                     favoriteList.forEach {
-                        loadRecipeFavorite(it.split("_")[1].toInt())
+                        loadRecipeFavorite(it.split("_")[1])
                     }
                 }
             }
@@ -163,7 +163,7 @@ class SearchActivity : AppCompatActivity() {
             }
     }
 
-    private fun loadRecipeFavorite(id:Int) {
+    private fun loadRecipeFavorite(id:String) {
         FirebaseFirestore.getInstance().collection("recipes")
             .whereEqualTo("id", id)
             .get()

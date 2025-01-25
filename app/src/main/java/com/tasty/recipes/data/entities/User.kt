@@ -4,8 +4,6 @@ class User (
     val id: String = "",
     val username: String = "",
     val email: String = "",
-    val password: String = "",
-    val repeatPassword: String = "",
     var photoUrl: String = ""
 ) {
     fun toMap(): Map<String, String> {

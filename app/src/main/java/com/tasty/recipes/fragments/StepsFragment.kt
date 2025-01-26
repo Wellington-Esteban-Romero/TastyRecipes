@@ -11,7 +11,7 @@ import com.tasty.recipes.R
 import com.tasty.recipes.adapters.StepsAdapter
 
 class StepsFragment(
-    private var steps: List<String>
+    private var steps: String
 ) : Fragment()  {
 
     override fun onCreateView(

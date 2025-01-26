@@ -44,7 +44,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private val categoryList = mutableListOf<Category>()
     private var selectedCategories = mutableListOf<String>()
     private lateinit var recipe: Recipe
-    var isEditing: Boolean = false
+    private var isEditing: Boolean = false
 
     companion object {
         const val EXTRA_RECIPE_CREATE_TAG_ID = "RECIPE_CREATE_TAG_ID"
@@ -60,8 +60,7 @@ class AddRecipeActivity : AppCompatActivity() {
                 recipe.image = uri.toString()
                 binding.imageViewSelected.setImageURI(uri)
                 binding.imageViewSelected.visibility = View.VISIBLE
-                Toast.makeText(this, "Se ha cargado la imagen correctamente", Toast.LENGTH_SHORT)
-                    .show()
+                showToast("Se ha cargado la imagen correctamente")
             }
         }
 
@@ -81,9 +80,6 @@ class AddRecipeActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-        loadCategories()
-        setupRecyclerView()
-
         val id = intent.getStringExtra(EXTRA_UPDATE_TAG_ID)
 
         if (!id.isNullOrEmpty()) {
@@ -94,6 +90,8 @@ class AddRecipeActivity : AppCompatActivity() {
             recipe = Recipe("", "")
             loadData()
         }
+        loadCategories()
+        setupRecyclerView()
     }
 
     private fun initListener() {
@@ -305,47 +303,47 @@ class AddRecipeActivity : AppCompatActivity() {
 
         recipe.userId = FirebaseAuth.getInstance().currentUser!!.uid
 
-        /* if (!isEditing) {
-             recipe.category = intent.getStringExtra(EXTRA_RECIPE_CREATE_TAG_ID).orEmpty()
-         }*/
-
         if (validateRecipe()) {
             val firestore = FirebaseFirestore.getInstance()
-            firestore.collection("recipes")
-                .add(recipe)
-                .addOnSuccessListener { documentReference ->
-                    val refID = documentReference.id
-                    recipe.id = refID
+            if (!isEditing) {
+                firestore.collection("recipes")
+                    .add(recipe)
+                    .addOnSuccessListener { documentReference ->
+                        val refID = documentReference.id
+                        recipe.id = refID
 
-                    firestore.collection("recipes")
-                        .document(refID)
-                        .update("id", refID)
-                        .addOnSuccessListener {
-                            val imageUri = recipe.image.toUri()
-                            uploadImageToStorage(imageUri, refID) { imageUrl ->
-                                if (imageUrl != null) {
-                                    saveImageFromStorage(imageUrl, refID)
-                                } else {
-                                    Toast.makeText(
-                                        this,
-                                        "Error uploading image.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                        firestore.collection("recipes")
+                            .document(refID)
+                            .update("id", refID)
+                            .addOnSuccessListener {
+                                val imageUri = recipe.image.toUri()
+                                uploadImageToStorage(imageUri, refID) { imageUrl ->
+                                    if (imageUrl != null) {
+                                        saveImageFromStorage(imageUrl, refID)
+                                    } else {
+                                        showToast("Error uploading image.")
+                                    }
                                 }
                             }
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(
-                                this,
-                                "Error update ID in recipe: " + e.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Error adding recipe: " + e.message, Toast.LENGTH_SHORT)
-                        .show();
-                }
+                            .addOnFailureListener { e ->
+                                showToast("Error update ID in recipe: " + e.message)
+                            }
+                    }
+                    .addOnFailureListener { e ->
+                        showToast("Error adding recipe: " + e.message)
+                    }
+            } else {
+                firestore.collection("recipes")
+                    .document(recipe.id)
+                    .update(recipe.toMap())
+                    .addOnSuccessListener {
+                        showToast("Recipe updated successfully")
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        showToast("Error updating recipe: ${e.message}")
+                    }
+            }
         }
     }
 
@@ -359,11 +357,11 @@ class AddRecipeActivity : AppCompatActivity() {
                     .addOnSuccessListener { downloadUrl ->
                         callback(downloadUrl.toString())
                     }
-                    .addOnFailureListener { e ->
+                    .addOnFailureListener { _ ->
                         callback(null)
                     }
             }
-            .addOnFailureListener { e ->
+            .addOnFailureListener { _ ->
                 callback(null)
             }
     }
@@ -374,33 +372,25 @@ class AddRecipeActivity : AppCompatActivity() {
             .document(refID)
             .update("image", imageUrl)
             .addOnSuccessListener {
-                Toast.makeText(
-                    this,
-                    "Recipe added successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast("Recipe added successfully")
                 clearFieldsFormRecipe()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(
-                    this,
-                    "Error updating recipe image URL: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast("Error updating recipe image URL: ${e.message}")
             }
     }
 
     private fun clearFieldsFormRecipe() {
-        recipe.name = ""
-        recipe.ingredients = mutableListOf()
-        recipe.instructions = ""
-        recipe.prepTimeMinutes = 0
-        recipe.cookTimeMinutes = 0
-        recipe.servings = 0
-        recipe.difficulty = binding.spinnerDifficulty.selectedItem.toString()
-        recipe.categoryIds = mutableListOf()
-        recipe.image = ""
-        recipe.userId = ""
+        binding.textFieldTitleName.editText?.setText("")
+        binding.textFieldIngredient.editText?.setText("")
+        binding.textFieldInstructions.editText?.setText("")
+        binding.textFieldPrepTime.editText?.setText("0")
+        binding.textFieldCookTime.editText?.setText("0")
+        binding.textFieldServings.editText?.setText("0")
+        binding.spinnerDifficulty.setSelection(0)
+        binding.imageViewSelected.setImageURI(null)
+        addRecipeCategoriesAdapter.updateCategories(mutableListOf())
+        addRecipeIngredientsAdapter.updateIngredients(mutableListOf())
     }
 
     private fun loadRecipeById(idRecipe: String) {
@@ -414,6 +404,10 @@ class AddRecipeActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar recipes: ${exception.message}")
             }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     /*private fun getTokenFromFirebaseAndSendNotification() {

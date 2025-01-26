@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tasty.recipes.R
 
-class StepsAdapter(private val steps: List<String>) : RecyclerView.Adapter<StepsAdapter.StepViewHolder>() {
+class StepsAdapter(private val steps: String) : RecyclerView.Adapter<StepsAdapter.StepViewHolder>() {
 
     class StepViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val stepTextView: TextView = itemView.findViewById(R.id.tvStep)
@@ -19,9 +19,9 @@ class StepsAdapter(private val steps: List<String>) : RecyclerView.Adapter<Steps
     }
 
     override fun onBindViewHolder(holder: StepViewHolder, position: Int) {
-        holder.stepTextView.text = steps[position]
+        holder.stepTextView.text = steps
     }
 
-    override fun getItemCount() = steps.size
+    override fun getItemCount() = 1
 
 }

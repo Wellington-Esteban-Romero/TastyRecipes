@@ -55,9 +55,13 @@ class RecipeDetailActivity : AppCompatActivity() {
         initListener()
     }
 
+    override fun onResume() {
+        loadRecipeById()
+        super.onResume()
+    }
+
     private fun initUI() {
         idRecipe = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
-        loadRecipeById()
         updateRecipe()
     }
 
@@ -100,7 +104,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             var selectedFragment: Fragment? = null
             when (item.itemId) {
                 R.id.nav_ingredients -> selectedFragment = IngredientsFragment(recipe.ingredients)
-                R.id.nav_steps -> selectedFragment = StepsFragment(recipe.instructions.split("."))
+                R.id.nav_steps -> selectedFragment = StepsFragment(recipe.instructions)
             }
 
             if (selectedFragment != null) {

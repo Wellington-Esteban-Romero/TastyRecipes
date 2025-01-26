@@ -198,11 +198,7 @@ class RegisterActivity : AppCompatActivity() {
             .document(refID)
             .update("photoUrl", imageUrl)
             .addOnSuccessListener {
-                Toast.makeText(
-                    this,
-                    "users added successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast("users added successfully")
                 signOutAndRedirectToLogin()
             }
             .addOnFailureListener { e ->

@@ -206,7 +206,7 @@ class LoginActivity : AppCompatActivity() {
         if (email.isEmpty()) {
             binding.etFieldEmail.error = "Ingresa un correo electrónico"
             isValid = false
-        } else if (!email.matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
+        } else if (!email.matches(Regex(RegisterActivity.PATTERN_EMAIL))) {
             binding.etFieldEmail.error = "Ingresa un correo electrónico válido"
             isValid = false
         }  else {
@@ -216,7 +216,7 @@ class LoginActivity : AppCompatActivity() {
         if (password.isEmpty()) {
             binding.etFieldPassword.error = "Ingresa una contraseña"
             isValid = false
-        } else if (!password.matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
+        } else if (!password.matches(Regex(RegisterActivity.PATTERN_PASSWORD))) {
             binding.etFieldPassword.error = "La contraseña debe contener al menos una letra mayúscula, una minúscula, un número y un símbolo especial."
             isValid = false
         } else {

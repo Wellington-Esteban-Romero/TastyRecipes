@@ -9,22 +9,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.squareup.picasso.Picasso
 import com.tasty.recipes.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private val storageRef = FirebaseStorage.getInstance().reference
     private var photoUrl: String = ""
 
     companion object {
-        private const val TAG = "Register"
+        private const val TAG = "Firestore"
+        const val PATTERN_EMAIL = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+        const val PATTERN_PASSWORD =
+            "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"
     }
 
     private val pickImageLauncher =
@@ -33,7 +34,8 @@ class RegisterActivity : AppCompatActivity() {
                 try {
                     val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                     this.contentResolver.takePersistableUriPermission(uri, flag)
-                    uploadImage(uri)
+                    photoUrl = uri.toString()
+                    binding.ivSelectedImage.setImageURI(uri)
                 } catch (e: Exception) {
                     Log.e("ImagePicker", "Error al procesar la imagen: ${e.message}", e)
                     Toast.makeText(this, "Error al cargar la imagen", Toast.LENGTH_SHORT).show()
@@ -73,28 +75,23 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun createAccount(email: String, password: String) {
-
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = task.result?.user
                     user?.let {
                         val userData = createUserDataMap(user)
-                        saveUserToFirestore(user.uid, userData, user)
-
-                        sendVerificationEmail(it)
-                        Toast.makeText(
-                            this,
-                            "Verifica tu email antes de continuar.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        saveUserToFirestore(user.uid, userData) { isSuccess ->
+                            if (isSuccess) {
+                                sendVerificationEmail(user)
+                                showToast("Verifica tu email antes de continuar.")
+                            } else {
+                                handleFirestoreFailure(Exception("Failed to save user data"), user)
+                            }
+                        }
                     }
                 } else {
-                    Toast.makeText(
-                        this,
-                        "Error: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showToast("Error: ${task.exception?.message}")
                 }
             }
     }
@@ -123,30 +120,45 @@ class RegisterActivity : AppCompatActivity() {
     private fun saveUserToFirestore(
         userId: String,
         userData: Map<String, Any>,
-        user: FirebaseUser
+        callback: (Boolean) -> Unit
     ) {
         FirebaseFirestore.getInstance().collection("users")
             .document(userId)
             .set(userData)
             .addOnSuccessListener {
-                Log.d("Firestore", "Usuario añadido correctamente")
-                if (userData["photoUrl"].toString().isNotEmpty())
-                    saveImageUriToDatabase(userData["photoUrl"].toString())
-                signOutAndRedirectToLogin()
+                Log.d(TAG, "User added to Firestore successfully.")
+                val photoUrl = userData["photoUrl"].toString()
+                val b = if (photoUrl.isNotEmpty()) {
+                    uploadImageToStorage(photoUrl.toUri()) { imageUrl ->
+                        if (imageUrl != null) {
+                            saveImageFromStorage(imageUrl, userId)
+                        } else {
+                            Toast.makeText(
+                                this,
+                                "Error uploading image.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    true
+                } else {
+                    false
+                }
+                callback(b)
             }
             .addOnFailureListener { exception ->
-                handleFirestoreFailure(exception, user)
+                callback(false)
             }
     }
 
     private fun handleFirestoreFailure(exception: Exception, user: FirebaseUser) {
         user.delete().addOnCompleteListener { deleteTask ->
             if (deleteTask.isSuccessful) {
-                Log.e("Firestore", "Error al guardar usuario, Auth revertido", exception)
+                Log.e(TAG, "User creation reverted due to Firestore failure", exception)
             } else {
                 Log.e(
-                    "Firestore",
-                    "Error al guardar usuario y fallo al eliminar de Auth",
+                    TAG,
+                    "Failed to revert user creation in Auth.",
                     deleteTask.exception
                 )
             }
@@ -161,35 +173,40 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun uploadImage(imageUri: Uri) {
-        val fileRef = storageRef.child("profile_pictures/image_${System.currentTimeMillis()}.web")
-        val uploadTask = fileRef.putFile(imageUri)
-        uploadTask.addOnSuccessListener {
-            fileRef.downloadUrl.addOnSuccessListener { uri ->
-                Picasso.get()
-                    .load(uri)
-                    .into(binding.ivSelectedImage)
-                Toast.makeText(this, "Imagen cargada correctamente", Toast.LENGTH_SHORT)
-                    .show()
-                this.photoUrl = uri.toString()
+    private fun uploadImageToStorage(imageUri: Uri, callback: (String?) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageRef = storageRef.child("profile_pictures/image_${System.currentTimeMillis()}.web")
+
+        imageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                imageRef.downloadUrl
+                    .addOnSuccessListener { downloadUrl ->
+                        callback(downloadUrl.toString())
+                    }
+                    .addOnFailureListener { _ ->
+                        callback(null)
+                    }
             }
-        }.addOnFailureListener { e ->
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
+            .addOnFailureListener { _ ->
+                callback(null)
+            }
     }
 
-    private fun saveImageUriToDatabase(downloadUrl: String) {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "default_user"
-        FirebaseDatabase.getInstance().reference.child("users").child(userId).child("photoUrl").setValue(downloadUrl)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    photoUrl = downloadUrl
-                    Picasso.get()
-                        .load(downloadUrl)
-                        .into(binding.ivSelectedImage)
-                } else {
-                    Toast.makeText(this, "Error al guardar URL", Toast.LENGTH_SHORT).show()
-                }
+    private fun saveImageFromStorage(imageUrl: String, refID: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("users")
+            .document(refID)
+            .update("photoUrl", imageUrl)
+            .addOnSuccessListener {
+                Toast.makeText(
+                    this,
+                    "users added successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+                signOutAndRedirectToLogin()
+            }
+            .addOnFailureListener { e ->
+                showToast("Error updating recipe image URL: ${e.message}")
             }
     }
 
@@ -206,7 +223,7 @@ class RegisterActivity : AppCompatActivity() {
         if (binding.etEmailRegister.text.toString().isEmpty()) {
             binding.etFieldEmailRegister.error = "Ingresa un correo electrónico"
             isValid = false
-        } else if (!binding.etEmailRegister.text.toString().matches(Regex("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"))) {
+        } else if (!binding.etEmailRegister.text.toString().matches(Regex(PATTERN_EMAIL))) {
             binding.etFieldEmailRegister.error = "Ingresa un correo electrónico válido"
             isValid = false
         } else {
@@ -216,7 +233,7 @@ class RegisterActivity : AppCompatActivity() {
         if (binding.etPasswordRegister.text.toString().isEmpty()) {
             binding.etFieldPasswordRegister.error = "Ingresa una contraseña"
             isValid = false
-        } else if (!binding.etPasswordRegister.text.toString().matches(Regex("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@\$!%*?&#])[A-Za-z\\d@\$!%*?&#]{6,}$"))) {
+        } else if (!binding.etPasswordRegister.text.toString().matches(Regex(PATTERN_PASSWORD))) {
             binding.etFieldPasswordRegister.error = "Mínimo debe haber 1 letra mayúscula.\n" +
                     "Mínimo debe haber 1 letra minúscula.\n" +
                     "Mínimo debe haber 1 número.\n" +
@@ -244,5 +261,9 @@ class RegisterActivity : AppCompatActivity() {
             isValid = false
         }
         return isValid
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

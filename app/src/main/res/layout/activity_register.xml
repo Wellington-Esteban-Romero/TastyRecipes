@@ -119,6 +119,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/upload_image"
             android:textSize="16sp"
+            android:textColor="@color/white"
             app:backgroundTint="@color/color_background_btn_o_icon_second" />
 
         <com.google.android.material.button.MaterialButton
@@ -128,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/create_user"
+            android:textColor="@color/white"
             app:backgroundTint="@color/color_background_btn_main"/>
 
     </LinearLayout>

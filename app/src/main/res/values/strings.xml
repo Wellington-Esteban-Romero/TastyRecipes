@@ -4,7 +4,7 @@
     <string name="title_logo">TASTY RECIPES</string>
     <string name="msg_logo">GET STARTED</string>
 
-    <string name="login">Login</string>
+    <string name="login">Log In</string>
     <string name="login_forgot_password">Forgot password?</string>
     <string name="login_log_in">Log In</string>
     <string name="login_register">Register</string>

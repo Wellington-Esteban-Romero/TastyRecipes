@@ -24,7 +24,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="8dp"
+        android:textColor="@color/color_background_menu_bottom"/>
 
     <TextView
         android:id="@+id/user_email"

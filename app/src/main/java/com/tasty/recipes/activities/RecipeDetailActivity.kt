@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.tasty.recipes.R
+import com.tasty.recipes.data.entities.Follower
 import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityRecipeDetailBinding
@@ -132,15 +134,8 @@ class RecipeDetailActivity : AppCompatActivity() {
                 R.id.action_favorite_details -> {
                     true
                 }
-
-                /*R.id.user -> {
-                    val intent = Intent(this, LoginActivity::class.java)
-                    startActivity(intent)
-                    true
-                }*/
                 else -> false
             }
-
         }
     }
 
@@ -224,7 +219,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun saveImageToCache(bitmap: Bitmap): Uri? {
         val cachePath = File(cacheDir, "images")
         cachePath.mkdirs()
-        val file = File(cachePath, UUID.randomUUID().toString() + ".png")
+        val file = File(cachePath, UUID.randomUUID().toString() + ".web")
         try {
             FileOutputStream(file).use { stream ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -272,5 +267,20 @@ class RecipeDetailActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar los datos asociados a la receta: ${exception.message}")
             }
+    }
+
+    private fun followUser () {
+        FirebaseFirestore.getInstance().collection("followers")
+            .add(Follower(FirebaseAuth.getInstance().currentUser?.uid!! ,recipe.userId))
+            .addOnSuccessListener {
+                showToast("followers add successfully")
+            }
+            .addOnFailureListener { e ->
+                showToast("Error add followers: ${e.message}")
+            }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

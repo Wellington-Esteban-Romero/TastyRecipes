@@ -1,7 +1,5 @@
 package com.tasty.recipes.data.entities
 
-import org.checkerframework.checker.units.qual.A
-
 data class Recipe(
     var id: String = "",
     var name: String = "",
@@ -12,7 +10,7 @@ data class Recipe(
     var servings: Int = 0,
     var difficulty: String = "",
     var image: String = "",
-    var categoryIds: List<Long> = mutableListOf(),
+    var categoryIds: List<String> = mutableListOf(),
     var userId: String = ""
 ) {
     fun toMap(): Map<String, Any> {

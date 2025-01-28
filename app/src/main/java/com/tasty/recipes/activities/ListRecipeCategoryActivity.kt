@@ -49,7 +49,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         binding.titleRecipe.text = name
 
         setupRecyclerView()
-        loadRecipesByCategory(id.toInt())
+        loadRecipesByCategory(id)
     }
 
     private fun initListener() {
@@ -78,7 +78,7 @@ class ListRecipeCategoryActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun loadRecipesByCategory(categoryId: Int) {
+    private fun loadRecipesByCategory(categoryId: String) {
         FirebaseFirestore.getInstance().collection("recipes")
             .whereArrayContains("categoryIds", categoryId)
             .get()

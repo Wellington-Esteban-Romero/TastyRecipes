@@ -11,7 +11,7 @@
     <string name="login_log_in_google">Sign in with Google</string>
     <string name="login_log_in_facebook">Sign in with Facebook</string>
 
-    <string name="msg_main">Choose\nYour Favorite Recipe</string>
+    <string name="msg_main">Choose\nYour Favorite <font color='#FF0000'>Recipe</font></string>
 
     <string name="splash_logo">Splash logo recipes</string>
 

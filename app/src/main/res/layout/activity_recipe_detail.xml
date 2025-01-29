@@ -118,7 +118,21 @@
             app:layout_constraintStart_toEndOf="@id/user_photo"
             app:layout_constraintTop_toTopOf="@id/user_photo"
             app:layout_constraintBottom_toBottomOf="@id/user_photo"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/btn_follow" />
+
+        <!-- Botón follow -->
+        <Button
+            android:id="@+id/btn_follow"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/color_background_btn_o_icon_second"
+            android:contentDescription="@string/todo"
+            android:scaleType="centerInside"
+            android:text="@string/follow"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Card con Bottom Navigation -->
@@ -164,6 +178,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_gravity="bottom"
+        android:fitsSystemWindows="true"
         app:backgroundTint="@color/color_background_btn_main"
         app:menu="@menu/bottom_app_bar_details"
         app:navigationIcon="@drawable/ic_home"

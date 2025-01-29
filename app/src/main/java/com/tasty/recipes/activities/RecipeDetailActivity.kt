@@ -3,17 +3,24 @@ package com.tasty.recipes.activities
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,12 +50,25 @@ class RecipeDetailActivity : AppCompatActivity() {
         lateinit var session: SessionManager
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+       /* window.insetsController?.let {
+            it.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
+            it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigation) { view, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, 0, 0, systemBarsInsets.bottom)
+            insets
+        }*/
 
         setSupportActionBar(binding.toolbar)
         session = SessionManager(applicationContext)
@@ -69,9 +89,10 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun initListener() {
         setupToolBarListeners()
-        setupBottomNavigationView()
-        setupBottomAppBarListeners()
-        setupDeleteRecipe()
+        setupButtonNavigationView()
+        setupButtonAppBarListeners()
+        setupButtonDeleteRecipe()
+        setupButtonFollowListeners()
     }
 
     private fun loadRecipeById() {
@@ -101,7 +122,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupBottomNavigationView() {
+    private fun setupButtonNavigationView() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             var selectedFragment: Fragment? = null
             when (item.itemId) {
@@ -118,7 +139,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupBottomAppBarListeners() {
+    private fun setupButtonAppBarListeners() {
         binding.bottomAppBar.setNavigationOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
@@ -134,12 +155,13 @@ class RecipeDetailActivity : AppCompatActivity() {
                 R.id.action_favorite_details -> {
                     true
                 }
+
                 else -> false
             }
         }
     }
 
-    private fun setupDeleteRecipe() {
+    private fun setupButtonDeleteRecipe() {
         binding.btnDeleteRecipe.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.alert_dialog_delete_title)
@@ -162,6 +184,22 @@ class RecipeDetailActivity : AppCompatActivity() {
                 }
                 .setIcon(android.R.drawable.ic_delete)
                 .show()
+        }
+    }
+
+    private fun setupButtonFollowListeners() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid!!
+        binding.btnFollow.setOnClickListener {
+            FirebaseFirestore.getInstance().collection("followers")
+                .add(Follower(uid, recipe.userId, recipe.id))
+                .addOnSuccessListener {
+                    showToast("followers add successfully")
+                    disableButtonFollow()
+                }
+                .addOnFailureListener { e ->
+                    showToast("Error add followers: ${e.message}")
+                    finish()
+                }
         }
     }
 
@@ -219,7 +257,7 @@ class RecipeDetailActivity : AppCompatActivity() {
     private fun saveImageToCache(bitmap: Bitmap): Uri? {
         val cachePath = File(cacheDir, "images")
         cachePath.mkdirs()
-        val file = File(cachePath, UUID.randomUUID().toString() + ".web")
+        val file = File(cachePath, UUID.randomUUID().toString() + ".png")
         try {
             FileOutputStream(file).use { stream ->
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -236,14 +274,15 @@ class RecipeDetailActivity : AppCompatActivity() {
     }
 
     private fun createDetails() {
-
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         createDetailsUser()
+        checkEnabledButtonFollow()
 
         if (recipe.userId == currentUser?.uid) {
             binding.btnDeleteRecipe.visibility = View.VISIBLE
             binding.btnUpdateRecipe.visibility = View.VISIBLE
+            binding.btnFollow.visibility = View.GONE
         }
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
         binding.toolbar.title = recipe.name
@@ -253,7 +292,7 @@ class RecipeDetailActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun createDetailsUser () {
+    private fun createDetailsUser() {
         FirebaseFirestore.getInstance().collection("users")
             .whereEqualTo("id", recipe.userId)
             .get()
@@ -265,19 +304,38 @@ class RecipeDetailActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("FirestoreError", "Error al cargar los datos asociados a la receta: ${exception.message}")
+                Log.e(
+                    "FirestoreError",
+                    "Error al cargar los datos asociados a la receta: ${exception.message}"
+                )
             }
     }
 
-    private fun followUser () {
+    private fun checkEnabledButtonFollow () {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid!!
         FirebaseFirestore.getInstance().collection("followers")
-            .add(Follower(FirebaseAuth.getInstance().currentUser?.uid!! ,recipe.userId))
-            .addOnSuccessListener {
-                showToast("followers add successfully")
+            .whereEqualTo("followerId", uid)
+            .whereEqualTo("followedId", recipe.userId)
+            .whereEqualTo("recipeId", recipe.id)
+            .get()
+            .addOnSuccessListener { task ->
+                if (!task.isEmpty) {
+                    disableButtonFollow()
+                }
             }
             .addOnFailureListener { e ->
-                showToast("Error add followers: ${e.message}")
+                showToast("Error: ${e.message}")
+                finish()
             }
+    }
+
+    private fun disableButtonFollow() {
+        with( binding.btnFollow) {
+            isEnabled = false
+            isActivated = false
+            setBackgroundResource(R.drawable.search_background)
+        }
+
     }
 
     private fun showToast(message: String) {

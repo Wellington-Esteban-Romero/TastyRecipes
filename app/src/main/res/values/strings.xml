@@ -74,5 +74,6 @@
     <string name="user_name_placeholder">User Name</string>
     <string name="profile_image">Profile Image</string>
     <string name="users">Users</string>
+    <string name="follow">Follow</string>
 
 </resources>

@@ -1,7 +1,8 @@
 package com.tasty.recipes.data.entities
 
 data class Follower (
-    private val followerId: String,
-    private val followedId: String
+    val followerId: String,
+    val followedId: String,
+    val recipeId: String
 ) {
 }

@@ -184,6 +184,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupButtonViewAll() {
+        binding.btnViewAll.setOnClickListener {
+            startActivity(Intent(this, AddRecipeActivity::class.java))
+        }
+    }
+
     private fun showInfoProfile(openMenu: Boolean) {
         val db = FirebaseFirestore.getInstance()
         val userCollection = db.collection("users")

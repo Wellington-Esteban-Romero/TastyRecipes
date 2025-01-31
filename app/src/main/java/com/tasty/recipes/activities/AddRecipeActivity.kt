@@ -114,7 +114,7 @@ class AddRecipeActivity : AppCompatActivity() {
                             selectedCategories.add(categoryList[which].name)
                         }
                     } else {
-                        selectedCategories.remove(selectedCategories[which])
+                        selectedCategories.remove(categoryList[which].name)
                     }
                 }
                 .setPositiveButton("OK") { _, _ ->

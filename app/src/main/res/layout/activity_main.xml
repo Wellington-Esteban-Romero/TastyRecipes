@@ -153,6 +153,10 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -163,6 +167,21 @@
                 android:textColor="@color/color_background_text_main"
                 android:textSize="18sp" />
 
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/btn_viewAll"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/roboto_medium"
+                android:textColor="@color/color_background_btn_main"
+                android:text="View all" />
+        </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRegisteredUsers"
                 android:layout_width="match_parent"

@@ -51,7 +51,6 @@ class AddRecipeActivity : AppCompatActivity() {
         const val EXTRA_UPDATE_TAG_ID = "EXTRA_UPDATE_TAG_ID"
     }
 
-    // Registrar el launcher para seleccionar imágenes
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
@@ -90,7 +89,6 @@ class AddRecipeActivity : AppCompatActivity() {
             recipe = Recipe("", "")
             loadData()
         }
-        loadCategories()
         setupRecyclerView()
     }
 
@@ -188,13 +186,9 @@ class AddRecipeActivity : AppCompatActivity() {
                 .toTypedArray()
             binding.spinnerDifficulty.setSelection(difficulty[0].ordinal)
 
-            addRecipeCategoriesAdapter.updateCategories(categoryList.filter { // ver categoryList
-                recipe.categoryIds.contains(it.id)
-            }.map { it.name }
-                .toMutableList()
-            )
             binding.buttonSaveRecipe.text = "Edit Recipe"
         }
+        loadCategories()
     }
 
     private fun loadCategories() {
@@ -207,6 +201,14 @@ class AddRecipeActivity : AppCompatActivity() {
                     categoryList.add(category)
                 }
                 addRecipeCategoriesAdapter.notifyItemInserted(categoryList.size - 1)
+
+                if (isEditing) {
+                    addRecipeCategoriesAdapter.updateCategories(categoryList.filter {
+                        recipe.categoryIds.contains(it.id)
+                    }.map { it.name }
+                        .toMutableList()
+                    )
+                }
             }
             .addOnFailureListener { exception ->
                 Log.e("FirestoreError", "Error al cargar categorías: ${exception.message}")

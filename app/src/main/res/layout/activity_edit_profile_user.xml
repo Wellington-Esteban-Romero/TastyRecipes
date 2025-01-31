@@ -8,15 +8,17 @@
     android:id="@+id/main"
     android:background="@color/white">
 
-    <!-- AppBar -->
+    <!-- Title Bar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/transparent"
         android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
-        app:title="Editar Perfil"
-        app:navigationIcon="@drawable/ic_arrow_back" />
+        app:title="Edit User"
+        app:titleTextColor="@color/color_background_btn_main"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/color_background_btn_main" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -74,27 +76,12 @@
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Campo de Texto: Correo -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/email"
-                app:boxBackgroundMode="filled"
-                android:layout_marginTop="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/emailEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Save"
+                android:text="@string/update_user"
                 style="@style/Widget.MaterialComponents.Button"
                 android:backgroundTint="@color/color_background_btn_main"/>
         </LinearLayout>

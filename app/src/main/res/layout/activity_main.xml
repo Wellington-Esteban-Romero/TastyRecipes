@@ -79,11 +79,12 @@
         android:autofillHints=""
         android:background="@drawable/search_background"
         android:drawableStart="@drawable/ic_search"
+        android:drawableTint="@color/color_background_text_main"
         android:focusable="false"
         android:hint="@string/search_recipe"
         android:inputType="none"
         android:paddingStart="10sp"
-        android:textColorHint="@color/color_background_text_second"
+        android:textColorHint="@color/color_background_text_main"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -173,14 +174,14 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/btn_viewAll"
+                android:id="@+id/btnViewAll"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/roboto_medium"
                 android:textColor="@color/color_background_btn_main"
-                android:text="View all" />
+                android:text="@string/view_all" />
         </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRegisteredUsers"

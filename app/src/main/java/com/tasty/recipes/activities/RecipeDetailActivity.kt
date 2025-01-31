@@ -50,7 +50,6 @@ class RecipeDetailActivity : AppCompatActivity() {
         lateinit var session: SessionManager
     }
 
-
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,14 +58,14 @@ class RecipeDetailActivity : AppCompatActivity() {
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-       /* window.insetsController?.let {
+       window.insetsController?.let {
             it.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
             it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigation) { view, insets ->
+         /*ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(0, 0, 0, systemBarsInsets.bottom)
+            view.setPadding(0, systemBarsInsets.top, 0, systemBarsInsets.bottom)
             insets
         }*/
 
@@ -285,8 +284,9 @@ class RecipeDetailActivity : AppCompatActivity() {
             binding.btnFollow.visibility = View.GONE
         }
         Picasso.get().load(recipe.image).into(binding.imageRecipe)
-        binding.toolbar.title = recipe.name
-        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+        binding.toolbarLayout.title = recipe.name
+        binding.toolbarLayout.setExpandedTitleColor(ContextCompat.getColor(this, R.color.white))
+        binding.bottomAppBar.setNavigationIconTint(ContextCompat.getColor(this, R.color.white))
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, IngredientsFragment(recipe.ingredients))
             .commit()

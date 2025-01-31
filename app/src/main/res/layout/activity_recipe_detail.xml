@@ -74,10 +74,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
+                app:menu="@menu/recipe_toolbar_menu"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="Recipe Name"
                 android:fitsSystemWindows="true"
-                app:menu="@menu/recipe_toolbar_menu" />
+                app:title="Recipe Name" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

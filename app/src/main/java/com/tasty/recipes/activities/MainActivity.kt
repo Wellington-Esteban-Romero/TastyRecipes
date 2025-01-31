@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         setupProfileMenuListeners()
         setupBottomAppBarListeners()
         setupFloatingActionButton()
+        setupShowViewAll()
     }
 
     private fun resetSearchField() {
@@ -184,9 +185,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupButtonViewAll() {
+    private fun setupShowViewAll() {
         binding.btnViewAll.setOnClickListener {
-            startActivity(Intent(this, AddRecipeActivity::class.java))
+            startActivity(Intent(this, ListUserActivity::class.java))
         }
     }
 

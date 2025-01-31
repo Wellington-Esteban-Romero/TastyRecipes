@@ -8,18 +8,6 @@
     android:id="@+id/main"
     android:background="@color/white">
 
-    <!-- Title Bar -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
-        app:title="Edit User"
-        app:titleTextColor="@color/color_background_btn_main"
-        app:navigationIcon="@drawable/ic_arrow_back"
-        app:navigationIconTint="@color/color_background_btn_main" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -31,6 +19,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal">
+
+            <!-- Title Bar -->
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"
+                app:title="Edit User"
+                app:titleTextColor="@color/color_background_btn_main"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:navigationIconTint="@color/color_background_btn_main" />
 
             <!-- Imagen de Perfil -->
             <FrameLayout

@@ -61,13 +61,13 @@ class RecipeDetailActivity : AppCompatActivity() {
        window.insetsController?.let {
             it.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
             it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
+       }
 
-         /*ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
-            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(0, systemBarsInsets.top, 0, systemBarsInsets.bottom)
+        binding.bottomAppBar.setOnApplyWindowInsetsListener { view, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
+            view.setPadding(view.paddingLeft, statusBarHeight, view.paddingRight, view.paddingBottom)
             insets
-        }*/
+        }
 
         setSupportActionBar(binding.toolbar)
         session = SessionManager(applicationContext)

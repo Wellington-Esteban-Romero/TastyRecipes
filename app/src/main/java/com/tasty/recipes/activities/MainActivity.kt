@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,6 +30,7 @@ import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.SessionManager
+import com.tasty.recipes.utils.setWindowInsets
 import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
@@ -62,11 +64,7 @@ class MainActivity : AppCompatActivity() {
             it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        binding.bottomAppBar.setOnApplyWindowInsetsListener { view, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-            view.setPadding(view.paddingLeft, statusBarHeight, view.paddingRight, view.paddingBottom)
-            insets
-        }
+        binding.bottomAppBar.setWindowInsets()
 
         initUI()
         initListener()

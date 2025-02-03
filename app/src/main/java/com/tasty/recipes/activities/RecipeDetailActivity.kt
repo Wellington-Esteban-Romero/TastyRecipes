@@ -31,12 +31,13 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
 
-
 class RecipeDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRecipeDetailBinding
     private lateinit var idRecipe: String
     private lateinit var recipe: Recipe
+    private lateinit var favoriteMenuItem: MenuItem
+    var isFavorite = false
 
     companion object {
         const val EXTRA_RECIPE_ID = "EXTRA_RECIPE_ID"
@@ -64,7 +65,8 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun initUI() {
         idRecipe = intent.getStringExtra(EXTRA_RECIPE_ID).orEmpty()
-        updateRecipe()
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        isFavorite = session.isFavorite(currentUser?.uid + "_" + idRecipe)
     }
 
     private fun initListener() {
@@ -72,6 +74,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         setupButtonNavigationView()
         setupButtonAppBarListeners()
         setupButtonDeleteRecipe()
+        setupUpdateListener()
         setupButtonFollowListeners()
     }
 
@@ -88,17 +91,17 @@ class RecipeDetailActivity : AppCompatActivity() {
             }
     }
 
-    private fun updateRecipe() {
+    private fun setupToolBarListeners() {
+        binding.toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun setupUpdateListener() {
         binding.btnUpdateRecipe.setOnClickListener {
             val intent = Intent(this, AddRecipeActivity::class.java)
             intent.putExtra(AddRecipeActivity.EXTRA_UPDATE_TAG_ID, idRecipe)
             startActivity(intent)
-        }
-    }
-
-    private fun setupToolBarListeners() {
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -186,8 +189,8 @@ class RecipeDetailActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.recipe_toolbar_menu, menu)
-        if (session.isFavorite(FirebaseAuth.getInstance().currentUser?.uid + "_" + idRecipe))
-            menu?.findItem(R.id.action_favorite)?.setIcon(R.drawable.ic_favorite)
+        favoriteMenuItem = menu?.findItem(R.id.action_favorite)!!
+        setFavoriteIcon()
         return true
     }
 
@@ -195,27 +198,26 @@ class RecipeDetailActivity : AppCompatActivity() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         when (item.itemId) {
             R.id.action_favorite -> {
-                if (!session.isFavorite(currentUser?.uid + "_" + idRecipe)) {
+                if (!isFavorite) {
                     session.saveRecipe(currentUser?.uid + "_" + idRecipe, SessionManager.ACTIVE)
-                    item.setIcon(R.drawable.ic_favorite)
                 } else {
                     session.saveRecipe(currentUser?.uid + "_" + idRecipe, SessionManager.DES_ACTIVE)
-                    item.setIcon(R.drawable.ic_favorite_empty)
                 }
-                true
+
+                isFavorite = !isFavorite
+                setFavoriteIcon()
+                return true
             }
 
             R.id.action_share -> {
-
                 binding.imageRecipe.isDrawingCacheEnabled = true
                 val bitmap: Bitmap = Bitmap.createBitmap(binding.imageRecipe.drawingCache)
                 binding.imageRecipe.isDrawingCacheEnabled = false
 
                 shareTextAndImage(binding.toolbar.title.toString(), bitmap);
-                true
+                return true
             }
-
-            else -> false
+            else -> super.onOptionsItemSelected(item)
         }
         return super.onOptionsItemSelected(item)
     }
@@ -273,6 +275,14 @@ class RecipeDetailActivity : AppCompatActivity() {
             .commit()
     }
 
+    private fun setFavoriteIcon() {
+        if (isFavorite) {
+            favoriteMenuItem.setIcon(R.drawable.ic_favorite)
+        } else {
+            favoriteMenuItem.setIcon(R.drawable.ic_favorite_empty)
+        }
+    }
+
     private fun createDetailsUser() {
         FirebaseFirestore.getInstance().collection("users")
             .whereEqualTo("id", recipe.userId)
@@ -290,6 +300,37 @@ class RecipeDetailActivity : AppCompatActivity() {
                     "Error al cargar los datos asociados a la receta: ${exception.message}"
                 )
             }
+    }
+
+    private fun updateFavouriteCount(sign: String):Boolean {
+        var update = false
+        val db = FirebaseFirestore.getInstance()
+        val recipeRef = db.collection("recipes").document(idRecipe)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(recipeRef)
+            if (snapshot.exists()) {
+                val currentCount = snapshot.getLong("countFavourite") ?: 0L
+                val newCount = when(sign) {
+                    "+" -> currentCount + 1L
+                    "-" -> currentCount - 1L
+                    else -> { 0L }
+                }
+                transaction.update(recipeRef, "countFavourite", newCount)
+            } else {
+                Log.e("Firestore", "Not found recipe")
+                throw Exception("Not found recipe")
+            }
+        }.addOnSuccessListener {
+            Log.d("Firestore", "Count favorite updated successfully.")
+            showToast("Favorite added successfully. Intenta de nuevo.")
+            update = true
+        }.addOnFailureListener { e ->
+            showToast("Error update favorite. Intenta de nuevo.")
+            Log.e("Firestore", "Error update favorite: ", e)
+            update = false
+        }
+        return update
     }
 
     private fun checkEnabledButtonFollow () {
@@ -316,7 +357,6 @@ class RecipeDetailActivity : AppCompatActivity() {
             isActivated = false
             setBackgroundResource(R.drawable.search_background)
         }
-
     }
 
     private fun showToast(message: String) {

@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:liftOnScroll="true"
+        android:fitsSystemWindows="true"
         tools:ignore="MissingConstraints">
 
         <!-- Collapsing Toolbar -->
@@ -29,7 +30,7 @@
             <ImageView
                 android:id="@+id/image_recipe"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="match_parent"
                 android:src="@drawable/photo_recipe_default"
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
@@ -73,10 +74,8 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
                 app:menu="@menu/recipe_toolbar_menu"
                 app:navigationIcon="@drawable/ic_arrow_back"
-                android:fitsSystemWindows="true"
                 app:title="Recipe Name" />
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -176,9 +175,8 @@
         android:id="@+id/bottomAppBar"
         style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:fitsSystemWindows="true"
         app:backgroundTint="@color/color_background_btn_main"
         app:menu="@menu/bottom_app_bar_details"
         app:navigationIcon="@drawable/ic_home"

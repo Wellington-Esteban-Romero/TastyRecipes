@@ -3,24 +3,17 @@ package com.tasty.recipes.activities
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,24 +43,12 @@ class RecipeDetailActivity : AppCompatActivity() {
         lateinit var session: SessionManager
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityRecipeDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-       window.insetsController?.let {
-            it.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
-            it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-       }
-
-        binding.bottomAppBar.setOnApplyWindowInsetsListener { view, insets ->
-            val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-            view.setPadding(view.paddingLeft, statusBarHeight, view.paddingRight, view.paddingBottom)
-            insets
-        }
 
         setSupportActionBar(binding.toolbar)
         session = SessionManager(applicationContext)

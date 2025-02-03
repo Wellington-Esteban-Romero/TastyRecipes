@@ -1,21 +1,14 @@
 package com.tasty.recipes.activities
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
-import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,7 +23,6 @@ import com.tasty.recipes.data.entities.Recipe
 import com.tasty.recipes.data.entities.User
 import com.tasty.recipes.databinding.ActivityMainBinding
 import com.tasty.recipes.utils.SessionManager
-import com.tasty.recipes.utils.setWindowInsets
 import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
@@ -51,20 +43,12 @@ class MainActivity : AppCompatActivity() {
         lateinit var session: SessionManager
     }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        window.insetsController?.let {
-            it.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
-            it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
-
-        binding.bottomAppBar.setWindowInsets()
 
         initUI()
         initListener()

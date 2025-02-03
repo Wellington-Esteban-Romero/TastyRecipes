@@ -3,6 +3,7 @@ package com.tasty.recipes.utils
 import android.os.Build
 import android.view.View
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 
@@ -28,11 +29,10 @@ import androidx.core.view.WindowInsetsCompat
  *           This view should have `MarginLayoutParams` as its layout parameters.
  */
 
-@RequiresApi(Build.VERSION_CODES.R)
 fun View.setWindowInsets() {
-    setOnApplyWindowInsetsListener { view, insets ->
-        val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top
-        view.setPadding(view.paddingLeft, statusBarHeight, view.paddingRight, view.paddingBottom)
+    ViewCompat.setOnApplyWindowInsetsListener (this) { view, insets ->
+        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
         insets
     }
 

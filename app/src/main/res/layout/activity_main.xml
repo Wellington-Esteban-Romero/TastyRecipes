@@ -175,7 +175,7 @@
                         android:layout_weight="1" />
 
                     <TextView
-                        android:id="@+id/btnViewAll"
+                        android:id="@+id/btnViewAllUsers"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginTop="16dp"

@@ -7,4 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".activities.ListUserActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvListUsers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        tools:ignore="MissingConstraints" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

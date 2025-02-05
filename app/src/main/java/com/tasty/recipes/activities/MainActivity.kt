@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupShowViewAll() {
-        binding.btnViewAll.setOnClickListener {
+        binding.btnViewAllUsers.setOnClickListener {
             startActivity(Intent(this, ListUserActivity::class.java))
         }
     }

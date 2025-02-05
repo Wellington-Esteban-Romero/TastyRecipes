@@ -67,18 +67,12 @@ class AddRecipeActivity : AppCompatActivity() {
             }
         }
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         binding = ActivityAddRecipeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        window.insetsController?.let {
-            it.hide(WindowInsets.Type.navigationBars() or WindowInsets.Type.statusBars())
-            it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
 
         initUI()
         initListener()

@@ -13,7 +13,7 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/imgPerfil"
+            android:id="@+id/userProfileImage"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
@@ -23,24 +23,24 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:id="@+id/txtNombreUsuario"
+            android:id="@+id/tvNameUser"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Nombre Usuario"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/imgPerfil"
-            app:layout_constraintTop_toTopOf="@id/imgPerfil"
+            app:layout_constraintStart_toEndOf="@id/userProfileImage"
+            app:layout_constraintTop_toTopOf="@id/userProfileImage"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
-            android:id="@+id/txtFollowers"
+            android:id="@+id/tvFollowers"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="1000 seguidores"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/imgPerfil"
-            app:layout_constraintTop_toBottomOf="@id/txtNombreUsuario"
+            app:layout_constraintStart_toEndOf="@id/userProfileImage"
+            app:layout_constraintTop_toBottomOf="@id/tvNameUser"
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
@@ -49,8 +49,8 @@
             android:layout_height="wrap_content"
             android:text="3 Recipes"
             android:textSize="14sp"
-            app:layout_constraintStart_toEndOf="@id/imgPerfil"
-            app:layout_constraintTop_toBottomOf="@id/txtFollowers"
+            app:layout_constraintStart_toEndOf="@id/userProfileImage"
+            app:layout_constraintTop_toBottomOf="@id/tvFollowers"
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
